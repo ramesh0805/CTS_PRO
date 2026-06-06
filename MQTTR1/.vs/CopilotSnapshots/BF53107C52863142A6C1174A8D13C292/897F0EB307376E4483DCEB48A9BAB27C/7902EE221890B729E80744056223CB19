@@ -1,0 +1,121 @@
+﻿import { Component, Input, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Chart, ChartConfiguration, registerables } from 'chart.js';
+
+Chart.register(...registerables);
+
+@Component({
+  selector: 'app-telemetry-chart',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    <div class="chart-container">
+      <canvas #chartCanvas></canvas>
+    </div>
+  `,
+  styles: [`
+    .chart-container {
+      position: relative;
+      height: 400px;
+      width: 100%;
+    }
+  `]
+})
+export class TelemetryChartComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('chartCanvas', { static: false }) chartCanvas!: ElementRef<HTMLCanvasElement>;
+  @Input() chartData: any[] = [];
+  @Input() chartLabel: string = 'Telemetry Data';
+  @Input() chartType: 'line' | 'bar' = 'line';
+  @Input() xAxisLabel: string = 'Time';
+  @Input() yAxisLabel: string = 'Value';
+
+  private chart?: Chart;
+
+  ngOnInit(): void {}
+
+  ngAfterViewInit(): void {
+    this.createChart();
+  }
+
+  ngOnDestroy(): void {
+    if (this.chart) {
+      this.chart.destroy();
+    }
+  }
+
+  private createChart(): void {
+    if (!this.chartCanvas) return;
+
+    const ctx = this.chartCanvas.nativeElement.getContext('2d');
+    if (!ctx) return;
+
+    const labels = this.chartData.map(d => {
+      const date = new Date(d.timestamp);
+      return date.toLocaleTimeString();
+    });
+
+    const data = this.chartData.map(d => d.value);
+
+    const config: ChartConfiguration = {
+      type: this.chartType,
+      data: {
+        labels: labels,
+        datasets: [{
+          label: this.chartLabel,
+          data: data,
+          borderColor: 'rgb(75, 192, 192)',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          tension: 0.4,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false,
+          }
+        },
+        scales: {
+          x: {
+            display: true,
+            title: {
+              display: true,
+              text: this.xAxisLabel
+            }
+          },
+          y: {
+            display: true,
+            title: {
+              display: true,
+              text: this.yAxisLabel
+            }
+          }
+        }
+      }
+    };
+
+    this.chart = new Chart(ctx, config);
+  }
+
+  public updateChart(newData: any[]): void {
+    if (!this.chart) return;
+
+    const labels = newData.map(d => {
+      const date = new Date(d.timestamp);
+      return date.toLocaleTimeString();
+    });
+
+    const data = newData.map(d => d.value);
+
+    this.chart.data.labels = labels;
+    this.chart.data.datasets[0].data = data;
+    this.chart.update();
+  }
+}

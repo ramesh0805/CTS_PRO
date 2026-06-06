@@ -1,0 +1,106 @@
+﻿import { Component } from '@angular/core';
+import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { AuthService } from './services/auth.service';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
+  template: `
+    <nav class="nav" *ngIf="authService.isAuthenticated()">
+      <div class="nav-left">
+        <ul>
+          <li><a routerLink="/dashboard" routerLinkActive="active">Dashboard</a></li>
+          <li><a routerLink="/devices" routerLinkActive="active">Devices</a></li>
+          <li><a routerLink="/telemetry" routerLinkActive="active">Telemetry</a></li>
+          <li *ngIf="authService.isAdmin()"><a routerLink="/simulator" routerLinkActive="active">Simulator</a></li>
+        </ul>
+      </div>
+      <div class="nav-right">
+        <span class="user-info">
+          {{ authService.getCurrentUser()?.username }} 
+          <span class="role-badge" [class.admin]="authService.isAdmin()">
+            {{ authService.getCurrentUser()?.role }}
+          </span>
+        </span>
+        <button class="logout-btn" (click)="logout()">Logout</button>
+      </div>
+    </nav>
+
+    <div class="container">
+      <router-outlet></router-outlet>
+    </div>
+  `,
+  styles: [`
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #333;
+      padding: 0 20px;
+    }
+
+    .nav-left ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+    }
+
+    .nav-left li {
+      margin: 0;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .user-info {
+      color: white;
+      font-size: 14px;
+    }
+
+    .role-badge {
+      background-color: #6c757d;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 12px;
+      margin-left: 8px;
+    }
+
+    .role-badge.admin {
+      background-color: #dc3545;
+      font-weight: bold;
+    }
+
+    .logout-btn {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .logout-btn:hover {
+      background-color: #c82333;
+    }
+  `]
+})
+export class AppComponent {
+  title = 'MQTTR Dashboard';
+
+  constructor(
+    public authService: AuthService,
+    private router: Router
+  ) {}
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
+}

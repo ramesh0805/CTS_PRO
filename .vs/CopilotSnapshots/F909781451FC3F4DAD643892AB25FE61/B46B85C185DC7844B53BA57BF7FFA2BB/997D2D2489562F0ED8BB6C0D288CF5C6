@@ -1,0 +1,82 @@
+﻿.telemetry {
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #312e81 0%, #2563eb 55%, #0ea5e9 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 0.2px;
+    }
+  }
+
+  .filter-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    padding: 16px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.06) 0%, rgba(14, 165, 233, 0.08) 100%);
+    border: 1px solid rgba(79, 70, 229, 0.16);
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .readonly-input {
+    background-color: #f8f9fa;
+    color: #495057;
+    cursor: not-allowed;
+    font-weight: 500;
+  }
+
+  .table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h3 {
+      margin: 0;
+      color: #1f2a58;
+      font-weight: 700;
+    }
+  }
+
+  .chart-header {
+    margin-bottom: 20px;
+
+    h3 {
+      margin-bottom: 5px;
+      color: #1f2a58;
+      font-weight: 700;
+    }
+
+    .chart-info {
+      color: #4f5c8a;
+      font-size: 0.9rem;
+    }
+  }
+
+  .page-info {
+    text-align: center;
+    margin-top: 15px;
+    color: #6c757d;
+    font-size: 14px;
+  }
+
+  .info-message {
+    text-align: center;
+    color: #6c757d;
+    padding: 40px;
+  }
+}

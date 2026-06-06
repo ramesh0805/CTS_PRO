@@ -1,0 +1,273 @@
+﻿import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService, LoginDto } from '../../services/auth.service';
+
+@Component({
+  selector: 'app-login',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  template: `
+    <div class="container">
+      <div class="background">
+        <!-- IoT Telemetry Animations -->
+        <div class="telemetry-widget temp-widget">
+          <div class="widget-icon">🌡️</div>
+          <div class="widget-value" [style.setProperty]="'--temp-val', tempValue + '%'">
+            <span class="value">{{tempValue}}°C</span>
+          </div>
+          <div class="widget-label">Temperature</div>
+          <div class="progress-bar">
+            <div class="progress-fill temp-fill"></div>
+          </div>
+        </div>
+
+        <div class="telemetry-widget humidity-widget">
+          <div class="widget-icon">💧</div>
+          <div class="widget-value">
+            <span class="value">{{humidityValue}}%</span>
+          </div>
+          <div class="widget-label">Humidity</div>
+          <div class="circular-progress">
+            <svg viewBox="0 0 100 100">
+              <circle class="progress-bg" cx="50" cy="50" r="45"></circle>
+              <circle class="progress-bar humidity-progress" cx="50" cy="50" r="45" 
+                [style.strokeDashoffset]="283 - (283 * humidityValue / 100)"></circle>
+            </svg>
+          </div>
+        </div>
+
+        <div class="telemetry-widget pressure-widget">
+          <div class="widget-icon">📊</div>
+          <div class="widget-value">
+            <span class="value">{{pressureValue}}</span>
+          </div>
+          <div class="widget-label">Pressure (kPa)</div>
+          <div class="gauge">
+            <div class="gauge-needle" [style.transform]="'rotate(' + (pressureValue - 950) * 1.8 + 'deg)'"></div>
+          </div>
+        </div>
+
+        <div class="data-stream">
+          <div class="stream-line" *ngFor="let line of dataLines"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Welcome Back</h2>
+
+        <form (ngSubmit)="onSubmit()" #form="ngForm">
+          <div class="field">
+            <label for="username">Username</label>
+            <input 
+              type="text" 
+              id="username" 
+              name="username"
+              [(ngModel)]="loginDto.username" 
+              required
+              placeholder="Username">
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <input 
+              type="password" 
+              id="password" 
+              name="password"
+              [(ngModel)]="loginDto.password" 
+              required
+              placeholder="Password">
+          </div>
+
+          <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+
+          <button type="submit" [disabled]="!form.valid || isLoading">
+            {{ isLoading ? 'Logging in...' : 'Login' }}
+          </button>
+        </form>
+
+        <p class="link">
+          Don't have an account? <a (click)="goToRegister()">Register</a>
+        </p>
+      </div>
+    </div>
+  `,
+  styles: [`
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .background {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .circle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      animation: float 20s infinite ease-in-out;
+    }
+
+    .circle:nth-child(1) {
+      width: 300px;
+      height: 300px;
+      top: -150px;
+      left: -150px;
+    }
+
+    .circle:nth-child(2) {
+      width: 200px;
+      height: 200px;
+      bottom: -100px;
+      right: -100px;
+      animation-delay: 5s;
+    }
+
+    .circle:nth-child(3) {
+      width: 150px;
+      height: 150px;
+      top: 50%;
+      left: 10%;
+      animation-delay: 10s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(20px, 20px); }
+    }
+
+    .card {
+      background: white;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      position: relative;
+      z-index: 1;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+      margin: 0 0 30px;
+      font-size: 24px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: #555;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover:not(:disabled) {
+      background: #5568d3;
+    }
+
+    button:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+    }
+
+    .link {
+      text-align: center;
+      margin: 20px 0 0;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .link a {
+      color: #667eea;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .link a:hover {
+      text-decoration: underline;
+    }
+  `]
+})
+export class LoginComponent {
+  loginDto: LoginDto = { username: '', password: '' };
+  errorMessage = '';
+  isLoading = false;
+
+  constructor(private authService: AuthService, private router: Router) {
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/dashboard']);
+    }
+  }
+
+  onSubmit(): void {
+    if (!this.loginDto.username || !this.loginDto.password) return;
+
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    this.authService.login(this.loginDto).subscribe({
+      next: () => this.router.navigate(['/dashboard']),
+      error: (error) => {
+        this.errorMessage = error.error?.message || 'Invalid credentials';
+        this.isLoading = false;
+      }
+    });
+  }
+
+  goToRegister(): void {
+    this.router.navigate(['/register']);
+  }
+}

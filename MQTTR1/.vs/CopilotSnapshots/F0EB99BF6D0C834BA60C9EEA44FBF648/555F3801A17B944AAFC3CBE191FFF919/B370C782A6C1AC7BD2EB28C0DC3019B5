@@ -1,0 +1,167 @@
+﻿import { Injectable, OnDestroy } from '@angular/core';
+import { TelemetryService } from './telemetry.service';
+import { DeviceService } from './device.service';
+import { AlertService } from './alert.service';
+import { interval, Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+
+interface MetricHistory {
+  [deviceId: string]: {
+    temperature?: number;
+    humidity?: number;
+    pressure?: number;
+  };
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class TelemetryMonitorService implements OnDestroy {
+  private monitoringSubscription?: Subscription;
+  private metricHistory: MetricHistory = {};
+  private readonly POLL_INTERVAL = 60000; // Check every 60 seconds
+
+  constructor(
+    private telemetryService: TelemetryService,
+    private deviceService: DeviceService,
+    private alertService: AlertService
+  ) {}
+
+  /**
+   * Start monitoring telemetry data for critical changes
+   */
+  startMonitoring(): void {
+    if (this.monitoringSubscription) {
+      return; // Already monitoring
+    }
+
+    console.log('[TelemetryMonitor] Starting monitoring...');
+
+    // Initial check
+    this.checkTelemetry();
+
+    // Poll every 60 seconds
+    this.monitoringSubscription = interval(this.POLL_INTERVAL)
+      .pipe(
+        switchMap(() => this.deviceService.getAllDevices())
+      )
+      .subscribe({
+        next: (devices) => {
+          devices.forEach(device => {
+            this.checkDeviceTelemetry(device.deviceId, device.name);
+          });
+        },
+        error: (err) => {
+          console.error('[TelemetryMonitor] Error:', err);
+        }
+      });
+  }
+
+  /**
+   * Stop monitoring
+   */
+  stopMonitoring(): void {
+    if (this.monitoringSubscription) {
+      console.log('[TelemetryMonitor] Stopping monitoring...');
+      this.monitoringSubscription.unsubscribe();
+      this.monitoringSubscription = undefined;
+    }
+  }
+
+  /**
+   * Check telemetry for all devices
+   */
+  private checkTelemetry(): void {
+    this.deviceService.getAllDevices().subscribe({
+      next: (devices) => {
+        devices.forEach(device => {
+          this.checkDeviceTelemetry(device.deviceId, device.name);
+        });
+      },
+      error: (err) => {
+        console.error('[TelemetryMonitor] Error loading devices:', err);
+      }
+    });
+  }
+
+  /**
+   * Check telemetry for a specific device
+   */
+  private checkDeviceTelemetry(deviceId: string, deviceName: string): void {
+    // Get latest telemetry (last 2 records to compare)
+    this.telemetryService.getLatestTelemetry(deviceId, 2).subscribe({
+      next: (telemetry) => {
+        if (telemetry.length < 2) {
+          // Not enough data to compare, store current value
+          if (telemetry.length === 1) {
+            this.storeMetric(deviceId, telemetry[0].metric, telemetry[0].value);
+          }
+          return;
+        }
+
+        const latest = telemetry[0];
+        const previous = telemetry[1];
+
+        // Only compare if they're the same metric
+        if (latest.metric === previous.metric) {
+          this.checkMetricChange(
+            deviceId,
+            deviceName,
+            latest.metric,
+            latest.value,
+            previous.value
+          );
+        }
+
+        // Store latest value
+        this.storeMetric(deviceId, latest.metric, latest.value);
+      },
+      error: (err) => {
+        console.error(`[TelemetryMonitor] Error loading telemetry for ${deviceId}:`, err);
+      }
+    });
+  }
+
+  /**
+   * Check if metric change is critical
+   */
+  private checkMetricChange(
+    deviceId: string,
+    deviceName: string,
+    metric: string,
+    currentValue: number,
+    previousValue: number
+  ): void {
+    const metricType = metric.toLowerCase() as 'temperature' | 'humidity' | 'pressure';
+
+    // Validate metric type
+    if (!['temperature', 'humidity', 'pressure'].includes(metricType)) {
+      return;
+    }
+
+    // Check against thresholds using AlertService
+    this.alertService.checkMetric(
+      metricType,
+      deviceId,
+      deviceName,
+      currentValue,
+      previousValue
+    );
+  }
+
+  /**
+   * Store metric value in history
+   */
+  private storeMetric(deviceId: string, metric: string, value: number): void {
+    if (!this.metricHistory[deviceId]) {
+      this.metricHistory[deviceId] = {};
+    }
+
+    const metricType = metric.toLowerCase() as 'temperature' | 'humidity' | 'pressure';
+    this.metricHistory[deviceId][metricType] = value;
+  }
+
+  ngOnDestroy(): void {
+    this.stopMonitoring();
+  }
+}

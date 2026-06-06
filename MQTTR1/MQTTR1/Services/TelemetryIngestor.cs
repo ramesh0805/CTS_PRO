@@ -1,0 +1,116 @@
+using MQTTR1.DTOs;
+using MQTTR1.Models;
+using MQTTR1.Repositories;
+
+namespace MQTTR1.Services;
+
+public class TelemetryIngestor
+{
+    private readonly ITelemetryRepository _telemetryRepository;
+    private readonly IDeviceRepository _deviceRepository;
+
+    public TelemetryIngestor(
+        ITelemetryRepository telemetryRepository,
+        IDeviceRepository deviceRepository)
+    {
+        _telemetryRepository = telemetryRepository;
+        _deviceRepository = deviceRepository;
+    }
+
+    public async Task<(bool Success, string? ErrorMessage, Telemetry? Telemetry)> ValidateAndStore(TelemetryDto telemetryDto)
+    {
+        // Validate required fields
+        if (string.IsNullOrWhiteSpace(telemetryDto.DeviceId))
+        {
+            return (false, "DeviceId is required", null);
+        }
+
+        if (string.IsNullOrWhiteSpace(telemetryDto.Metric))
+        {
+            return (false, "Metric is required", null);
+        }
+
+        // Check if device exists
+        var device = await _deviceRepository.GetByDeviceIdAsync(telemetryDto.DeviceId);
+        if (device == null)
+        {
+            return (false, $"Device with DeviceId '{telemetryDto.DeviceId}' not found", null);
+        }
+
+        // Create telemetry entity
+        var telemetry = new Telemetry
+        {
+            DeviceId = device.Id,
+            Metric = telemetryDto.Metric,
+            Value = telemetryDto.Value,
+            Timestamp = telemetryDto.Timestamp ?? DateTime.UtcNow
+        };
+
+        // Store telemetry
+        try
+        {
+            var storedTelemetry = await _telemetryRepository.CreateAsync(telemetry);
+            return (true, null, storedTelemetry);
+        }
+        catch (Exception ex)
+        {
+            return (false, $"Failed to store telemetry: {ex.Message}", null);
+        }
+    }
+
+    public async Task<(bool Success, string? ErrorMessage, List<Telemetry>? Telemetries)> ValidateAndStoreBatch(IEnumerable<TelemetryDto> telemetryDtos)
+    {
+        var validTelemetries = new List<Telemetry>();
+        var errors = new List<string>();
+
+        // Validate all records first; collect valid entities without hitting the DB per record
+        foreach (var dto in telemetryDtos)
+        {
+            if (string.IsNullOrWhiteSpace(dto.DeviceId))
+            {
+                errors.Add($"{dto.DeviceId}/{dto.Metric}: DeviceId is required");
+                continue;
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.Metric))
+            {
+                errors.Add($"{dto.DeviceId}/{dto.Metric}: Metric is required");
+                continue;
+            }
+
+            var device = await _deviceRepository.GetByDeviceIdAsync(dto.DeviceId);
+            if (device == null)
+            {
+                errors.Add($"{dto.DeviceId}/{dto.Metric}: Device not found");
+                continue;
+            }
+
+            validTelemetries.Add(new Telemetry
+            {
+                DeviceId = device.Id,
+                Metric = dto.Metric,
+                Value = dto.Value,
+                Timestamp = dto.Timestamp ?? DateTime.UtcNow
+            });
+        }
+
+        // Persist all valid records in a single DB transaction
+        if (validTelemetries.Count > 0)
+        {
+            try
+            {
+                await _telemetryRepository.CreateBatchAsync(validTelemetries);
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Failed to persist batch: {ex.Message}", null);
+            }
+        }
+
+        // Return success with details about any validation errors
+        var errorMessage = errors.Any() ? string.Join("; ", errors) : null;
+        var overallSuccess = validTelemetries.Count > 0;
+
+        return (overallSuccess, errorMessage, validTelemetries.Count > 0 ? validTelemetries : null);
+    }
+}

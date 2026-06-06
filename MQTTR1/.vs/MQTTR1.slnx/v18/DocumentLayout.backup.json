@@ -1,0 +1,2418 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|ViewDataWindow_MSSQL__/LTIN689325_SQLEXPRESS/TelemetryDb/True/SqlTable/dbo.Telemetries.sql||{0058A1F7-65F3-4DB9-B3D0-CA7E64DD73CD}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\mqttr1\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|solutionrelative:mqttr1\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\simulator\\simulator.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\components\\simulator\\simulator.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\telemetry\\telemetry.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\components\\telemetry\\telemetry.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\telemetry-chart\\telemetry-chart.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\components\\telemetry-chart\\telemetry-chart.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\telemetry\\telemetry.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\components\\telemetry\\telemetry.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\services\\telemetry.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\services\\telemetry.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\login\\login.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\components\\login\\login.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\guards\\root.guard.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\guards\\root.guard.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\services\\auth.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\services\\auth.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\services\\telemetry-monitor.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\services\\telemetry-monitor.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\user-management\\user-management.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\components\\user-management\\user-management.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\devices\\devices.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\components\\devices\\devices.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\register\\register.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\components\\register\\register.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\simulator\\simulator.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\components\\simulator\\simulator.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\dashboard\\dashboard.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\components\\dashboard\\dashboard.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\dashboard\\dashboard.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\components\\dashboard\\dashboard.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\dashboard\\dashboard.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\components\\dashboard\\dashboard.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\telemetry\\telemetry.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\components\\telemetry\\telemetry.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\simulator\\simulator.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\components\\simulator\\simulator.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\utils\\device-metric-mapper.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\utils\\device-metric-mapper.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\.copilot\\plans\\plan-add-metric-field-to-telemetry-submission-with-auto-defaults-and-full-stack-optim.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|MarkdownSecurePreview"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/TelemetryDb/True/SqlTable/dbo.Telemetries.sql||{0058A1F7-65F3-4DB9-B3D0-CA7E64DD73CD}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\package.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\package.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/TelemetryDb/True/SqlTable/dbo.__EFMigrationsHistory.sql||{0058A1F7-65F3-4DB9-B3D0-CA7E64DD73CD}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/TelemetryDb/True/SqlTable/dbo.Devices.sql||{0058A1F7-65F3-4DB9-B3D0-CA7E64DD73CD}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/TelemetryDb/True/SqlTable/dbo.Users.sql||{0058A1F7-65F3-4DB9-B3D0-CA7E64DD73CD}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\.copilot\\plans\\plan-optimize-mqtt-telemetry-system-backend,-frontend-database.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|MarkdownSecurePreview"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\GRAPH-TIMESTAMP-FIX-SUMMARY.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\ADMIN-FOOTER-REMOVAL-SUMMARY.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\DASHBOARD-GRID-LAYOUT-SUMMARY.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\TELEMETRY-BUG-FIX-SUMMARY.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\DASHBOARD-CAROUSEL-ENHANCEMENT-SUMMARY.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\TELEMETRY-DEFAULT-DATA-SUMMARY.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\app.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\app.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\ICON-REMOVAL-SUMMARY.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\user-management\\user-management.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\components\\user-management\\user-management.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\devices\\devices.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\components\\devices\\devices.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\PROJECT-RUNNING-STATUS.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\NAVBAR-ALERTS-SYSTEM.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\navbar-alerts\\navbar-alerts.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\components\\navbar-alerts\\navbar-alerts.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\navbar-alerts\\navbar-alerts.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\components\\navbar-alerts\\navbar-alerts.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\navbar-alerts\\navbar-alerts.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\components\\navbar-alerts\\navbar-alerts.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\services\\alert.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\services\\alert.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\POPUP-NOTIFICATIONS-IMPLEMENTED.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\notification\\notification.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\components\\notification\\notification.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\notification\\notification.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\components\\notification\\notification.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\notification\\notification.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\components\\notification\\notification.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\services\\notification.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\services\\notification.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\DEVICE-UI-FINAL.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\devices\\devices.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\components\\devices\\devices.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\DEVICE-UI-UPDATES.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\styles.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\styles.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\DEVICE-EDIT-TROUBLESHOOTING.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\DEVICE-PERMISSIONS-FIXED.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\PROJECT-VISUAL-SUMMARY.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\PROJECT-COMPLETE-OVERVIEW.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\QUICK-REFERENCE.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\IMPLEMENTATION-COMPLETE.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\VISUAL-ANIMATION-SUMMARY.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\ENHANCED-ANIMATIONS.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\FULL-PAGE-BACKGROUND.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\REALTIME-DATA-UPDATES.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\QUICK-START-GUIDE.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\IOT-TELEMETRY-ANIMATIONS.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\OPTIMIZED-AUTH-FORMS.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\ANIMATED-AUTH-PAGES.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\NAVBAR-VISIBILITY-FINAL-FIX.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\app.routes.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\app.routes.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\AUTHENTICATION-COMPLETE-FIX.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\AUTHENTICATION-DEBUG.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\guards\\admin.guard.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\guards\\admin.guard.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\guards\\auth.guard.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\guards\\auth.guard.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\AUTHENTICATION-FIX.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\TROUBLESHOOTING-DATA-LOAD.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\TESTING-CHECKLIST.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\QUICK-START.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\AUTHENTICATION-FIXES.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\services\\device.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\services\\device.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\services\\user.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\services\\user.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\MANUAL-SETUP-GUIDE.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\user-management\\user-management.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\components\\user-management\\user-management.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\AppData\\Local\\Temp\\CopilotBaseline\\Deleted\\-968722832\\WeatherForecast.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\angular.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\angular.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\TELEMETRY-GRAPHS-FIXED.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\TELEMETRY-FIX.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\models\\telemetry.model.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\models\\telemetry.model.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\SIMULATOR-QUICKSTART.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\SIMULATOR-IMPLEMENTATION.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\SIMULATOR-GUIDE.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\services\\data-simulator.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\services\\data-simulator.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\tsconfig.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\tsconfig.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\START-ALL.bat||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:START-ALL.bat||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\PROJECT-OVERVIEW.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\setup-and-run.ps1||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\setup-and-run.ps1||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\IMPLEMENTATION-SUMMARY.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\QUICKSTART.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\environments\\environment.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\environments\\environment.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\environments\\environment.development.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\environments\\environment.development.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\README.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\models\\device.model.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\app\\models\\device.model.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\main.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\main.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\tsconfig.app.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\tsconfig.app.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\proxy.conf.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:mqttr-frontend\\src\\proxy.conf.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\.copilot\\plans\\plan-week-2-angular-frontend-implementation.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|MarkdownSecurePreview"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\CHECKLIST.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\ARCHITECTURE.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\QUICK_REFERENCE.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\PROJECT_SUMMARY.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\TESTING_GUIDE.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\.copilot\\plans\\plan-week-1-asp.net-core-backend-development.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|MarkdownSecurePreview"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\README.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\start-all.ps1||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:start-all.ps1||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\AppData\\Local\\Temp\\CopilotBaseline\\Deleted\\2084945841\\WeatherForecastController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\UI_CONSOLIDATION_SUMMARY.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\CHANGE_DETECTION_FIX.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\AUTO_LOAD_DATA_FIX.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\TELEMETRY_FORM_ENHANCEMENT.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\TYPE_CONVERSION_SUMMARY.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\ConsolePublisher\\README.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\DATABASE_MIGRATION.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\mqttr1\\dtos\\pagedresultdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|solutionrelative:mqttr1\\dtos\\pagedresultdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\mqttr1\\dtos\\telemetrydto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|solutionrelative:mqttr1\\dtos\\telemetrydto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\mqttr1\\dtos\\telemetryresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|solutionrelative:mqttr1\\dtos\\telemetryresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\mqttr1\\dtos\\deviceresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|solutionrelative:mqttr1\\dtos\\deviceresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\mqttr1\\dtos\\devicedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|solutionrelative:mqttr1\\dtos\\devicedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\mqttr1\\dtos\\authdtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|solutionrelative:mqttr1\\dtos\\authdtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\mqttr1\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|solutionrelative:mqttr1\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\mqttr1\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|solutionrelative:mqttr1\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\mqttr1\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|solutionrelative:mqttr1\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\mqttr1\\utilities\\telemetryvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|solutionrelative:mqttr1\\utilities\\telemetryvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\mqttr1\\repositories\\itelemetryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|solutionrelative:mqttr1\\repositories\\itelemetryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\mqttr1\\repositories\\telemetryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|solutionrelative:mqttr1\\repositories\\telemetryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\mqttr1\\services\\livetelemetrygeneratorservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|solutionrelative:mqttr1\\services\\livetelemetrygeneratorservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\mqttr1\\models\\telemetry.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|solutionrelative:mqttr1\\models\\telemetry.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\mqttr1\\controllers\\telemetrycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|solutionrelative:mqttr1\\controllers\\telemetrycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\mqttr1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|solutionrelative:mqttr1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\mqttr1\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|solutionrelative:mqttr1\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\mqttr1\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|solutionrelative:mqttr1\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5E56354D-BB4D-BD28-AF70-B5D3953078A6}|ConsolePublisher\\ConsolePublisher.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\consolepublisher\\consolepublisher.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{5E56354D-BB4D-BD28-AF70-B5D3953078A6}|ConsolePublisher\\ConsolePublisher.csproj|solutionrelative:consolepublisher\\consolepublisher.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\mqttr1\\mqttr1.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|solutionrelative:mqttr1\\mqttr1.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5E56354D-BB4D-BD28-AF70-B5D3953078A6}|ConsolePublisher\\ConsolePublisher.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\consolepublisher\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5E56354D-BB4D-BD28-AF70-B5D3953078A6}|ConsolePublisher\\ConsolePublisher.csproj|solutionrelative:consolepublisher\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5E56354D-BB4D-BD28-AF70-B5D3953078A6}|ConsolePublisher\\ConsolePublisher.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\consolepublisher\\sample-single.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{5E56354D-BB4D-BD28-AF70-B5D3953078A6}|ConsolePublisher\\ConsolePublisher.csproj|solutionrelative:consolepublisher\\sample-single.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5E56354D-BB4D-BD28-AF70-B5D3953078A6}|ConsolePublisher\\ConsolePublisher.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\consolepublisher\\sample-batch.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{5E56354D-BB4D-BD28-AF70-B5D3953078A6}|ConsolePublisher\\ConsolePublisher.csproj|solutionrelative:consolepublisher\\sample-batch.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\mqttr1\\controllers\\devicescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|solutionrelative:mqttr1\\controllers\\devicescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\mqttr1\\utilities\\paginghelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|solutionrelative:mqttr1\\utilities\\paginghelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\mqttr1\\services\\telemetryingestor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|solutionrelative:mqttr1\\services\\telemetryingestor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\mqttr1\\repositories\\devicerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|solutionrelative:mqttr1\\repositories\\devicerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\mqttr1\\repositories\\idevicerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|solutionrelative:mqttr1\\repositories\\idevicerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|c:\\users\\2489592\\downloads\\mqtt_telemetrycollector\\mqttr1\\mqttr1\\models\\device.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2E2E5AAE-E15C-AD00-327E-378C9AAAFE59}|MQTTR1\\MQTTR1.csproj|solutionrelative:mqttr1\\models\\device.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\TELEMETRY_INGESTION_VERIFICATION.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:TELEMETRY_INGESTION_VERIFICATION.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 152,
+              "Title": "TELEMETRY_INGESTION_VERIFICATION.md",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\TELEMETRY_INGESTION_VERIFICATION.md",
+              "RelativeDocumentMoniker": "TELEMETRY_INGESTION_VERIFICATION.md",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\TELEMETRY_INGESTION_VERIFICATION.md",
+              "RelativeToolTip": "TELEMETRY_INGESTION_VERIFICATION.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAALkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-18T12:34:31.445Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "dbo.Telemetries [Data]",
+              "DocumentMoniker": "ViewDataWindow_MSSQL__/LTIN689325_SQLEXPRESS/TelemetryDb/True/SqlTable/dbo.Telemetries.sql",
+              "ToolTip": "dbo.Telemetries [Data]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
+              "WhenOpened": "2026-05-18T12:31:49.274Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 123,
+              "Title": "PagedResultDto.cs",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\DTOs\\PagedResultDto.cs",
+              "RelativeDocumentMoniker": "MQTTR1\\DTOs\\PagedResultDto.cs",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\DTOs\\PagedResultDto.cs",
+              "RelativeToolTip": "MQTTR1\\DTOs\\PagedResultDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-14T08:20:55.21Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 124,
+              "Title": "TelemetryDto.cs",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\DTOs\\TelemetryDto.cs",
+              "RelativeDocumentMoniker": "MQTTR1\\DTOs\\TelemetryDto.cs",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\DTOs\\TelemetryDto.cs",
+              "RelativeToolTip": "MQTTR1\\DTOs\\TelemetryDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-14T08:20:35.088Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 125,
+              "Title": "TelemetryResponseDto.cs",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\DTOs\\TelemetryResponseDto.cs",
+              "RelativeDocumentMoniker": "MQTTR1\\DTOs\\TelemetryResponseDto.cs",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\DTOs\\TelemetryResponseDto.cs",
+              "RelativeToolTip": "MQTTR1\\DTOs\\TelemetryResponseDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-14T08:20:39.962Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "simulator.component.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\simulator\\simulator.component.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\components\\simulator\\simulator.component.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\simulator\\simulator.component.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\components\\simulator\\simulator.component.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFwAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-14T09:38:22.755Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\appsettings.json",
+              "RelativeDocumentMoniker": "MQTTR1\\appsettings.json",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\appsettings.json",
+              "RelativeToolTip": "MQTTR1\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-05-18T10:28:14.631Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 126,
+              "Title": "DeviceResponseDto.cs",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\DTOs\\DeviceResponseDto.cs",
+              "RelativeDocumentMoniker": "MQTTR1\\DTOs\\DeviceResponseDto.cs",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\DTOs\\DeviceResponseDto.cs",
+              "RelativeToolTip": "MQTTR1\\DTOs\\DeviceResponseDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-14T08:20:49.965Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 127,
+              "Title": "DeviceDto.cs",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\DTOs\\DeviceDto.cs",
+              "RelativeDocumentMoniker": "MQTTR1\\DTOs\\DeviceDto.cs",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\DTOs\\DeviceDto.cs",
+              "RelativeToolTip": "MQTTR1\\DTOs\\DeviceDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-14T08:20:45.287Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 128,
+              "Title": "AuthDtos.cs",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\DTOs\\AuthDtos.cs",
+              "RelativeDocumentMoniker": "MQTTR1\\DTOs\\AuthDtos.cs",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\DTOs\\AuthDtos.cs",
+              "RelativeToolTip": "MQTTR1\\DTOs\\AuthDtos.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-18T04:05:16.874Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "telemetry.component.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\telemetry\\telemetry.component.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\components\\telemetry\\telemetry.component.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\telemetry\\telemetry.component.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\components\\telemetry\\telemetry.component.ts",
+              "ViewState": "AgIAABAAAAAAAAAAAAAwwCQAAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-14T09:07:37.812Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "telemetry-chart.component.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\telemetry-chart\\telemetry-chart.component.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\components\\telemetry-chart\\telemetry-chart.component.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\telemetry-chart\\telemetry-chart.component.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\components\\telemetry-chart\\telemetry-chart.component.ts",
+              "ViewState": "AgIAALEBAAAAAAAAAADwv3kAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-14T09:37:50.805Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "telemetry.component.html",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\telemetry\\telemetry.component.html",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\components\\telemetry\\telemetry.component.html",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\telemetry\\telemetry.component.html",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\components\\telemetry\\telemetry.component.html",
+              "ViewState": "AgIAAGAAAAAAAAAAAAASwI4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-05-14T09:07:59.618Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "telemetry.service.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\services\\telemetry.service.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\services\\telemetry.service.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\services\\telemetry.service.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\services\\telemetry.service.ts",
+              "ViewState": "AgIAACcAAAAAAAAAAAAjwB0AAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-14T09:06:17.392Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "login.component.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\login\\login.component.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\components\\login\\login.component.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\login\\login.component.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\components\\login\\login.component.ts",
+              "ViewState": "AgIAAL8DAAAAAAAAAAAwwAAAAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-15T14:20:18.847Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "auth.service.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\services\\auth.service.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\services\\auth.service.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\services\\auth.service.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\services\\auth.service.ts",
+              "ViewState": "AgIAAEIAAAAAAAAAAAAowAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-15T12:39:11.258Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "telemetry-monitor.service.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\services\\telemetry-monitor.service.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\services\\telemetry-monitor.service.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\services\\telemetry-monitor.service.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\services\\telemetry-monitor.service.ts",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAwwLAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-15T16:20:58.791Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "root.guard.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\guards\\root.guard.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\guards\\root.guard.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\guards\\root.guard.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\guards\\root.guard.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-15T14:21:57.679Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "user-management.component.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\user-management\\user-management.component.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\components\\user-management\\user-management.component.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\user-management\\user-management.component.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\components\\user-management\\user-management.component.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAABFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-15T11:35:19.399Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "devices.component.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\devices\\devices.component.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\components\\devices\\devices.component.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\devices\\devices.component.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\components\\devices\\devices.component.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAI4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-14T09:06:58.828Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 129,
+              "Title": "UsersController.cs",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Controllers\\UsersController.cs",
+              "RelativeDocumentMoniker": "MQTTR1\\Controllers\\UsersController.cs",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Controllers\\UsersController.cs",
+              "RelativeToolTip": "MQTTR1\\Controllers\\UsersController.cs",
+              "ViewState": "AgIAAB4AAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-18T06:14:53.914Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "register.component.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\register\\register.component.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\components\\register\\register.component.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\register\\register.component.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\components\\register\\register.component.ts",
+              "ViewState": "AgIAALQDAAAAAAAAAAAAALADAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-15T14:20:36.609Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 130,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "MQTTR1\\Controllers\\AuthController.cs",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "MQTTR1\\Controllers\\AuthController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-18T04:05:27.149Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 131,
+              "Title": "AuthService.cs",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Services\\AuthService.cs",
+              "RelativeDocumentMoniker": "MQTTR1\\Services\\AuthService.cs",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Services\\AuthService.cs",
+              "RelativeToolTip": "MQTTR1\\Services\\AuthService.cs",
+              "ViewState": "AgIAABgAAAAAAAAAAAAjwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-18T04:05:38.807Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "simulator.component.html",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\simulator\\simulator.component.html",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\components\\simulator\\simulator.component.html",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\simulator\\simulator.component.html",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\components\\simulator\\simulator.component.html",
+              "ViewState": "AgIAAEQAAAAAAAAAAAAUwH4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-05-14T09:38:45.31Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 116,
+              "Title": "UI_CONSOLIDATION_SUMMARY.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\UI_CONSOLIDATION_SUMMARY.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\UI_CONSOLIDATION_SUMMARY.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\UI_CONSOLIDATION_SUMMARY.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\UI_CONSOLIDATION_SUMMARY.md",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-18T03:45:23.946Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 117,
+              "Title": "CHANGE_DETECTION_FIX.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\CHANGE_DETECTION_FIX.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\CHANGE_DETECTION_FIX.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\CHANGE_DETECTION_FIX.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\CHANGE_DETECTION_FIX.md",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-18T03:37:58.122Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "dashboard.component.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\dashboard\\dashboard.component.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\components\\dashboard\\dashboard.component.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\dashboard\\dashboard.component.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\components\\dashboard\\dashboard.component.ts",
+              "ViewState": "AgIAADkBAAAAAAAAAAAAADwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-14T09:06:26.596Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 118,
+              "Title": "AUTO_LOAD_DATA_FIX.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\AUTO_LOAD_DATA_FIX.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\AUTO_LOAD_DATA_FIX.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\AUTO_LOAD_DATA_FIX.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\AUTO_LOAD_DATA_FIX.md",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-18T03:31:02.072Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "dashboard.component.scss",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\dashboard\\dashboard.component.scss",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\components\\dashboard\\dashboard.component.scss",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\dashboard\\dashboard.component.scss",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\components\\dashboard\\dashboard.component.scss",
+              "ViewState": "AgIAACkAAAAAAAAAAAAgwCAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002663|",
+              "WhenOpened": "2026-05-14T09:06:46.211Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "dashboard.component.html",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\dashboard\\dashboard.component.html",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\components\\dashboard\\dashboard.component.html",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\dashboard\\dashboard.component.html",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\components\\dashboard\\dashboard.component.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAD8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-05-14T09:06:37.51Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 119,
+              "Title": "TELEMETRY_FORM_ENHANCEMENT.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\TELEMETRY_FORM_ENHANCEMENT.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\TELEMETRY_FORM_ENHANCEMENT.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\TELEMETRY_FORM_ENHANCEMENT.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\TELEMETRY_FORM_ENHANCEMENT.md",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-16T05:59:20.951Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "telemetry.component.scss",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\telemetry\\telemetry.component.scss",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\components\\telemetry\\telemetry.component.scss",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\telemetry\\telemetry.component.scss",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\components\\telemetry\\telemetry.component.scss",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAlwEAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002663|",
+              "WhenOpened": "2026-05-14T09:08:06.65Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 120,
+              "Title": "TYPE_CONVERSION_SUMMARY.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\TYPE_CONVERSION_SUMMARY.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\TYPE_CONVERSION_SUMMARY.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\TYPE_CONVERSION_SUMMARY.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\TYPE_CONVERSION_SUMMARY.md",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-16T05:53:17.717Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 132,
+              "Title": "TelemetryValidator.cs",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Utilities\\TelemetryValidator.cs",
+              "RelativeDocumentMoniker": "MQTTR1\\Utilities\\TelemetryValidator.cs",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Utilities\\TelemetryValidator.cs",
+              "RelativeToolTip": "MQTTR1\\Utilities\\TelemetryValidator.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-14T08:22:19.954Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 133,
+              "Title": "ITelemetryRepository.cs",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Repositories\\ITelemetryRepository.cs",
+              "RelativeDocumentMoniker": "MQTTR1\\Repositories\\ITelemetryRepository.cs",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Repositories\\ITelemetryRepository.cs",
+              "RelativeToolTip": "MQTTR1\\Repositories\\ITelemetryRepository.cs",
+              "ViewState": "AgIAAAQAAAAAAAAAAAD4vxUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-14T08:21:34.34Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 134,
+              "Title": "TelemetryRepository.cs",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Repositories\\TelemetryRepository.cs",
+              "RelativeDocumentMoniker": "MQTTR1\\Repositories\\TelemetryRepository.cs",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Repositories\\TelemetryRepository.cs",
+              "RelativeToolTip": "MQTTR1\\Repositories\\TelemetryRepository.cs",
+              "ViewState": "AgIAAFMAAAAAAAAAAAAuwHgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-14T08:21:45.367Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 135,
+              "Title": "LiveTelemetryGeneratorService.cs",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Services\\LiveTelemetryGeneratorService.cs",
+              "RelativeDocumentMoniker": "MQTTR1\\Services\\LiveTelemetryGeneratorService.cs",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Services\\LiveTelemetryGeneratorService.cs",
+              "RelativeToolTip": "MQTTR1\\Services\\LiveTelemetryGeneratorService.cs",
+              "ViewState": "AgIAAJ0BAAAAAAAAAAAjwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-15T14:51:25.737Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 136,
+              "Title": "Telemetry.cs",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Models\\Telemetry.cs",
+              "RelativeDocumentMoniker": "MQTTR1\\Models\\Telemetry.cs",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Models\\Telemetry.cs",
+              "RelativeToolTip": "MQTTR1\\Models\\Telemetry.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-14T08:20:25.7Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 137,
+              "Title": "TelemetryController.cs",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Controllers\\TelemetryController.cs",
+              "RelativeDocumentMoniker": "MQTTR1\\Controllers\\TelemetryController.cs",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Controllers\\TelemetryController.cs",
+              "RelativeToolTip": "MQTTR1\\Controllers\\TelemetryController.cs",
+              "ViewState": "AgIAAAMBAAAAAAAAAADwvyEAAAAzAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-14T08:23:00.427Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 138,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Program.cs",
+              "RelativeDocumentMoniker": "MQTTR1\\Program.cs",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Program.cs",
+              "RelativeToolTip": "MQTTR1\\Program.cs",
+              "ViewState": "AgIAAAQAAAAAAAAAAADwvwUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-14T08:23:50.655Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 139,
+              "Title": "appsettings.Development.json",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\appsettings.Development.json",
+              "RelativeDocumentMoniker": "MQTTR1\\appsettings.Development.json",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\appsettings.Development.json",
+              "RelativeToolTip": "MQTTR1\\appsettings.Development.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-05-16T03:21:05.41Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "simulator.component.scss",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\simulator\\simulator.component.scss",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\components\\simulator\\simulator.component.scss",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\simulator\\simulator.component.scss",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\components\\simulator\\simulator.component.scss",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAMgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002663|",
+              "WhenOpened": "2026-05-14T09:39:02.488Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "device-metric-mapper.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\utils\\device-metric-mapper.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\utils\\device-metric-mapper.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\utils\\device-metric-mapper.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\utils\\device-metric-mapper.ts",
+              "ViewState": "AgIAAGkAAAAAAAAAAAAAAKIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-15T17:55:15.733Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "plan-add-metric-field-to-telemetry-submission-with-auto-defaults-and-full-stack-optim.md [Preview]",
+              "DocumentMoniker": "C:\\Users\\2489338\\.copilot\\plans\\plan-add-metric-field-to-telemetry-submission-with-auto-defaults-and-full-stack-optim.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\.copilot\\plans\\plan-add-metric-field-to-telemetry-submission-with-auto-defaults-and-full-stack-optim.md",
+              "ToolTip": "C:\\Users\\2489338\\.copilot\\plans\\plan-add-metric-field-to-telemetry-submission-with-auto-defaults-and-full-stack-optim.md [Preview]",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\.copilot\\plans\\plan-add-metric-field-to-telemetry-submission-with-auto-defaults-and-full-stack-optim.md [Preview]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T17:54:04.265Z",
+              "EditorCaption": " [Preview]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "dbo.Telemetries.sql",
+              "DocumentMoniker": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/TelemetryDb/True/SqlTable/dbo.Telemetries.sql",
+              "ToolTip": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/TelemetryDb/True/SqlTable/dbo.Telemetries.sql",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
+              "WhenOpened": "2026-05-15T17:33:01.574Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "package.json",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\package.json",
+              "RelativeDocumentMoniker": "mqttr-frontend\\package.json",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\package.json",
+              "RelativeToolTip": "mqttr-frontend\\package.json",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAewCEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-05-14T09:04:31.151Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "dbo.__EFMigrationsHistory.sql",
+              "DocumentMoniker": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/TelemetryDb/True/SqlTable/dbo.__EFMigrationsHistory.sql",
+              "ToolTip": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/TelemetryDb/True/SqlTable/dbo.__EFMigrationsHistory.sql",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
+              "WhenOpened": "2026-05-15T17:19:24.614Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "dbo.Devices.sql",
+              "DocumentMoniker": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/TelemetryDb/True/SqlTable/dbo.Devices.sql",
+              "ToolTip": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/TelemetryDb/True/SqlTable/dbo.Devices.sql",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
+              "WhenOpened": "2026-05-15T17:19:18.327Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "dbo.Users.sql",
+              "DocumentMoniker": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/TelemetryDb/True/SqlTable/dbo.Users.sql",
+              "ToolTip": "ViewDataWindow_MSSQL__/_localdb__MSSQLLocalDB/TelemetryDb/True/SqlTable/dbo.Users.sql",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
+              "WhenOpened": "2026-05-15T17:19:04.41Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 140,
+              "Title": "ApplicationDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Data\\ApplicationDbContext.cs",
+              "RelativeDocumentMoniker": "MQTTR1\\Data\\ApplicationDbContext.cs",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Data\\ApplicationDbContext.cs",
+              "RelativeToolTip": "MQTTR1\\Data\\ApplicationDbContext.cs",
+              "ViewState": "AgIAACIAAAAAAAAAAAAjwE4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-14T08:21:10.729Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "plan-optimize-mqtt-telemetry-system-backend,-frontend-database.md [Preview]",
+              "DocumentMoniker": "C:\\Users\\2489338\\.copilot\\plans\\plan-optimize-mqtt-telemetry-system-backend,-frontend-database.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\.copilot\\plans\\plan-optimize-mqtt-telemetry-system-backend,-frontend-database.md",
+              "ToolTip": "C:\\Users\\2489338\\.copilot\\plans\\plan-optimize-mqtt-telemetry-system-backend,-frontend-database.md [Preview]",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\.copilot\\plans\\plan-optimize-mqtt-telemetry-system-backend,-frontend-database.md [Preview]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T17:14:31.059Z",
+              "EditorCaption": " [Preview]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "GRAPH-TIMESTAMP-FIX-SUMMARY.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\GRAPH-TIMESTAMP-FIX-SUMMARY.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\GRAPH-TIMESTAMP-FIX-SUMMARY.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\GRAPH-TIMESTAMP-FIX-SUMMARY.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\GRAPH-TIMESTAMP-FIX-SUMMARY.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGYBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T17:03:01.508Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "ADMIN-FOOTER-REMOVAL-SUMMARY.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\ADMIN-FOOTER-REMOVAL-SUMMARY.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\ADMIN-FOOTER-REMOVAL-SUMMARY.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\ADMIN-FOOTER-REMOVAL-SUMMARY.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\ADMIN-FOOTER-REMOVAL-SUMMARY.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAOEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T17:00:49.237Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "DASHBOARD-GRID-LAYOUT-SUMMARY.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\DASHBOARD-GRID-LAYOUT-SUMMARY.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\DASHBOARD-GRID-LAYOUT-SUMMARY.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\DASHBOARD-GRID-LAYOUT-SUMMARY.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\DASHBOARD-GRID-LAYOUT-SUMMARY.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADEBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T16:57:49.837Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "TELEMETRY-BUG-FIX-SUMMARY.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\TELEMETRY-BUG-FIX-SUMMARY.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\TELEMETRY-BUG-FIX-SUMMARY.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\TELEMETRY-BUG-FIX-SUMMARY.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\TELEMETRY-BUG-FIX-SUMMARY.md",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAOwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T16:54:10.902Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "DASHBOARD-CAROUSEL-ENHANCEMENT-SUMMARY.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\DASHBOARD-CAROUSEL-ENHANCEMENT-SUMMARY.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\DASHBOARD-CAROUSEL-ENHANCEMENT-SUMMARY.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\DASHBOARD-CAROUSEL-ENHANCEMENT-SUMMARY.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\DASHBOARD-CAROUSEL-ENHANCEMENT-SUMMARY.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAMoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T16:51:05.456Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 33,
+              "Title": "TELEMETRY-DEFAULT-DATA-SUMMARY.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\TELEMETRY-DEFAULT-DATA-SUMMARY.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\TELEMETRY-DEFAULT-DATA-SUMMARY.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\TELEMETRY-DEFAULT-DATA-SUMMARY.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\TELEMETRY-DEFAULT-DATA-SUMMARY.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAJkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T16:48:38.688Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 34,
+              "Title": "app.component.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\app.component.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\app.component.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\app.component.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\app.component.ts",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAjwB0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-14T09:05:47.359Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 35,
+              "Title": "ICON-REMOVAL-SUMMARY.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\ICON-REMOVAL-SUMMARY.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\ICON-REMOVAL-SUMMARY.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\ICON-REMOVAL-SUMMARY.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\ICON-REMOVAL-SUMMARY.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAALgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T16:37:04.465Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 36,
+              "Title": "user-management.component.html",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\user-management\\user-management.component.html",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\components\\user-management\\user-management.component.html",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\user-management\\user-management.component.html",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\components\\user-management\\user-management.component.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-05-15T11:36:17.46Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 37,
+              "Title": "devices.component.html",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\devices\\devices.component.html",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\components\\devices\\devices.component.html",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\devices\\devices.component.html",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\components\\devices\\devices.component.html",
+              "ViewState": "AgIAACQAAAAAAAAAAAAlwGsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-05-14T09:07:12.245Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 38,
+              "Title": "PROJECT-RUNNING-STATUS.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\PROJECT-RUNNING-STATUS.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\PROJECT-RUNNING-STATUS.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\PROJECT-RUNNING-STATUS.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\PROJECT-RUNNING-STATUS.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAIoBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T16:28:26.389Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 39,
+              "Title": "NAVBAR-ALERTS-SYSTEM.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\NAVBAR-ALERTS-SYSTEM.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\NAVBAR-ALERTS-SYSTEM.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\NAVBAR-ALERTS-SYSTEM.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\NAVBAR-ALERTS-SYSTEM.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACkCAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T16:23:18.772Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 40,
+              "Title": "navbar-alerts.component.html",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\navbar-alerts\\navbar-alerts.component.html",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\components\\navbar-alerts\\navbar-alerts.component.html",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\navbar-alerts\\navbar-alerts.component.html",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\components\\navbar-alerts\\navbar-alerts.component.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-05-15T16:19:18.35Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 41,
+              "Title": "navbar-alerts.component.scss",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\navbar-alerts\\navbar-alerts.component.scss",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\components\\navbar-alerts\\navbar-alerts.component.scss",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\navbar-alerts\\navbar-alerts.component.scss",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\components\\navbar-alerts\\navbar-alerts.component.scss",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAPkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002663|",
+              "WhenOpened": "2026-05-15T16:19:42.456Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 42,
+              "Title": "navbar-alerts.component.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\navbar-alerts\\navbar-alerts.component.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\components\\navbar-alerts\\navbar-alerts.component.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\navbar-alerts\\navbar-alerts.component.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\components\\navbar-alerts\\navbar-alerts.component.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-15T16:19:03.425Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 43,
+              "Title": "alert.service.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\services\\alert.service.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\services\\alert.service.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\services\\alert.service.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\services\\alert.service.ts",
+              "ViewState": "AgIAADwAAAAAAAAAAIBJwOMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-15T16:18:48.941Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 44,
+              "Title": "POPUP-NOTIFICATIONS-IMPLEMENTED.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\POPUP-NOTIFICATIONS-IMPLEMENTED.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\POPUP-NOTIFICATIONS-IMPLEMENTED.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\POPUP-NOTIFICATIONS-IMPLEMENTED.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\POPUP-NOTIFICATIONS-IMPLEMENTED.md",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAAP0BAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T16:18:02.196Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 45,
+              "Title": "notification.component.scss",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\notification\\notification.component.scss",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\components\\notification\\notification.component.scss",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\notification\\notification.component.scss",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\components\\notification\\notification.component.scss",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAIgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002663|",
+              "WhenOpened": "2026-05-15T16:15:37.512Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 46,
+              "Title": "notification.component.html",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\notification\\notification.component.html",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\components\\notification\\notification.component.html",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\notification\\notification.component.html",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\components\\notification\\notification.component.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-05-15T16:15:20.602Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 47,
+              "Title": "notification.component.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\notification\\notification.component.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\components\\notification\\notification.component.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\notification\\notification.component.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\components\\notification\\notification.component.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-15T16:15:13.754Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 48,
+              "Title": "notification.service.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\services\\notification.service.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\services\\notification.service.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\services\\notification.service.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\services\\notification.service.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-15T16:15:03.667Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 49,
+              "Title": "DEVICE-UI-FINAL.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\DEVICE-UI-FINAL.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\DEVICE-UI-FINAL.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\DEVICE-UI-FINAL.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\DEVICE-UI-FINAL.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAIEBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T16:14:09.151Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 50,
+              "Title": "devices.component.scss",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\devices\\devices.component.scss",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\components\\devices\\devices.component.scss",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\devices\\devices.component.scss",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\components\\devices\\devices.component.scss",
+              "ViewState": "AgIAABEAAAAAAAAAAAAlwBkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002663|",
+              "WhenOpened": "2026-05-14T09:07:18.358Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 51,
+              "Title": "DEVICE-UI-UPDATES.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\DEVICE-UI-UPDATES.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\DEVICE-UI-UPDATES.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\DEVICE-UI-UPDATES.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\DEVICE-UI-UPDATES.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T16:11:50.901Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 52,
+              "Title": "styles.scss",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\styles.scss",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\styles.scss",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\styles.scss",
+              "RelativeToolTip": "mqttr-frontend\\src\\styles.scss",
+              "ViewState": "AgIAADwAAAAAAAAAAAAAwO8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002663|",
+              "WhenOpened": "2026-05-14T09:05:27.128Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 53,
+              "Title": "DEVICE-EDIT-TROUBLESHOOTING.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\DEVICE-EDIT-TROUBLESHOOTING.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\DEVICE-EDIT-TROUBLESHOOTING.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\DEVICE-EDIT-TROUBLESHOOTING.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\DEVICE-EDIT-TROUBLESHOOTING.md",
+              "ViewState": "AgIAAIQAAAAAAAAAAAAAABcBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T16:05:00.245Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 54,
+              "Title": "DEVICE-PERMISSIONS-FIXED.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\DEVICE-PERMISSIONS-FIXED.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\DEVICE-PERMISSIONS-FIXED.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\DEVICE-PERMISSIONS-FIXED.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\DEVICE-PERMISSIONS-FIXED.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEwBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T16:00:17.104Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 55,
+              "Title": "PROJECT-VISUAL-SUMMARY.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\PROJECT-VISUAL-SUMMARY.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\PROJECT-VISUAL-SUMMARY.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\PROJECT-VISUAL-SUMMARY.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\PROJECT-VISUAL-SUMMARY.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGQCAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T15:56:39.46Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 56,
+              "Title": "PROJECT-COMPLETE-OVERVIEW.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\PROJECT-COMPLETE-OVERVIEW.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\PROJECT-COMPLETE-OVERVIEW.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\PROJECT-COMPLETE-OVERVIEW.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\PROJECT-COMPLETE-OVERVIEW.md",
+              "ViewState": "AgIAAJsBAAAAAAAAAAAAAOUCAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T15:54:51.107Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 57,
+              "Title": "QUICK-REFERENCE.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\QUICK-REFERENCE.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\QUICK-REFERENCE.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\QUICK-REFERENCE.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\QUICK-REFERENCE.md",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAAMQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T15:20:27.45Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 58,
+              "Title": "IMPLEMENTATION-COMPLETE.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\IMPLEMENTATION-COMPLETE.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\IMPLEMENTATION-COMPLETE.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\IMPLEMENTATION-COMPLETE.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\IMPLEMENTATION-COMPLETE.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAHgBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T15:19:53.594Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 59,
+              "Title": "VISUAL-ANIMATION-SUMMARY.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\VISUAL-ANIMATION-SUMMARY.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\VISUAL-ANIMATION-SUMMARY.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\VISUAL-ANIMATION-SUMMARY.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\VISUAL-ANIMATION-SUMMARY.md",
+              "ViewState": "AgIAAEEBAAAAAAAAAAAAALUBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T15:12:08.09Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 60,
+              "Title": "ENHANCED-ANIMATIONS.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\ENHANCED-ANIMATIONS.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\ENHANCED-ANIMATIONS.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\ENHANCED-ANIMATIONS.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\ENHANCED-ANIMATIONS.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4CAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T15:10:27.058Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 61,
+              "Title": "FULL-PAGE-BACKGROUND.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\FULL-PAGE-BACKGROUND.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\FULL-PAGE-BACKGROUND.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\FULL-PAGE-BACKGROUND.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\FULL-PAGE-BACKGROUND.md",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAAJ4BAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T15:00:56.555Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 62,
+              "Title": "REALTIME-DATA-UPDATES.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\REALTIME-DATA-UPDATES.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\REALTIME-DATA-UPDATES.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\REALTIME-DATA-UPDATES.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\REALTIME-DATA-UPDATES.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGkBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T14:55:22.422Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 63,
+              "Title": "QUICK-START-GUIDE.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\QUICK-START-GUIDE.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\QUICK-START-GUIDE.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\QUICK-START-GUIDE.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\QUICK-START-GUIDE.md",
+              "ViewState": "AgIAAPEAAAAAAAAAAAAewFIBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T14:50:03.949Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 64,
+              "Title": "IOT-TELEMETRY-ANIMATIONS.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\IOT-TELEMETRY-ANIMATIONS.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\IOT-TELEMETRY-ANIMATIONS.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\IOT-TELEMETRY-ANIMATIONS.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\IOT-TELEMETRY-ANIMATIONS.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADcBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T14:44:52.169Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 65,
+              "Title": "OPTIMIZED-AUTH-FORMS.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\OPTIMIZED-AUTH-FORMS.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\OPTIMIZED-AUTH-FORMS.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\OPTIMIZED-AUTH-FORMS.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\OPTIMIZED-AUTH-FORMS.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACsBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T14:40:30.939Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 66,
+              "Title": "ANIMATED-AUTH-PAGES.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\ANIMATED-AUTH-PAGES.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\ANIMATED-AUTH-PAGES.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\ANIMATED-AUTH-PAGES.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\ANIMATED-AUTH-PAGES.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T14:30:56.507Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 67,
+              "Title": "NAVBAR-VISIBILITY-FINAL-FIX.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\NAVBAR-VISIBILITY-FINAL-FIX.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\NAVBAR-VISIBILITY-FINAL-FIX.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\NAVBAR-VISIBILITY-FINAL-FIX.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\NAVBAR-VISIBILITY-FINAL-FIX.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAOwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T14:23:03.176Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 68,
+              "Title": "app.routes.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\app.routes.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\app.routes.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\app.routes.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\app.routes.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-14T09:05:40.661Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 69,
+              "Title": "AUTHENTICATION-COMPLETE-FIX.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\AUTHENTICATION-COMPLETE-FIX.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\AUTHENTICATION-COMPLETE-FIX.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\AUTHENTICATION-COMPLETE-FIX.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\AUTHENTICATION-COMPLETE-FIX.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAANQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T14:18:55.442Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 70,
+              "Title": "AUTHENTICATION-DEBUG.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\AUTHENTICATION-DEBUG.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\AUTHENTICATION-DEBUG.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\AUTHENTICATION-DEBUG.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\AUTHENTICATION-DEBUG.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAJ4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T14:17:48.186Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 71,
+              "Title": "admin.guard.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\guards\\admin.guard.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\guards\\admin.guard.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\guards\\admin.guard.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\guards\\admin.guard.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-15T14:16:10.943Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 72,
+              "Title": "auth.guard.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\guards\\auth.guard.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\guards\\auth.guard.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\guards\\auth.guard.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\guards\\auth.guard.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-15T14:15:59.639Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 73,
+              "Title": "AUTHENTICATION-FIX.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\AUTHENTICATION-FIX.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\AUTHENTICATION-FIX.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\AUTHENTICATION-FIX.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\AUTHENTICATION-FIX.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAH0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T14:13:37.955Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 74,
+              "Title": "TROUBLESHOOTING-DATA-LOAD.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\TROUBLESHOOTING-DATA-LOAD.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\TROUBLESHOOTING-DATA-LOAD.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\TROUBLESHOOTING-DATA-LOAD.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\TROUBLESHOOTING-DATA-LOAD.md",
+              "ViewState": "AgIAABoBAAAAAAAAAAAAAKMBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T12:52:17.067Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 75,
+              "Title": "TESTING-CHECKLIST.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\TESTING-CHECKLIST.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\TESTING-CHECKLIST.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\TESTING-CHECKLIST.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\TESTING-CHECKLIST.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACIBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T12:46:39.513Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 76,
+              "Title": "QUICK-START.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\QUICK-START.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\QUICK-START.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\QUICK-START.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\QUICK-START.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAOwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T12:52:57.505Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 77,
+              "Title": "AUTHENTICATION-FIXES.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\AUTHENTICATION-FIXES.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\AUTHENTICATION-FIXES.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\AUTHENTICATION-FIXES.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\AUTHENTICATION-FIXES.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGoBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T12:45:45.584Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 78,
+              "Title": "device.service.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\services\\device.service.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\services\\device.service.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\services\\device.service.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\services\\device.service.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-14T09:06:07.452Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 79,
+              "Title": "user.service.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\services\\user.service.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\services\\user.service.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\services\\user.service.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\services\\user.service.ts",
+              "ViewState": "AgIAABYAAAAAAAAAAAAWwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-15T12:40:01.905Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 80,
+              "Title": "MANUAL-SETUP-GUIDE.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\MANUAL-SETUP-GUIDE.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\MANUAL-SETUP-GUIDE.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\MANUAL-SETUP-GUIDE.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\MANUAL-SETUP-GUIDE.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAJQBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-15T12:36:53.721Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 121,
+              "Title": "README.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\ConsolePublisher\\README.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\ConsolePublisher\\README.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\ConsolePublisher\\README.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\ConsolePublisher\\README.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-14T08:28:28.744Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 81,
+              "Title": "user-management.component.scss",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\user-management\\user-management.component.scss",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\components\\user-management\\user-management.component.scss",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\components\\user-management\\user-management.component.scss",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\components\\user-management\\user-management.component.scss",
+              "ViewState": "AgIAACkAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002663|",
+              "WhenOpened": "2026-05-15T11:36:43.374Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 82,
+              "Title": "WeatherForecast.cs",
+              "DocumentMoniker": "C:\\Users\\2489338\\AppData\\Local\\Temp\\CopilotBaseline\\Deleted\\-968722832\\WeatherForecast.cs",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\AppData\\Local\\Temp\\CopilotBaseline\\Deleted\\-968722832\\WeatherForecast.cs",
+              "ToolTip": "C:\\Users\\2489338\\AppData\\Local\\Temp\\CopilotBaseline\\Deleted\\-968722832\\WeatherForecast.cs",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\AppData\\Local\\Temp\\CopilotBaseline\\Deleted\\-968722832\\WeatherForecast.cs",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-14T10:17:19.21Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 115,
+              "Title": "WeatherForecastController.cs",
+              "DocumentMoniker": "C:\\Users\\2489338\\AppData\\Local\\Temp\\CopilotBaseline\\Deleted\\2084945841\\WeatherForecastController.cs",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\AppData\\Local\\Temp\\CopilotBaseline\\Deleted\\2084945841\\WeatherForecastController.cs",
+              "ToolTip": "C:\\Users\\2489338\\AppData\\Local\\Temp\\CopilotBaseline\\Deleted\\2084945841\\WeatherForecastController.cs",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\AppData\\Local\\Temp\\CopilotBaseline\\Deleted\\2084945841\\WeatherForecastController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-14T10:17:19.539Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 84,
+              "Title": "TELEMETRY-GRAPHS-FIXED.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\TELEMETRY-GRAPHS-FIXED.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\TELEMETRY-GRAPHS-FIXED.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\TELEMETRY-GRAPHS-FIXED.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\TELEMETRY-GRAPHS-FIXED.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAHQBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-14T09:59:47.082Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 83,
+              "Title": "angular.json",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\angular.json",
+              "RelativeDocumentMoniker": "mqttr-frontend\\angular.json",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\angular.json",
+              "RelativeToolTip": "mqttr-frontend\\angular.json",
+              "ViewState": "AgIAAEQAAAAAAAAAAADgv3IAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-05-14T09:04:43.313Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 85,
+              "Title": "TELEMETRY-FIX.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\TELEMETRY-FIX.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\TELEMETRY-FIX.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\TELEMETRY-FIX.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\TELEMETRY-FIX.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-14T09:46:28.401Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 86,
+              "Title": "telemetry.model.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\models\\telemetry.model.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\models\\telemetry.model.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\models\\telemetry.model.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\models\\telemetry.model.ts",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAawBgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-14T09:05:58.812Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 87,
+              "Title": "SIMULATOR-QUICKSTART.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\SIMULATOR-QUICKSTART.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\SIMULATOR-QUICKSTART.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\SIMULATOR-QUICKSTART.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\SIMULATOR-QUICKSTART.md",
+              "ViewState": "AgIAAGYAAAAAAAAAAAAAAJIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-14T09:42:18.216Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 88,
+              "Title": "SIMULATOR-IMPLEMENTATION.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\SIMULATOR-IMPLEMENTATION.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\SIMULATOR-IMPLEMENTATION.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\SIMULATOR-IMPLEMENTATION.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\SIMULATOR-IMPLEMENTATION.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAE8BAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-14T09:41:34.332Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 89,
+              "Title": "SIMULATOR-GUIDE.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\SIMULATOR-GUIDE.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\SIMULATOR-GUIDE.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\SIMULATOR-GUIDE.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\SIMULATOR-GUIDE.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAPIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-14T09:40:30.155Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 90,
+              "Title": "data-simulator.service.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\services\\data-simulator.service.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\services\\data-simulator.service.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\services\\data-simulator.service.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\services\\data-simulator.service.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAJsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-14T09:37:36.438Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 91,
+              "Title": "tsconfig.json",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\tsconfig.json",
+              "RelativeDocumentMoniker": "mqttr-frontend\\tsconfig.json",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\tsconfig.json",
+              "RelativeToolTip": "mqttr-frontend\\tsconfig.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-05-14T09:04:51.13Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 92,
+              "Title": "START-ALL.bat",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\START-ALL.bat",
+              "RelativeDocumentMoniker": "START-ALL.bat",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\START-ALL.bat",
+              "RelativeToolTip": "START-ALL.bat",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000614|",
+              "WhenOpened": "2026-05-14T09:11:35.083Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 93,
+              "Title": "PROJECT-OVERVIEW.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\PROJECT-OVERVIEW.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\PROJECT-OVERVIEW.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\PROJECT-OVERVIEW.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\PROJECT-OVERVIEW.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFIBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-14T09:11:12.566Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 94,
+              "Title": "setup-and-run.ps1",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\setup-and-run.ps1",
+              "RelativeDocumentMoniker": "mqttr-frontend\\setup-and-run.ps1",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\setup-and-run.ps1",
+              "RelativeToolTip": "mqttr-frontend\\setup-and-run.ps1",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAE8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-05-14T09:10:23.062Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 95,
+              "Title": "IMPLEMENTATION-SUMMARY.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\IMPLEMENTATION-SUMMARY.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\IMPLEMENTATION-SUMMARY.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\IMPLEMENTATION-SUMMARY.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\IMPLEMENTATION-SUMMARY.md",
+              "ViewState": "AgIAAHgAAAAAAAAAAAAAAP4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-14T09:10:06.05Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 96,
+              "Title": "QUICKSTART.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\QUICKSTART.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\QUICKSTART.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\QUICKSTART.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\QUICKSTART.md",
+              "ViewState": "AgIAABsAAAAAAAAAAAAAAL8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-14T09:09:27.319Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 97,
+              "Title": "environment.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\environments\\environment.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\environments\\environment.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\environments\\environment.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\environments\\environment.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-14T09:08:49.614Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 98,
+              "Title": "environment.development.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\environments\\environment.development.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\environments\\environment.development.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\environments\\environment.development.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\environments\\environment.development.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-14T09:08:44.153Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 99,
+              "Title": ".gitignore",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\.gitignore",
+              "RelativeDocumentMoniker": "mqttr-frontend\\.gitignore",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\.gitignore",
+              "RelativeToolTip": "mqttr-frontend\\.gitignore",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-05-14T09:08:33.195Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 100,
+              "Title": "README.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\README.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\README.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\README.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\mqttr-frontend\\README.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAIUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-14T09:08:23.669Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 101,
+              "Title": "device.model.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\models\\device.model.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\app\\models\\device.model.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\app\\models\\device.model.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\app\\models\\device.model.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-14T09:05:53.308Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 102,
+              "Title": "main.ts",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\main.ts",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\main.ts",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\main.ts",
+              "RelativeToolTip": "mqttr-frontend\\src\\main.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-05-14T09:05:33.22Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 104,
+              "Title": "index.html",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\index.html",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\index.html",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\index.html",
+              "RelativeToolTip": "mqttr-frontend\\src\\index.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-05-14T09:05:04.953Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 105,
+              "Title": "proxy.conf.json",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\proxy.conf.json",
+              "RelativeDocumentMoniker": "mqttr-frontend\\src\\proxy.conf.json",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\src\\proxy.conf.json",
+              "RelativeToolTip": "mqttr-frontend\\src\\proxy.conf.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-05-14T09:05:00.1Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 103,
+              "Title": "tsconfig.app.json",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\tsconfig.app.json",
+              "RelativeDocumentMoniker": "mqttr-frontend\\tsconfig.app.json",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\mqttr-frontend\\tsconfig.app.json",
+              "RelativeToolTip": "mqttr-frontend\\tsconfig.app.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-05-14T09:04:55.698Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 141,
+              "Title": "ConsolePublisher.csproj",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\ConsolePublisher\\ConsolePublisher.csproj",
+              "RelativeDocumentMoniker": "ConsolePublisher\\ConsolePublisher.csproj",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\ConsolePublisher\\ConsolePublisher.csproj",
+              "RelativeToolTip": "ConsolePublisher\\ConsolePublisher.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-05-14T08:27:19.786Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 142,
+              "Title": "MQTTR1.csproj",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\MQTTR1.csproj",
+              "RelativeDocumentMoniker": "MQTTR1\\MQTTR1.csproj",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\MQTTR1.csproj",
+              "RelativeToolTip": "MQTTR1\\MQTTR1.csproj",
+              "ViewState": "AgIAAAUAAAAAAAAAAAArwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-05-14T08:56:28.571Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 106,
+              "Title": "plan-week-2-angular-frontend-implementation.md [Preview]",
+              "DocumentMoniker": "C:\\Users\\2489338\\.copilot\\plans\\plan-week-2-angular-frontend-implementation.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\.copilot\\plans\\plan-week-2-angular-frontend-implementation.md",
+              "ToolTip": "C:\\Users\\2489338\\.copilot\\plans\\plan-week-2-angular-frontend-implementation.md [Preview]",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\.copilot\\plans\\plan-week-2-angular-frontend-implementation.md [Preview]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-14T08:35:13.222Z",
+              "EditorCaption": " [Preview]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 107,
+              "Title": "CHECKLIST.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\CHECKLIST.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\CHECKLIST.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\CHECKLIST.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\CHECKLIST.md",
+              "ViewState": "AgIAAFcAAAAAAAAAAAAAAOYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-14T08:33:30.628Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 108,
+              "Title": "ARCHITECTURE.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\ARCHITECTURE.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\ARCHITECTURE.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\ARCHITECTURE.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\ARCHITECTURE.md",
+              "ViewState": "AgIAAGsBAAAAAAAAAAAAAHoBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-14T08:32:32.009Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 109,
+              "Title": "QUICK_REFERENCE.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\QUICK_REFERENCE.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\QUICK_REFERENCE.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\QUICK_REFERENCE.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\QUICK_REFERENCE.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAIwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-14T08:31:26.079Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 110,
+              "Title": "PROJECT_SUMMARY.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\PROJECT_SUMMARY.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\PROJECT_SUMMARY.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\PROJECT_SUMMARY.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\PROJECT_SUMMARY.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-14T08:31:04.661Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 111,
+              "Title": "TESTING_GUIDE.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\TESTING_GUIDE.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\TESTING_GUIDE.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\TESTING_GUIDE.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\TESTING_GUIDE.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACwBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-14T08:30:06.455Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 114,
+              "Title": "start-all.ps1",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\start-all.ps1",
+              "RelativeDocumentMoniker": "start-all.ps1",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\start-all.ps1",
+              "RelativeToolTip": "start-all.ps1",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-05-14T08:29:21.391Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 113,
+              "Title": "README.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\README.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\README.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\README.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\README.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-14T08:29:21.249Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 143,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\ConsolePublisher\\Program.cs",
+              "RelativeDocumentMoniker": "ConsolePublisher\\Program.cs",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\ConsolePublisher\\Program.cs",
+              "RelativeToolTip": "ConsolePublisher\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAIMBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-14T08:28:02.681Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 144,
+              "Title": "sample-single.json",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\ConsolePublisher\\sample-single.json",
+              "RelativeDocumentMoniker": "ConsolePublisher\\sample-single.json",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\ConsolePublisher\\sample-single.json",
+              "RelativeToolTip": "ConsolePublisher\\sample-single.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-05-14T08:28:28.88Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 145,
+              "Title": "sample-batch.json",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\ConsolePublisher\\sample-batch.json",
+              "RelativeDocumentMoniker": "ConsolePublisher\\sample-batch.json",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\ConsolePublisher\\sample-batch.json",
+              "RelativeToolTip": "ConsolePublisher\\sample-batch.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-05-14T08:28:30.283Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 122,
+              "Title": "DATABASE_MIGRATION.md",
+              "DocumentMoniker": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\DATABASE_MIGRATION.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\DATABASE_MIGRATION.md",
+              "ToolTip": "C:\\Users\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\DATABASE_MIGRATION.md",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\source\\repos\\MQTTR1\\MQTTR1\\DATABASE_MIGRATION.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-14T08:24:25.563Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 146,
+              "Title": "DevicesController.cs",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Controllers\\DevicesController.cs",
+              "RelativeDocumentMoniker": "MQTTR1\\Controllers\\DevicesController.cs",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Controllers\\DevicesController.cs",
+              "RelativeToolTip": "MQTTR1\\Controllers\\DevicesController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAANYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-14T08:23:29.293Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 147,
+              "Title": "PagingHelper.cs",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Utilities\\PagingHelper.cs",
+              "RelativeDocumentMoniker": "MQTTR1\\Utilities\\PagingHelper.cs",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Utilities\\PagingHelper.cs",
+              "RelativeToolTip": "MQTTR1\\Utilities\\PagingHelper.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-14T08:22:25.703Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 148,
+              "Title": "TelemetryIngestor.cs",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Services\\TelemetryIngestor.cs",
+              "RelativeDocumentMoniker": "MQTTR1\\Services\\TelemetryIngestor.cs",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Services\\TelemetryIngestor.cs",
+              "RelativeToolTip": "MQTTR1\\Services\\TelemetryIngestor.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-14T08:22:06.134Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 149,
+              "Title": "DeviceRepository.cs",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Repositories\\DeviceRepository.cs",
+              "RelativeDocumentMoniker": "MQTTR1\\Repositories\\DeviceRepository.cs",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Repositories\\DeviceRepository.cs",
+              "RelativeToolTip": "MQTTR1\\Repositories\\DeviceRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-14T08:21:28.204Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 150,
+              "Title": "IDeviceRepository.cs",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Repositories\\IDeviceRepository.cs",
+              "RelativeDocumentMoniker": "MQTTR1\\Repositories\\IDeviceRepository.cs",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Repositories\\IDeviceRepository.cs",
+              "RelativeToolTip": "MQTTR1\\Repositories\\IDeviceRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-14T08:21:20.61Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 112,
+              "Title": "plan-week-1-asp.net-core-backend-development.md [Preview]",
+              "DocumentMoniker": "C:\\Users\\2489338\\.copilot\\plans\\plan-week-1-asp.net-core-backend-development.md",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\2489338\\.copilot\\plans\\plan-week-1-asp.net-core-backend-development.md",
+              "ToolTip": "C:\\Users\\2489338\\.copilot\\plans\\plan-week-1-asp.net-core-backend-development.md [Preview]",
+              "RelativeToolTip": "..\\..\\..\\..\\2489338\\.copilot\\plans\\plan-week-1-asp.net-core-backend-development.md [Preview]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-05-14T08:18:03.872Z",
+              "EditorCaption": " [Preview]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 151,
+              "Title": "Device.cs",
+              "DocumentMoniker": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Models\\Device.cs",
+              "RelativeDocumentMoniker": "MQTTR1\\Models\\Device.cs",
+              "ToolTip": "C:\\Users\\2489592\\Downloads\\MQTT_TelemetryCollector\\MQTTR1\\MQTTR1\\Models\\Device.cs",
+              "RelativeToolTip": "MQTTR1\\Models\\Device.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-14T08:20:19.182Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

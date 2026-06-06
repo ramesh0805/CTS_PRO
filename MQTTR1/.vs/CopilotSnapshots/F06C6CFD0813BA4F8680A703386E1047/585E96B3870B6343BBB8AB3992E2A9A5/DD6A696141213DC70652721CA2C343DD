@@ -1,0 +1,484 @@
+﻿import { Component, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService, LoginDto } from '../../services/auth.service';
+
+@Component({
+  selector: 'app-login',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  template: `
+    <div class="container">
+      <div class="background">
+        <!-- IoT Telemetry Animations -->
+        <div class="telemetry-widget temp-widget">
+          <div class="widget-icon">🌡️</div>
+          <div class="widget-value" [style.setProperty]="'--temp-val', tempValue + '%'">
+            <span class="value">{{tempValue}}°C</span>
+          </div>
+          <div class="widget-label">Temperature</div>
+          <div class="progress-bar">
+            <div class="progress-fill temp-fill"></div>
+          </div>
+        </div>
+
+        <div class="telemetry-widget humidity-widget">
+          <div class="widget-icon">💧</div>
+          <div class="widget-value">
+            <span class="value">{{humidityValue}}%</span>
+          </div>
+          <div class="widget-label">Humidity</div>
+          <div class="circular-progress">
+            <svg viewBox="0 0 100 100">
+              <circle class="progress-bg" cx="50" cy="50" r="45"></circle>
+              <circle class="progress-bar humidity-progress" cx="50" cy="50" r="45" 
+                [style.strokeDashoffset]="283 - (283 * humidityValue / 100)"></circle>
+            </svg>
+          </div>
+        </div>
+
+        <div class="telemetry-widget pressure-widget">
+          <div class="widget-icon">📊</div>
+          <div class="widget-value">
+            <span class="value">{{pressureValue}}</span>
+          </div>
+          <div class="widget-label">Pressure (kPa)</div>
+          <div class="gauge">
+            <div class="gauge-needle" [style.transform]="'rotate(' + (pressureValue - 950) * 1.8 + 'deg)'"></div>
+          </div>
+        </div>
+
+        <div class="data-stream">
+          <div class="stream-line" *ngFor="let line of dataLines"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Welcome Back</h2>
+
+        <form (ngSubmit)="onSubmit()" #form="ngForm">
+          <div class="field">
+            <label for="username">Username</label>
+            <input 
+              type="text" 
+              id="username" 
+              name="username"
+              [(ngModel)]="loginDto.username" 
+              required
+              placeholder="Username">
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <input 
+              type="password" 
+              id="password" 
+              name="password"
+              [(ngModel)]="loginDto.password" 
+              required
+              placeholder="Password">
+          </div>
+
+          <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+
+          <button type="submit" [disabled]="!form.valid || isLoading">
+            {{ isLoading ? 'Logging in...' : 'Login' }}
+          </button>
+        </form>
+
+        <p class="link">
+          Don't have an account? <a (click)="goToRegister()">Register</a>
+        </p>
+      </div>
+    </div>
+  `,
+  styles: [`
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .background {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    /* Telemetry Widgets */
+    .telemetry-widget {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 15px;
+      color: white;
+      animation: widgetFloat 6s infinite ease-in-out;
+    }
+
+    .temp-widget {
+      top: 10%;
+      left: 8%;
+      width: 140px;
+      animation-delay: 0s;
+    }
+
+    .humidity-widget {
+      top: 60%;
+      left: 12%;
+      width: 130px;
+      animation-delay: 2s;
+    }
+
+    .pressure-widget {
+      top: 30%;
+      right: 10%;
+      width: 150px;
+      animation-delay: 4s;
+    }
+
+    @keyframes widgetFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    .widget-icon {
+      font-size: 32px;
+      text-align: center;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    }
+
+    .widget-value {
+      text-align: center;
+      margin-bottom: 5px;
+    }
+
+    .widget-value .value {
+      font-size: 20px;
+      font-weight: 700;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      animation: valueChange 3s infinite;
+    }
+
+    @keyframes valueChange {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; transform: scale(1.05); }
+    }
+
+    .widget-label {
+      text-align: center;
+      font-size: 11px;
+      opacity: 0.9;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Temperature Progress Bar */
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      animation: tempProgress 4s infinite ease-in-out;
+    }
+
+    .temp-fill {
+      background: linear-gradient(90deg, #4ade80, #ef4444);
+    }
+
+    @keyframes tempProgress {
+      0% { width: 45%; }
+      50% { width: 75%; }
+      100% { width: 45%; }
+    }
+
+    /* Humidity Circular Progress */
+    .circular-progress {
+      width: 60px;
+      height: 60px;
+      margin: 8px auto 0;
+    }
+
+    .circular-progress svg {
+      transform: rotate(-90deg);
+    }
+
+    .progress-bg {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.2);
+      stroke-width: 8;
+    }
+
+    .humidity-progress {
+      fill: none;
+      stroke: #3b82f6;
+      stroke-width: 8;
+      stroke-dasharray: 283;
+      stroke-linecap: round;
+      animation: humidityProgress 5s infinite ease-in-out;
+    }
+
+    @keyframes humidityProgress {
+      0% { stroke-dashoffset: 113; }
+      50% { stroke-dashoffset: 70; }
+      100% { stroke-dashoffset: 113; }
+    }
+
+    /* Pressure Gauge */
+    .gauge {
+      width: 80px;
+      height: 40px;
+      margin: 10px auto 0;
+      position: relative;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 80px 80px 0 0;
+      border-bottom: none;
+      overflow: hidden;
+    }
+
+    .gauge::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 3px;
+      height: 3px;
+      background: white;
+      border-radius: 50%;
+      transform: translateX(-50%);
+    }
+
+    .gauge-needle {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 2px;
+      height: 35px;
+      background: linear-gradient(to top, white, #fbbf24);
+      transform-origin: bottom center;
+      animation: gaugeRotate 4s infinite ease-in-out;
+      box-shadow: 0 0 5px rgba(251, 191, 36, 0.8);
+    }
+
+    @keyframes gaugeRotate {
+      0% { transform: translateX(-50%) rotate(-45deg); }
+      50% { transform: translateX(-50%) rotate(45deg); }
+      100% { transform: translateX(-50%) rotate(-45deg); }
+    }
+
+    /* Data Stream Lines */
+    .data-stream {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 100px;
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      padding: 0 10%;
+      opacity: 0.3;
+    }
+
+    .stream-line {
+      flex: 1;
+      background: linear-gradient(to top, rgba(255,255,255,0.6), transparent);
+      border-radius: 2px 2px 0 0;
+      animation: streamPulse 2s infinite ease-in-out;
+    }
+
+    .stream-line:nth-child(1) { animation-delay: 0s; height: 30%; }
+    .stream-line:nth-child(2) { animation-delay: 0.1s; height: 50%; }
+    .stream-line:nth-child(3) { animation-delay: 0.2s; height: 40%; }
+    .stream-line:nth-child(4) { animation-delay: 0.3s; height: 60%; }
+    .stream-line:nth-child(5) { animation-delay: 0.4s; height: 45%; }
+    .stream-line:nth-child(6) { animation-delay: 0.5s; height: 70%; }
+    .stream-line:nth-child(7) { animation-delay: 0.6s; height: 35%; }
+    .stream-line:nth-child(8) { animation-delay: 0.7s; height: 55%; }
+
+    @keyframes streamPulse {
+      0%, 100% { transform: scaleY(1); opacity: 0.6; }
+      50% { transform: scaleY(1.3); opacity: 1; }
+    }
+
+    .card {
+      background: white;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      position: relative;
+      z-index: 1;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+      margin: 0 0 30px;
+      font-size: 24px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: #555;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover:not(:disabled) {
+      background: #5568d3;
+    }
+
+    button:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+    }
+
+    .link {
+      text-align: center;
+      margin: 20px 0 0;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .link a {
+      color: #667eea;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .link a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .telemetry-widget {
+        transform: scale(0.8);
+      }
+
+      .temp-widget { top: 5%; left: 5%; }
+      .humidity-widget { top: 70%; left: 5%; }
+      .pressure-widget { top: 15%; right: 5%; }
+    }
+  `]
+})
+export class LoginComponent implements OnDestroy {
+  loginDto: LoginDto = { username: '', password: '' };
+  errorMessage = '';
+  isLoading = false;
+
+  // Telemetry animation values
+  tempValue = 22;
+  humidityValue = 60;
+  pressureValue = 1013;
+  dataLines = Array(8).fill(0);
+
+  private intervals: any[] = [];
+
+  constructor(private authService: AuthService, private router: Router) {
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/dashboard']);
+    }
+    this.startTelemetryAnimation();
+  }
+
+  ngOnDestroy(): void {
+    this.intervals.forEach(interval => clearInterval(interval));
+  }
+
+  startTelemetryAnimation(): void {
+    // Temperature animation (18-28°C)
+    this.intervals.push(setInterval(() => {
+      this.tempValue = Math.floor(18 + Math.random() * 10);
+    }, 3000));
+
+    // Humidity animation (45-85%)
+    this.intervals.push(setInterval(() => {
+      this.humidityValue = Math.floor(45 + Math.random() * 40);
+    }, 4000));
+
+    // Pressure animation (995-1025 kPa)
+    this.intervals.push(setInterval(() => {
+      this.pressureValue = Math.floor(995 + Math.random() * 30);
+    }, 3500));
+  }
+
+  onSubmit(): void {
+    if (!this.loginDto.username || !this.loginDto.password) return;
+
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    this.authService.login(this.loginDto).subscribe({
+      next: () => this.router.navigate(['/dashboard']),
+      error: (error) => {
+        this.errorMessage = error.error?.message || 'Invalid credentials';
+        this.isLoading = false;
+      }
+    });
+  }
+
+  goToRegister(): void {
+    this.router.navigate(['/register']);
+  }
+}

@@ -1,0 +1,16 @@
+﻿namespace MQTTR1.DTOs;
+
+public class DeviceResponseDto
+{
+    public int Id { get; set; }
+
+    public required string DeviceId { get; set; }
+
+    public required string Name { get; set; }
+
+    public string? Description { get; set; }
+
+    public DateTime CreatedAt { get; set; }
+
+    public DateTime? UpdatedAt { get; set; }
+}

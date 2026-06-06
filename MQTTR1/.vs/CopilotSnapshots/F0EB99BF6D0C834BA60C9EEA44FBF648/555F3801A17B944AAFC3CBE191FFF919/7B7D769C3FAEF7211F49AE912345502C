@@ -1,0 +1,21 @@
+﻿using MQTTR1.Models;
+
+namespace MQTTR1.Repositories;
+
+public interface ITelemetryRepository
+{
+    Task<Telemetry> CreateAsync(Telemetry telemetry);
+    Task<(IEnumerable<Telemetry> Data, int TotalCount)> GetPagedAsync(
+        int page, 
+        int pageSize, 
+        string? deviceId = null, 
+        string? metric = null,
+        DateTime? startDate = null,
+        DateTime? endDate = null);
+    Task<Telemetry?> GetLastValueAsync(string deviceId, string metric);
+    Task<Dictionary<string, double>> GetHourlyAverageAsync(
+        string deviceId, 
+        string metric, 
+        DateTime startDate, 
+        DateTime endDate);
+}

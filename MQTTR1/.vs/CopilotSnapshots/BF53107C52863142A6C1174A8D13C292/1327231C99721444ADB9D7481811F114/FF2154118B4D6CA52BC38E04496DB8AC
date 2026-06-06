@@ -1,0 +1,344 @@
+﻿using Microsoft.EntityFrameworkCore;
+using MQTTR1.Data;
+using MQTTR1.Models;
+
+namespace MQTTR1.Services;
+
+public class LiveTelemetryGeneratorService : BackgroundService
+{
+    private readonly IServiceProvider _serviceProvider;
+    private readonly ILogger<LiveTelemetryGeneratorService> _logger;
+    private readonly TimeSpan _generationInterval = TimeSpan.FromHours(1); // Generate data every hour
+    private readonly Random _random = new Random();
+
+    // Store last values for gradual changes (deviceId-metric -> lastValue)
+    private readonly Dictionary<string, double> _lastValues = new Dictionary<string, double>();
+
+    public LiveTelemetryGeneratorService(
+        IServiceProvider serviceProvider,
+        ILogger<LiveTelemetryGeneratorService> logger)
+    {
+        _serviceProvider = serviceProvider;
+        _logger = logger;
+    }
+
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        _logger.LogInformation("Live Telemetry Generator Service started. Will generate data every hour.");
+
+        // Wait a short delay before first generation
+        await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
+
+        // First, clean up irrelevant data on startup
+        await CleanupIrrelevantDataAsync();
+
+        // Generate initial 10 hours of historical data for charts
+        await GenerateInitialHistoricalDataAsync();
+
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            try
+            {
+                await GenerateLiveTelemetryAsync();
+
+                _logger.LogInformation("Next telemetry generation in 1 hour at {NextRun}", 
+                    DateTime.UtcNow.Add(_generationInterval).ToString("yyyy-MM-dd HH:mm:ss UTC"));
+
+                await Task.Delay(_generationInterval, stoppingToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred during live telemetry generation.");
+                await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken); // Wait 5 minutes on error
+            }
+        }
+    }
+
+    private async Task GenerateLiveTelemetryAsync()
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        try
+        {
+            // Get all devices
+            var devices = await context.Devices.ToListAsync();
+
+            if (!devices.Any())
+            {
+                _logger.LogWarning("No devices found. Skipping telemetry generation.");
+                return;
+            }
+
+            var telemetriesToAdd = new List<Telemetry>();
+            var currentTime = DateTime.UtcNow;
+
+            foreach (var device in devices)
+            {
+                // Determine which metrics this device should generate based on its name/description
+                var metrics = GetDeviceMetrics(device);
+
+                foreach (var metric in metrics)
+                {
+                    var telemetry = new Telemetry
+                    {
+                        DeviceId = device.Id,
+                        Metric = metric,
+                        Value = GenerateRealisticValue(metric, currentTime),
+                        Timestamp = currentTime
+                    };
+
+                    telemetriesToAdd.Add(telemetry);
+                }
+            }
+
+            // Add all telemetry records in batch
+            context.Telemetries.AddRange(telemetriesToAdd);
+            await context.SaveChangesAsync();
+
+            _logger.LogInformation(
+                "Generated {Count} live telemetry records for {DeviceCount} devices at {Timestamp}",
+                telemetriesToAdd.Count,
+                devices.Count,
+                currentTime.ToString("yyyy-MM-dd HH:mm:ss UTC"));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to generate live telemetry data.");
+        }
+    }
+
+    private async Task GenerateInitialHistoricalDataAsync()
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        try
+        {
+            // Check if we already have recent data (last 10 hours)
+            var recentDataCount = await context.Telemetries
+                .Where(t => t.Timestamp >= DateTime.UtcNow.AddHours(-10))
+                .CountAsync();
+
+            if (recentDataCount >= 30) // 3 devices × 10 hours = 30 records
+            {
+                _logger.LogInformation("Sufficient historical data already exists ({Count} records). Skipping backfill.", recentDataCount);
+                return;
+            }
+
+            _logger.LogInformation("Generating initial 10 hours of historical telemetry data...");
+
+            var devices = await context.Devices.ToListAsync();
+            if (!devices.Any())
+            {
+                _logger.LogWarning("No devices found. Skipping historical data generation.");
+                return;
+            }
+
+            var telemetriesToAdd = new List<Telemetry>();
+
+            // Generate data for last 10 hours (one record per hour per device)
+            for (int hoursAgo = 10; hoursAgo >= 1; hoursAgo--)
+            {
+                var timestamp = DateTime.UtcNow.AddHours(-hoursAgo);
+
+                foreach (var device in devices)
+                {
+                    var metrics = GetDeviceMetrics(device);
+
+                    foreach (var metric in metrics)
+                    {
+                        var telemetry = new Telemetry
+                        {
+                            DeviceId = device.Id,
+                            Metric = metric,
+                            Value = GenerateRealisticValue(metric, timestamp),
+                            Timestamp = timestamp
+                        };
+
+                        telemetriesToAdd.Add(telemetry);
+                    }
+                }
+            }
+
+            context.Telemetries.AddRange(telemetriesToAdd);
+            await context.SaveChangesAsync();
+
+            _logger.LogInformation(
+                "Generated {Count} historical telemetry records for {DeviceCount} devices (last 10 hours)",
+                telemetriesToAdd.Count,
+                devices.Count);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to generate initial historical telemetry data.");
+        }
+    }
+
+    private async Task CleanupIrrelevantDataAsync()
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        try
+        {
+            _logger.LogInformation("Starting cleanup of irrelevant telemetry data...");
+
+            // Get all devices
+            var devices = await context.Telemetries
+                .Include(t => t.Device)
+                .Select(t => t.Device)
+                .Distinct()
+                .ToListAsync();
+
+            int totalDeleted = 0;
+
+            foreach (var device in devices)
+            {
+                // Get the correct metric(s) for this device
+                var correctMetrics = GetDeviceMetrics(device);
+
+                // Find telemetry records that don't match the device's metric
+                var irrelevantRecords = await context.Telemetries
+                    .Where(t => t.DeviceId == device.Id && !correctMetrics.Contains(t.Metric))
+                    .ToListAsync();
+
+                if (irrelevantRecords.Any())
+                {
+                    context.Telemetries.RemoveRange(irrelevantRecords);
+                    totalDeleted += irrelevantRecords.Count;
+
+                    _logger.LogInformation(
+                        "Device '{DeviceName}' ({DeviceId}): Removing {Count} irrelevant '{Metrics}' records. Correct metric: {CorrectMetric}",
+                        device.Name,
+                        device.DeviceId,
+                        irrelevantRecords.Count,
+                        string.Join(", ", irrelevantRecords.Select(r => r.Metric).Distinct()),
+                        string.Join(", ", correctMetrics));
+                }
+            }
+
+            if (totalDeleted > 0)
+            {
+                await context.SaveChangesAsync();
+                _logger.LogInformation(
+                    "Cleanup complete: Removed {TotalDeleted} irrelevant telemetry records from database",
+                    totalDeleted);
+            }
+            else
+            {
+                _logger.LogInformation("No irrelevant telemetry data found. Database is clean.");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to cleanup irrelevant telemetry data.");
+        }
+    }
+
+    private List<string> GetDeviceMetrics(Device device)
+    {
+        var metrics = new List<string>();
+        var deviceName = device.Name.ToLower();
+        var deviceDesc = (device.Description ?? "").ToLower();
+        var combined = deviceName + " " + deviceDesc;
+
+        // Determine PRIMARY metric based on device type (ONLY ONE metric per device)
+        // Priority: temperature > humidity > pressure
+        if (combined.Contains("temperature") || combined.Contains("thermostat") || 
+            combined.Contains("temp") || device.DeviceId == "device-001")
+        {
+            metrics.Add("temperature");
+            return metrics; // Return immediately - only temperature
+        }
+        else if (combined.Contains("humidity") || combined.Contains("moisture") || 
+            device.DeviceId == "device-002")
+        {
+            metrics.Add("humidity");
+            return metrics; // Return immediately - only humidity
+        }
+        else if (combined.Contains("pressure") || combined.Contains("barometric") || 
+            combined.Contains("barometer") || device.DeviceId == "device-003")
+        {
+            metrics.Add("pressure");
+            return metrics; // Return immediately - only pressure
+        }
+
+        // If no specific metrics detected, generate temperature by default
+        metrics.Add("temperature");
+        return metrics;
+    }
+
+    private double GenerateRealisticValue(string metric, DateTime timestamp)
+    {
+        // Generate realistic values for Indian climate
+        switch (metric.ToLower())
+        {
+            case "temperature":
+                // India temperature: 25-48°C with daily variation
+                // Hotter during day (12-18 IST), cooler at night
+                var hour = timestamp.Hour;
+                var istHour = (hour + 5) % 24; // Approximate IST conversion
+
+                // Base temperature varies by time of day
+                double baseTemp;
+                if (istHour >= 6 && istHour < 12)
+                {
+                    // Morning: 28-35°C
+                    baseTemp = 28 + (istHour - 6) * 1.2;
+                }
+                else if (istHour >= 12 && istHour < 18)
+                {
+                    // Afternoon (hottest): 35-42°C
+                    baseTemp = 38 + (istHour - 12) * 0.7;
+                }
+                else if (istHour >= 18 && istHour < 22)
+                {
+                    // Evening: 35-38°C
+                    baseTemp = 38 - (istHour - 18) * 2.0;
+                }
+                else
+                {
+                    // Night: 26-30°C
+                    baseTemp = 26 + _random.NextDouble() * 4;
+                }
+
+                // Add some random variation
+                return Math.Round(baseTemp + (_random.NextDouble() * 4 - 2), 1);
+
+            case "humidity":
+                // India humidity: 30-85% (higher during monsoon, lower in winter)
+                // More humid in morning and evening
+                var istHourHumidity = (timestamp.Hour + 5) % 24;
+                double baseHumidity;
+
+                if (istHourHumidity >= 6 && istHourHumidity < 12)
+                {
+                    // Morning: higher humidity 60-75%
+                    baseHumidity = 60 + _random.NextDouble() * 15;
+                }
+                else if (istHourHumidity >= 12 && istHourHumidity < 18)
+                {
+                    // Afternoon: lower humidity 40-60%
+                    baseHumidity = 40 + _random.NextDouble() * 20;
+                }
+                else
+                {
+                    // Evening/Night: moderate 50-70%
+                    baseHumidity = 50 + _random.NextDouble() * 20;
+                }
+
+                return Math.Round(baseHumidity, 1);
+
+            case "pressure":
+                // Atmospheric pressure: 1008-1016 hPa (typical for India)
+                // Slight variations throughout the day
+                double basePressure = 1012 + (_random.NextDouble() * 4 - 2);
+                return Math.Round(basePressure, 1);
+
+            default:
+                // Default random value
+                return Math.Round(_random.NextDouble() * 100, 1);
+        }
+    }
+}

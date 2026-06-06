@@ -1,0 +1,312 @@
+﻿import { Component, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService, RegisterDto } from '../../services/auth.service';
+
+@Component({
+  selector: 'app-register',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  template: `
+    <div class="container">
+      <div class="background">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+      </div>
+
+      <div class="card">
+        <h2>Create Account</h2>
+
+        <div *ngIf="isFirstUser" class="info">
+          You will become an Admin!
+        </div>
+
+        <form (ngSubmit)="onSubmit()" #form="ngForm">
+          <div class="field">
+            <label for="username">Username</label>
+            <input 
+              type="text" 
+              id="username" 
+              name="username"
+              [(ngModel)]="registerDto.username" 
+              required
+              minlength="3"
+              placeholder="Username">
+          </div>
+
+          <div class="field">
+            <label for="email">Email</label>
+            <input 
+              type="email" 
+              id="email" 
+              name="email"
+              [(ngModel)]="registerDto.email" 
+              required
+              email
+              placeholder="Email">
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <input 
+              type="password" 
+              id="password" 
+              name="password"
+              [(ngModel)]="registerDto.password" 
+              required
+              minlength="6"
+              placeholder="Password">
+          </div>
+
+          <div class="field">
+            <label for="confirmPassword">Confirm Password</label>
+            <input 
+              type="password" 
+              id="confirmPassword" 
+              name="confirmPassword"
+              [(ngModel)]="confirmPassword" 
+              required
+              placeholder="Confirm Password">
+          </div>
+
+          <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+          <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
+
+          <button type="submit" [disabled]="!form.valid || isLoading">
+            {{ isLoading ? 'Registering...' : 'Register' }}
+          </button>
+        </form>
+
+        <p class="link">
+          Already have an account? <a (click)="goToLogin()">Login</a>
+        </p>
+      </div>
+    </div>
+  `,
+  styles: [`
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      background: linear-gradient(135deg, #11998e, #38ef7d);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .background {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .circle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      animation: float 20s infinite ease-in-out;
+    }
+
+    .circle:nth-child(1) {
+      width: 300px;
+      height: 300px;
+      top: -150px;
+      left: -150px;
+    }
+
+    .circle:nth-child(2) {
+      width: 200px;
+      height: 200px;
+      bottom: -100px;
+      right: -100px;
+      animation-delay: 5s;
+    }
+
+    .circle:nth-child(3) {
+      width: 150px;
+      height: 150px;
+      top: 50%;
+      left: 10%;
+      animation-delay: 10s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(20px, 20px); }
+    }
+
+    .card {
+      background: white;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 450px;
+      position: relative;
+      z-index: 1;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+      margin: 0 0 20px;
+      font-size: 24px;
+    }
+
+    .info {
+      background: #d1ecf1;
+      color: #0c5460;
+      padding: 12px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: #555;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #11998e;
+    }
+
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    .success {
+      background: #d4edda;
+      color: #155724;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #11998e;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover:not(:disabled) {
+      background: #0d7a6f;
+    }
+
+    button:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+    }
+
+    .link {
+      text-align: center;
+      margin: 20px 0 0;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .link a {
+      color: #11998e;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .link a:hover {
+      text-decoration: underline;
+    }
+  `]
+})
+export class RegisterComponent {
+  registerDto: RegisterDto = {
+    username: '',
+    email: '',
+    password: ''
+  };
+
+  confirmPassword = '';
+  errorMessage = '';
+  successMessage = '';
+  isLoading = false;
+  isFirstUser = false;
+
+  constructor(private authService: AuthService, private router: Router) {
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/dashboard']);
+    }
+  }
+
+  onSubmit(): void {
+    if (!this.validateForm()) return;
+
+    this.isLoading = true;
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    this.authService.register(this.registerDto).subscribe({
+      next: (response) => {
+        this.successMessage = `Welcome ${response.username}!`;
+        setTimeout(() => this.router.navigate(['/telemetry']), 2000);
+      },
+      error: (error) => {
+        this.errorMessage = error.error?.message || 'Registration failed';
+        this.isLoading = false;
+      }
+    });
+  }
+
+  validateForm(): boolean {
+    if (this.registerDto.password !== this.confirmPassword) {
+      this.errorMessage = 'Passwords do not match';
+      return false;
+    }
+    if (this.registerDto.password.length < 6) {
+      this.errorMessage = 'Password must be at least 6 characters';
+      return false;
+    }
+    if (this.registerDto.username.length < 3) {
+      this.errorMessage = 'Username must be at least 3 characters';
+      return false;
+    }
+    return true;
+  }
+
+  goToLogin(): void {
+    this.router.navigate(['/login']);
+  }
+}

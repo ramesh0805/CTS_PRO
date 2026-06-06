@@ -1,0 +1,147 @@
+﻿# Telemetry Form Enhancement: Auto-Detect Metric and Default Value
+
+## Feature Added
+Automatically detect and populate the metric type and a realistic default value based on the selected device in the telemetry submission form. Users can also manually override the metric selection if needed.
+
+## Changes Made
+
+### 1. **mqttr-frontend/src/app/components/telemetry/telemetry.component.ts**
+
+#### Added Methods:
+
+**`getDevicePrimaryMetric(device: Device): string`**
+- Determines the primary metric for a device based on its name and description
+- Matches the backend logic in `LiveTelemetryGeneratorService.cs`
+- Priority order: temperature > humidity > pressure
+- Returns the appropriate metric type for the device
+
+**`getDefaultValueForMetric(metric: string): number`**
+- Returns realistic default values for each metric type:
+  - **Temperature**: 25.0°C (comfortable room temperature)
+  - **Humidity**: 60.0% (moderate humidity)
+  - **Pressure**: 1013.25 hPa (standard atmospheric pressure)
+
+**`onFormDeviceChange(): void`**
+- Called when user changes device selection in the form
+- Automatically updates both the metric and value fields
+- Ensures metric matches the device's capability
+
+**`onFormMetricChange(): void`**
+- Called when user manually changes metric selection
+- Automatically updates the value field with appropriate default
+- Allows users to override auto-detected metric
+
+#### Updated Method:
+
+**`showAddForm(): void`**
+- Now automatically detects the first device's primary metric
+- Sets an appropriate default value based on that metric
+- Provides better initial form state
+
+### 2. **mqttr-frontend/src/app/components/telemetry/telemetry.component.html**
+
+#### Form Updates:
+- Added `(ngModelChange)="onFormDeviceChange()"` to device dropdown
+  - Triggers automatic metric/value update when device changes
+- Changed **Metric** field from read-only to dropdown:
+  - Options: Temperature (°C), Humidity (%), Pressure (hPa)
+  - Auto-populated based on device selection
+  - User can manually override if needed
+  - Added `(ngModelChange)="onFormMetricChange()"` to update default value when metric changes
+
+### 3. **mqttr-frontend/src/app/components/telemetry/telemetry.component.scss**
+
+#### Styling (retained for future use):
+```scss
+.readonly-input {
+  background-color: #f8f9fa;
+  color: #495057;
+  cursor: not-allowed;
+  font-weight: 500;
+}
+```
+
+## How It Works
+
+### Device-to-Metric Mapping Logic:
+The feature uses the same logic as the backend to determine which metric a device should use:
+
+1. **Temperature Devices**:
+   - Name/description contains: "temperature", "thermostat", "temp"
+   - Device ID: "device-001"
+   - Default value: 25.0°C
+
+2. **Humidity Devices**:
+   - Name/description contains: "humidity", "moisture"
+   - Device ID: "device-002"
+   - Default value: 60.0%
+
+3. **Pressure Devices**:
+   - Name/description contains: "pressure", "barometric", "barometer"
+   - Device ID: "device-003"
+   - Default value: 1013.25 hPa
+
+### User Experience Flow:
+
+1. User clicks "Submit Telemetry" button
+2. Form opens with:
+   - First device pre-selected
+   - Metric auto-detected from device name
+   - Realistic default value populated
+3. User can:
+   - Change device → metric and value auto-update
+   - Change metric → value auto-updates
+   - Manually adjust value
+4. User submits the form
+
+## Benefits
+
+1. **Flexibility**: Users can manually select any metric while still benefiting from smart defaults
+2. **Consistency**: Auto-detection matches backend logic for device-metric assignment
+3. **User-Friendly**: No need to manually select metric or guess appropriate values in typical cases
+4. **Error Prevention**: Smart defaults reduce incorrect metric selection
+5. **Realistic Defaults**: Provides sensible starting values for each metric type
+6. **Time-Saving**: Reduces form filling steps while maintaining full control
+
+## Example Scenarios
+
+### Scenario 1: Temperature Sensor (Auto-Detected)
+- **Device Selected**: "Smart Thermostat - Living Room (device-001)"
+- **Auto-Detected Metric**: "Temperature"
+- **Default Value**: 25.0
+- **User can**: Keep it or change to Humidity/Pressure if needed
+
+### Scenario 2: Humidity Sensor (Auto-Detected)
+- **Device Selected**: "Humidity Monitor - Kitchen (device-002)"
+- **Auto-Detected Metric**: "Humidity"
+- **Default Value**: 60.0
+- **User can**: Keep it or change to Temperature/Pressure if needed
+
+### Scenario 3: Manual Override
+- **Device Selected**: "Barometric Pressure Sensor - Rooftop (device-003)"
+- **Auto-Detected Metric**: "Pressure" (1013.25 hPa)
+- **User changes to**: "Temperature"
+- **Value auto-updates to**: 25.0°C
+- **Result**: Flexible submission despite device name
+
+## Verification
+
+✅ Form opens with correct metric for first device
+✅ Metric field is editable dropdown with three options
+✅ Default value is realistic for metric type
+✅ Changing device updates both metric and value
+✅ Changing metric updates default value
+✅ Frontend successfully rebuilds with changes
+✅ No TypeScript compilation errors
+✅ Intuitive user experience
+
+## Technical Notes
+
+- The metric detection logic is consistent with `LiveTelemetryGeneratorService.cs` (lines 286-317)
+- Default values represent typical real-world measurements:
+  - Temperature: Room temperature in Celsius
+  - Humidity: Moderate indoor humidity percentage
+  - Pressure: Standard sea-level atmospheric pressure
+- The metric dropdown shows user-friendly labels with units (e.g., "Temperature (°C)")
+- Two-way binding (`[(ngModel)]`) allows both auto-population and manual editing
+- The `onFormMetricChange()` handler ensures the value field always has a sensible default when metric changes

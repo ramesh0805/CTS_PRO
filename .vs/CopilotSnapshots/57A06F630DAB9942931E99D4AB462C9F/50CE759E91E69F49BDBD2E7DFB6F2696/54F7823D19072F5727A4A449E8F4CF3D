@@ -1,0 +1,115 @@
+﻿<div class="dashboard">
+  <!-- Live Metrics Grid -->
+  <div class="metrics-section">
+    <div class="time-display">
+      <span class="time-text">{{ currentTime }}</span>
+    </div>
+
+    <!-- Loading state for metrics -->
+    <div class="metrics-loading" *ngIf="loading && liveMetrics.length === 0">
+      <p>Loading live metrics...</p>
+    </div>
+
+    <!-- Metrics grid -->
+    <div class="metrics-grid" *ngIf="liveMetrics.length > 0">
+      <div class="metric-card" 
+           *ngFor="let metric of liveMetrics"
+           [style.border-left-color]="metric.color">
+
+        <div class="metric-header">
+          <div class="metric-icon">{{ metric.icon }}</div>
+          <h3 class="metric-name">{{ metric.name }}</h3>
+        </div>
+
+        <div class="metric-current">
+          <span class="metric-value">{{ metric.value | number:'1.1-1' }}</span>
+          <span class="metric-unit">{{ metric.unit }}</span>
+        </div>
+
+        <div class="metric-interpretation" [style.color]="metric.color">
+          {{ metric.interpretation }}
+        </div>
+
+        <div class="metric-stats">
+          <div class="stat-box" [style.border-left-color]="metric.color">
+            <span class="stat-label">Range</span>
+            <span class="stat-value">{{ metric.min | number:'1.1-1' }} - {{ metric.max | number:'1.1-1' }}</span>
+          </div>
+          <div class="stat-box" [style.border-left-color]="metric.color">
+            <span class="stat-label">Average</span>
+            <span class="stat-value">{{ metric.average | number:'1.1-1' }}{{ metric.unit }}</span>
+          </div>
+        </div>
+
+        <div class="metric-range-bar">
+          <div class="range-fill" 
+               [style.width.%]="((metric.value - metric.absMin) / (metric.absMax - metric.absMin)) * 100"
+               [style.background]="metric.color">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h1>Operations Overview</h1>
+  <p class="overview-subtitle">Track device performance, telemetry health, and recent activity in a single workspace.</p>
+
+  <div *ngIf="loading" class="loading">
+    <p>Loading dashboard...</p>
+  </div>
+
+  <div *ngIf="error" class="alert alert-error">
+    {{ error }}
+    <button class="btn btn-secondary" (click)="refresh()">Retry</button>
+  </div>
+
+  <div *ngIf="!loading && !error">
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Fleet Summary</h3>
+        <div class="stats">
+          <div class="stat-item">
+            <span class="stat-label">Total Devices:</span>
+            <span class="stat-value">{{ totalDevices }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Connected:</span>
+            <span class="stat-value">{{ connectedCount }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Quick Actions</h3>
+        <div class="actions">
+          <button class="btn btn-primary" routerLink="/devices">Open Device Explorer</button>
+          <button class="btn btn-success" routerLink="/telemetry">Open Data Explorer</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Recently Registered Devices</h3>
+      <table class="table" *ngIf="devices.length > 0">
+        <thead>
+          <tr>
+            <th>Device ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Created</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let device of devices.slice(0, 5)">
+            <td>{{ device.deviceId }}</td>
+            <td>{{ device.name }}</td>
+            <td>{{ device.description || 'N/A' }}</td>
+            <td>{{ device.createdAt | date:'short' }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p *ngIf="devices.length === 0">No devices found.</p>
+    </div>
+  </div>
+</div>
+

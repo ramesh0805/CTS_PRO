@@ -1,0 +1,125 @@
+﻿import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, BehaviorSubject, tap } from 'rxjs';
+
+export interface RegisterDto {
+  username: string;
+  email: string;
+  password: string;
+}
+
+export interface LoginDto {
+  username: string;
+  password: string;
+}
+
+export interface AuthResponse {
+  token: string;
+  username: string;
+  email: string;
+  role: string;
+  expiresAt: Date;
+}
+
+export interface UserDto {
+  id: number;
+  username: string;
+  email: string;
+  role: string;
+  createdAt: Date;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthService {
+  private apiUrl = '/api/auth';
+  private tokenKey = 'auth_token';
+  private userKey = 'auth_user';
+
+  private currentUserSubject = new BehaviorSubject<UserDto | null>(this.getStoredUser());
+  public currentUser$ = this.currentUserSubject.asObservable();
+
+  constructor(private http: HttpClient) {}
+
+  register(registerDto: RegisterDto): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, registerDto).pipe(
+      tap(response => this.handleAuthResponse(response))
+    );
+  }
+
+  login(loginDto: LoginDto): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, loginDto).pipe(
+      tap(response => this.handleAuthResponse(response))
+    );
+  }
+
+  logout(): void {
+    localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(this.userKey);
+    this.currentUserSubject.next(null);
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem(this.tokenKey);
+  }
+
+  isAuthenticated(): boolean {
+    const token = this.getToken();
+    if (!token) {
+      return false;
+    }
+
+    // Check if token is expired
+    const user = this.getStoredUser();
+    if (!user) {
+      return false;
+    }
+
+    return true;
+  }
+
+  isAdmin(): boolean {
+    const user = this.currentUserSubject.value;
+    return user?.role === 'Admin';
+  }
+
+  getCurrentUser(): UserDto | null {
+    return this.currentUserSubject.value;
+  }
+
+  private handleAuthResponse(response: AuthResponse): void {
+    localStorage.setItem(this.tokenKey, response.token);
+
+    const user: UserDto = {
+      id: 0, // Will be populated from token or separate call
+      username: response.username,
+      email: response.email,
+      role: response.role,
+      createdAt: new Date()
+    };
+
+    localStorage.setItem(this.userKey, JSON.stringify(user));
+    this.currentUserSubject.next(user);
+  }
+
+  private getStoredUser(): UserDto | null {
+    const userJson = localStorage.getItem(this.userKey);
+    if (!userJson) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(userJson);
+    } catch {
+      return null;
+    }
+  }
+
+  getAuthHeaders(): HttpHeaders {
+    const token = this.getToken();
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+  }
+}

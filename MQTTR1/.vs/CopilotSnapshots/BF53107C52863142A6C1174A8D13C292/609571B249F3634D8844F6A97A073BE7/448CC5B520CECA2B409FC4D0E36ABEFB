@@ -1,0 +1,137 @@
+﻿# ✅ UPDATED: 2-Minute Interval Telemetry System
+
+## 🎯 Changes Completed
+
+### 1. **Database Cleared**
+   - ✅ All previous telemetry data removed from SQL Server
+   - ✅ Database now has **0 telemetry records**
+   - ✅ 3 devices configured with real-world names:
+     - **device-001**: Smart Thermostat - Living Room
+     - **device-002**: Humidity Monitor - Basement
+     - **device-003**: Barometric Pressure Sensor - Rooftop
+
+### 2. **Simulator Scripts Updated**
+
+#### **continuous-simulator.ps1**
+- ✅ **Changed interval from 5 seconds to 2 minutes**
+- ✅ Sends telemetry data every 2 minutes
+- ✅ Real-time data collection
+- ✅ Shows countdown timer
+
+#### **send-live-data.ps1**
+- ✅ **Generates historical data with 2-minute intervals**
+- ✅ Creates 100 readings per device (covers ~3.3 hours of history)
+- ✅ Timestamps go back in time with proper 2-minute spacing
+- ✅ Total: 300 readings (100 per device)
+
+### 3. **Documentation Updated**
+   - ✅ LIVE_DATA_GUIDE.md updated to reflect 2-minute intervals
+   - ✅ All examples and workflows updated
+
+---
+
+## 📊 Current Database Status
+
+**Total Telemetry Records:** 300 (just sent)
+
+**Data Statistics:**
+| Device | Metric | Readings | Time Span | Interval |
+|--------|--------|----------|-----------|----------|
+| device-001 | temperature | 100 | ~3.3 hours | 2 minutes |
+| device-002 | humidity | 100 | ~3.3 hours | 2 minutes |
+| device-003 | pressure | 100 | ~3.3 hours | 2 minutes |
+
+**Verified Interval:** Exactly 2 minutes between each reading ✅
+
+**Sample Timestamps (device-001):**
+- 02:07:03
+- 02:09:03  ← +2 minutes
+- 02:11:03  ← +2 minutes
+- 02:13:03  ← +2 minutes
+- 02:15:03  ← +2 minutes
+- ... continues with 2-minute intervals
+- 05:25:03 (last reading)
+
+---
+
+## 🚀 How to Use
+
+### Start Continuous Data Collection (2-minute intervals)
+```powershell
+.\continuous-simulator.ps1
+```
+
+**What it does:**
+- Sends telemetry every **2 minutes**
+- Shows timestamp and value for each reading
+- Displays countdown: "Next reading in 2 minutes..."
+- Press `Ctrl+C` to stop
+
+**Example Output:**
+```
+[05:30:15] device-001 - temperature: 23.5°C ✓
+[05:30:15] device-002 - humidity: 62.3% ✓
+[05:30:15] device-003 - pressure: 1015.2hPa ✓
+
+Next reading in 2 minutes...
+```
+
+### Send Historical Data (one-time)
+```powershell
+.\send-live-data.ps1
+```
+
+**What it does:**
+- Generates 100 readings per device
+- Each reading is 2 minutes apart
+- Covers ~3.3 hours of historical data
+- Timestamps go back in time from now
+
+---
+
+## 📈 View Data in Frontend
+
+1. **Open:** `http://localhost:4200`
+2. **Navigate to:** Telemetry page
+3. **Select device:** e.g., device-001
+4. **Select metric:** e.g., temperature
+5. **See chart:** Data points with 2-minute spacing! 📊
+
+The X-axis will show timestamps with 2-minute intervals, and the chart will display the real data from SQL Server.
+
+---
+
+## 🔍 Verify Data Intervals
+
+### Check timestamp spacing:
+```powershell
+sqlcmd -S "(localdb)\mssqllocaldb" -d "TelemetryDb" -Q "SELECT TOP 5 d.DeviceId, t.Timestamp, t.Value FROM Telemetries t INNER JOIN Devices d ON t.DeviceId = d.Id WHERE d.DeviceId = 'device-001' ORDER BY t.Timestamp ASC"
+```
+
+### Check interval statistics:
+```powershell
+sqlcmd -S "(localdb)\mssqllocaldb" -d "TelemetryDb" -Q "SELECT COUNT(*) as TotalRecords FROM Telemetries"
+```
+
+---
+
+## ✨ Benefits of 2-Minute Intervals
+
+✅ **Realistic IoT pattern** - Real sensors typically don't send data every second  
+✅ **Better visualization** - Charts are easier to read with spaced-out data points  
+✅ **Reduced database load** - Less frequent writes  
+✅ **Historical trends** - Easier to see patterns over time  
+✅ **Production-like** - Mimics real-world IoT deployments  
+
+---
+
+## 🎯 Summary
+
+Your telemetry system now:
+- ✅ **Collects data every 2 minutes** (not every second)
+- ✅ **Database cleared** of old random data
+- ✅ **300 new records** with proper 2-minute spacing
+- ✅ **Verified intervals** - exactly 2 minutes apart
+- ✅ **Ready for use** - frontend will show spaced data points
+
+**Run the continuous simulator to keep collecting data at 2-minute intervals!** 🚀

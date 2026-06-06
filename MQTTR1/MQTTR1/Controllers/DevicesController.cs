@@ -1,0 +1,223 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using MQTTR1.DTOs;
+using MQTTR1.Models;
+using MQTTR1.Repositories;
+using MQTTR1.Utilities;
+
+namespace MQTTR1.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+[Authorize]
+public class DevicesController : ControllerBase
+{
+    private readonly IDeviceRepository _deviceRepository;
+    private readonly ILogger<DevicesController> _logger;
+
+    public DevicesController(
+        IDeviceRepository deviceRepository,
+        ILogger<DevicesController> logger)
+    {
+        _deviceRepository = deviceRepository;
+        _logger = logger;
+    }
+
+    /// <summary>
+    /// GET /api/devices - Get all devices
+    /// </summary>
+    [HttpGet]
+    public async Task<IActionResult> GetAllDevices()
+    {
+        _logger.LogInformation("Getting all devices");
+
+        var devices = (await _deviceRepository.GetAllAsync()).ToList();
+
+        var lastSeenMap = await _deviceRepository.GetLastSeenMapAsync(
+            devices.Select(d => d.DeviceId));
+
+        var responseDtos = devices.Select(d => new DeviceResponseDto
+        {
+            Id = d.Id,
+            DeviceId = d.DeviceId,
+            Name = d.Name,
+            Description = d.Description,
+            CreatedAt = d.CreatedAt,
+            UpdatedAt = d.UpdatedAt,
+            LastSeenAt = lastSeenMap.TryGetValue(d.DeviceId, out var ls) ? ls : null
+        });
+
+        return Ok(responseDtos);
+    }
+
+    /// <summary>
+    /// GET /api/devices/{id} - Get device by ID
+    /// </summary>
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetDeviceById(int id)
+    {
+        _logger.LogInformation("Getting device with ID {DeviceId}", id);
+
+        var device = await _deviceRepository.GetByIdAsync(id);
+
+        if (device == null)
+        {
+            return NotFound(new { error = $"Device with ID {id} not found" });
+        }
+
+        return Ok(new DeviceResponseDto
+        {
+            Id = device.Id,
+            DeviceId = device.DeviceId,
+            Name = device.Name,
+            Description = device.Description,
+            CreatedAt = device.CreatedAt,
+            UpdatedAt = device.UpdatedAt
+        });
+    }
+
+    /// <summary>
+    /// GET /api/devices/byDeviceId/{deviceId} - Get device by DeviceId
+    /// </summary>
+    [HttpGet("byDeviceId/{deviceId}")]
+    public async Task<IActionResult> GetDeviceByDeviceId(string deviceId)
+    {
+        _logger.LogInformation("Getting device with DeviceId {DeviceId}", deviceId);
+
+        var device = await _deviceRepository.GetByDeviceIdAsync(deviceId);
+
+        if (device == null)
+        {
+            return NotFound(new { error = $"Device with DeviceId '{deviceId}' not found" });
+        }
+
+        return Ok(new DeviceResponseDto
+        {
+            Id = device.Id,
+            DeviceId = device.DeviceId,
+            Name = device.Name,
+            Description = device.Description,
+            CreatedAt = device.CreatedAt,
+            UpdatedAt = device.UpdatedAt
+        });
+    }
+
+    /// <summary>
+    /// POST /api/devices - Create a new device
+    /// </summary>
+    [HttpPost]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> CreateDevice([FromBody] DeviceDto deviceDto)
+    {
+        _logger.LogInformation("Creating device with DeviceId {DeviceId}", deviceDto.DeviceId);
+
+        // Validate DeviceId format
+        if (!TelemetryValidator.IsValidDeviceId(deviceDto.DeviceId))
+        {
+            return BadRequest(new { error = "Invalid DeviceId format" });
+        }
+
+        // Check if device already exists
+        if (await _deviceRepository.ExistsAsync(deviceDto.DeviceId))
+        {
+            return Conflict(new { error = $"Device with DeviceId '{deviceDto.DeviceId}' already exists" });
+        }
+
+        var device = new Device
+        {
+            DeviceId = deviceDto.DeviceId,
+            Name = deviceDto.Name,
+            Description = deviceDto.Description,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        var createdDevice = await _deviceRepository.CreateAsync(device);
+
+        _logger.LogInformation("Device created successfully with ID {Id}", createdDevice.Id);
+
+        return CreatedAtAction(
+            nameof(GetDeviceById),
+            new { id = createdDevice.Id },
+            new DeviceResponseDto
+            {
+                Id = createdDevice.Id,
+                DeviceId = createdDevice.DeviceId,
+                Name = createdDevice.Name,
+                Description = createdDevice.Description,
+                CreatedAt = createdDevice.CreatedAt,
+                UpdatedAt = createdDevice.UpdatedAt
+            });
+    }
+
+    /// <summary>
+    /// PUT /api/devices/{id} - Update an existing device
+    /// </summary>
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> UpdateDevice(int id, [FromBody] DeviceDto deviceDto)
+    {
+        _logger.LogInformation("Updating device with ID {DeviceId}", id);
+
+        var existingDevice = await _deviceRepository.GetByIdAsync(id);
+
+        if (existingDevice == null)
+        {
+            return NotFound(new { error = $"Device with ID {id} not found" });
+        }
+
+        // Validate DeviceId format
+        if (!TelemetryValidator.IsValidDeviceId(deviceDto.DeviceId))
+        {
+            return BadRequest(new { error = "Invalid DeviceId format" });
+        }
+
+        // Check if new DeviceId conflicts with another device
+        if (existingDevice.DeviceId != deviceDto.DeviceId)
+        {
+            var deviceWithSameId = await _deviceRepository.GetByDeviceIdAsync(deviceDto.DeviceId);
+            if (deviceWithSameId != null && deviceWithSameId.Id != id)
+            {
+                return Conflict(new { error = $"Device with DeviceId '{deviceDto.DeviceId}' already exists" });
+            }
+        }
+
+        existingDevice.DeviceId = deviceDto.DeviceId;
+        existingDevice.Name = deviceDto.Name;
+        existingDevice.Description = deviceDto.Description;
+
+        var updatedDevice = await _deviceRepository.UpdateAsync(existingDevice);
+
+        _logger.LogInformation("Device with ID {Id} updated successfully", id);
+
+        return Ok(new DeviceResponseDto
+        {
+            Id = updatedDevice.Id,
+            DeviceId = updatedDevice.DeviceId,
+            Name = updatedDevice.Name,
+            Description = updatedDevice.Description,
+            CreatedAt = updatedDevice.CreatedAt,
+            UpdatedAt = updatedDevice.UpdatedAt
+        });
+    }
+
+    /// <summary>
+    /// DELETE /api/devices/{id} - Delete a device
+    /// </summary>
+    [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> DeleteDevice(int id)
+    {
+        _logger.LogInformation("Deleting device with ID {DeviceId}", id);
+
+        var result = await _deviceRepository.DeleteAsync(id);
+
+        if (!result)
+        {
+            return NotFound(new { error = $"Device with ID {id} not found" });
+        }
+
+        _logger.LogInformation("Device with ID {Id} deleted successfully", id);
+
+        return NoContent();
+    }
+}

@@ -1,0 +1,62 @@
+﻿# Send Live Telemetry Data to API
+# This script simulates IoT devices sending continuous telemetry data
+
+$apiUrl = "http://localhost:5297/api/telemetry"
+
+Write-Host "=====================================" -ForegroundColor Cyan
+Write-Host "Live Telemetry Data Simulator" -ForegroundColor Cyan
+Write-Host "=====================================" -ForegroundColor Cyan
+Write-Host "Sending telemetry data to: $apiUrl" -ForegroundColor Yellow
+Write-Host ""
+
+$devices = @(
+	@{ DeviceId = "device-001"; Metric = "temperature"; BaseValue = 22.0; Variance = 5.0 },
+	@{ DeviceId = "device-002"; Metric = "humidity"; BaseValue = 60.0; Variance = 10.0 },
+	@{ DeviceId = "device-003"; Metric = "pressure"; BaseValue = 1013.0; Variance = 5.0 }
+)
+
+$count = 0
+$maxReadings = 100  # Send 100 readings per device
+
+Write-Host "Sending $maxReadings readings for each device..." -ForegroundColor Green
+Write-Host ""
+
+foreach ($device in $devices) {
+	Write-Host "Device: $($device.DeviceId) | Metric: $($device.Metric)" -ForegroundColor Magenta
+
+	for ($i = 0; $i -lt $maxReadings; $i++) {
+		# Generate random value with variance
+		$randomFactor = (Get-Random -Minimum -1.0 -Maximum 1.0)
+		$value = $device.BaseValue + ($randomFactor * $device.Variance)
+		$value = [Math]::Round($value, 2)
+
+		# Create telemetry payload
+		$telemetry = @{
+			deviceId = $device.DeviceId
+			metric = $device.Metric
+			value = $value
+			timestamp = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+		} | ConvertTo-Json
+
+		try {
+			# Send POST request
+			$response = Invoke-RestMethod -Uri $apiUrl -Method Post -Body $telemetry -ContentType "application/json" -ErrorAction Stop
+			$count++
+			Write-Host "  [$count] Sent: $($device.Metric)=$value | Status: OK" -ForegroundColor Green
+		}
+		catch {
+			Write-Host "  [ERROR] Failed to send data: $($_.Exception.Message)" -ForegroundColor Red
+		}
+
+		# Small delay between requests (50ms)
+		Start-Sleep -Milliseconds 50
+	}
+
+	Write-Host ""
+}
+
+Write-Host "=====================================" -ForegroundColor Cyan
+Write-Host "Total readings sent: $count" -ForegroundColor Yellow
+Write-Host "=====================================" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "Check your frontend at http://localhost:4200 to see the data!" -ForegroundColor Green

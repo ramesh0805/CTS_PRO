@@ -1,0 +1,98 @@
+﻿using Microsoft.EntityFrameworkCore;
+using MQTTR1.Data;
+using MQTTR1.Models;
+
+namespace MQTTR1.Repositories;
+
+public class TelemetryRepository : ITelemetryRepository
+{
+    private readonly ApplicationDbContext _context;
+
+    public TelemetryRepository(ApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<Telemetry> CreateAsync(Telemetry telemetry)
+    {
+        _context.Telemetries.Add(telemetry);
+        await _context.SaveChangesAsync();
+        return telemetry;
+    }
+
+    public async Task<(IEnumerable<Telemetry> Data, int TotalCount)> GetPagedAsync(
+        int page,
+        int pageSize,
+        string? deviceId = null,
+        string? metric = null,
+        DateTime? startDate = null,
+        DateTime? endDate = null)
+    {
+        var query = _context.Telemetries
+            .Include(t => t.Device)
+            .AsQueryable();
+
+        if (!string.IsNullOrEmpty(deviceId))
+        {
+            query = query.Where(t => t.Device.DeviceId == deviceId);
+        }
+
+        if (!string.IsNullOrEmpty(metric))
+        {
+            query = query.Where(t => t.Metric == metric);
+        }
+
+        if (startDate.HasValue)
+        {
+            query = query.Where(t => t.Timestamp >= startDate.Value);
+        }
+
+        if (endDate.HasValue)
+        {
+            query = query.Where(t => t.Timestamp <= endDate.Value);
+        }
+
+        var totalCount = await query.CountAsync();
+
+        var data = await query
+            .OrderByDescending(t => t.Timestamp)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (data, totalCount);
+    }
+
+    public async Task<Telemetry?> GetLastValueAsync(string deviceId, string metric)
+    {
+        return await _context.Telemetries
+            .Include(t => t.Device)
+            .Where(t => t.Device.DeviceId == deviceId && t.Metric == metric)
+            .OrderByDescending(t => t.Timestamp)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<Dictionary<string, double>> GetHourlyAverageAsync(
+        string deviceId,
+        string metric,
+        DateTime startDate,
+        DateTime endDate)
+    {
+        var telemetries = await _context.Telemetries
+            .Include(t => t.Device)
+            .Where(t => t.Device.DeviceId == deviceId 
+                && t.Metric == metric 
+                && t.Timestamp >= startDate 
+                && t.Timestamp <= endDate)
+            .ToListAsync();
+
+        var hourlyAverages = telemetries
+            .GroupBy(t => new DateTime(t.Timestamp.Year, t.Timestamp.Month, t.Timestamp.Day, t.Timestamp.Hour, 0, 0))
+            .ToDictionary(
+                g => g.Key.ToString("yyyy-MM-dd HH:00"),
+                g => g.Average(t => t.Value)
+            );
+
+        return hourlyAverages;
+    }
+}

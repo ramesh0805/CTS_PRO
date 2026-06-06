@@ -1,0 +1,53 @@
+﻿import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { DeviceService } from '../../services/device.service';
+import { TelemetryService } from '../../services/telemetry.service';
+import { Device } from '../../models/device.model';
+import { forkJoin } from 'rxjs';
+
+@Component({
+  selector: 'app-dashboard',
+  standalone: true,
+  imports: [CommonModule, RouterLink],
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.scss']
+})
+export class DashboardComponent implements OnInit {
+  devices: Device[] = [];
+  totalDevices: number = 0;
+  recentTelemetry: any[] = [];
+  loading: boolean = true;
+  error: string = '';
+
+  constructor(
+    private deviceService: DeviceService,
+    private telemetryService: TelemetryService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadDashboard();
+  }
+
+  loadDashboard(): void {
+    this.loading = true;
+    this.error = '';
+
+    this.deviceService.getAllDevices().subscribe({
+      next: (devices) => {
+        this.devices = devices;
+        this.totalDevices = devices.length;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = 'Failed to load dashboard data';
+        this.loading = false;
+        console.error(err);
+      }
+    });
+  }
+
+  refresh(): void {
+    this.loadDashboard();
+  }
+}

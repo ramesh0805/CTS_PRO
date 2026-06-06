@@ -1,0 +1,248 @@
+﻿import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { UserService, UserDto, CreateUserDto, UpdateUserDto } from '../../services/user.service';
+import { AuthService } from '../../services/auth.service';
+
+@Component({
+  selector: 'app-user-management',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './user-management.component.html',
+  styleUrls: ['./user-management.component.scss']
+})
+export class UserManagementComponent implements OnInit {
+  users: UserDto[] = [];
+  loading = false;
+  error = '';
+  success = '';
+  currentUser: any = null;
+
+  // Create user form
+  showCreateForm = false;
+  newUser: CreateUserDto = {
+    username: '',
+    email: '',
+    password: '',
+    role: 'User'
+  };
+
+  // Edit user
+  editingUser: UserDto | null = null;
+  editForm: UpdateUserDto = {};
+
+  // Reset password
+  resetPasswordUserId: number | null = null;
+  newPassword = '';
+
+  constructor(
+    private userService: UserService,
+    private authService: AuthService
+  ) {}
+
+  ngOnInit(): void {
+    this.currentUser = this.authService.getCurrentUser();
+    this.loadUsers();
+  }
+
+  loadUsers(): void {
+    this.loading = true;
+    this.error = '';
+
+    this.userService.getAllUsers().subscribe({
+      next: (users) => {
+        this.users = users;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = 'Failed to load users';
+        this.loading = false;
+        console.error(err);
+      }
+    });
+  }
+
+  openCreateForm(): void {
+    this.showCreateForm = true;
+    this.newUser = {
+      username: '',
+      email: '',
+      password: '',
+      role: 'User'
+    };
+    this.error = '';
+    this.success = '';
+  }
+
+  closeCreateForm(): void {
+    this.showCreateForm = false;
+    this.newUser = {
+      username: '',
+      email: '',
+      password: '',
+      role: 'User'
+    };
+  }
+
+  createUser(): void {
+    if (!this.newUser.username || !this.newUser.email || !this.newUser.password) {
+      this.error = 'All fields are required';
+      return;
+    }
+
+    this.loading = true;
+    this.error = '';
+
+    this.userService.createUser(this.newUser).subscribe({
+      next: (user) => {
+        this.success = `User "${user.username}" created successfully`;
+        this.closeCreateForm();
+        this.loadUsers();
+        setTimeout(() => this.success = '', 3000);
+      },
+      error: (err) => {
+        this.error = err.error?.message || 'Failed to create user';
+        this.loading = false;
+        console.error(err);
+      }
+    });
+  }
+
+  startEdit(user: UserDto): void {
+    this.editingUser = user;
+    this.editForm = {
+      email: user.email,
+      role: user.role,
+      isActive: user.isActive
+    };
+    this.error = '';
+    this.success = '';
+  }
+
+  cancelEdit(): void {
+    this.editingUser = null;
+    this.editForm = {};
+  }
+
+  updateUser(): void {
+    if (!this.editingUser) return;
+
+    this.loading = true;
+    this.error = '';
+
+    this.userService.updateUser(this.editingUser.id, this.editForm).subscribe({
+      next: (user) => {
+        this.success = `User "${user.username}" updated successfully`;
+        this.cancelEdit();
+        this.loadUsers();
+        setTimeout(() => this.success = '', 3000);
+      },
+      error: (err) => {
+        this.error = err.error?.message || 'Failed to update user';
+        this.loading = false;
+        console.error(err);
+      }
+    });
+  }
+
+  deleteUser(user: UserDto): void {
+    if (!confirm(`Are you sure you want to delete user "${user.username}"?`)) {
+      return;
+    }
+
+    this.loading = true;
+    this.error = '';
+
+    this.userService.deleteUser(user.id).subscribe({
+      next: () => {
+        this.success = `User "${user.username}" deleted successfully`;
+        this.loadUsers();
+        setTimeout(() => this.success = '', 3000);
+      },
+      error: (err) => {
+        this.error = err.error?.message || 'Failed to delete user';
+        this.loading = false;
+        console.error(err);
+      }
+    });
+  }
+
+  toggleUserStatus(user: UserDto): void {
+    const action = user.isActive ? 'deactivate' : 'activate';
+    if (!confirm(`Are you sure you want to ${action} user "${user.username}"?`)) {
+      return;
+    }
+
+    this.loading = true;
+    this.error = '';
+
+    const updateDto: UpdateUserDto = {
+      isActive: !user.isActive
+    };
+
+    this.userService.updateUser(user.id, updateDto).subscribe({
+      next: () => {
+        this.success = `User "${user.username}" ${action}d successfully`;
+        this.loadUsers();
+        setTimeout(() => this.success = '', 3000);
+      },
+      error: (err) => {
+        this.error = err.error?.message || `Failed to ${action} user`;
+        this.loading = false;
+        console.error(err);
+      }
+    });
+  }
+
+  openResetPassword(userId: number): void {
+    this.resetPasswordUserId = userId;
+    this.newPassword = '';
+    this.error = '';
+  }
+
+  closeResetPassword(): void {
+    this.resetPasswordUserId = null;
+    this.newPassword = '';
+  }
+
+  resetPassword(): void {
+    if (!this.resetPasswordUserId || !this.newPassword) {
+      this.error = 'Password is required';
+      return;
+    }
+
+    if (this.newPassword.length < 6) {
+      this.error = 'Password must be at least 6 characters';
+      return;
+    }
+
+    this.loading = true;
+    this.error = '';
+
+    this.userService.resetPassword(this.resetPasswordUserId, { newPassword: this.newPassword }).subscribe({
+      next: () => {
+        this.success = 'Password reset successfully';
+        this.closeResetPassword();
+        this.loading = false;
+        setTimeout(() => this.success = '', 3000);
+      },
+      error: (err) => {
+        this.error = err.error?.message || 'Failed to reset password';
+        this.loading = false;
+        console.error(err);
+      }
+    });
+  }
+
+  getRoleBadgeClass(role: string): string {
+    return role === 'Admin' ? 'badge-admin' : 'badge-user';
+  }
+
+  getStatusBadgeClass(isActive: boolean): string {
+    return isActive ? 'badge-active' : 'badge-inactive';
+  }
+
+  isMainAdmin(user: UserDto): boolean {
+    return user.email === 'admin@example.com';
+  }
+}

@@ -1,0 +1,410 @@
+﻿.dashboard {
+  // Add top padding to separate from navbar
+  padding-top: 25px;
+
+  // Metrics Grid Section
+  .metrics-section {
+    margin: 0 20px 30px 20px;
+    background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0, 114, 255, 0.3);
+    border: 3px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .time-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+
+    .time-icon {
+      font-size: 22px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .time-text {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+
+  // Grid Layout for Metrics
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .metric-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    border-left: 5px solid;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+    }
+  }
+
+  .metric-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+  }
+
+  .metric-icon {
+    font-size: 42px;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .metric-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0;
+  }
+
+  .metric-current {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    margin-bottom: 10px;
+
+    .metric-value {
+      font-size: 36px;
+      font-weight: 800;
+      color: #2c3e50;
+      line-height: 1;
+    }
+
+    .metric-unit {
+      font-size: 18px;
+      font-weight: 600;
+      color: #6c757d;
+    }
+  }
+
+  .metric-interpretation {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.04);
+    border-radius: 6px;
+    text-align: center;
+  }
+
+  .metric-stats {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+
+    .stat-box {
+      flex: 1;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.03);
+      border-radius: 8px;
+      border-left: 3px solid;
+
+      .stat-label {
+        display: block;
+        font-size: 11px;
+        color: #495057;
+        margin-bottom: 4px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .stat-value {
+        display: block;
+        font-size: 13px;
+        font-weight: 800;
+        color: #212529;
+      }
+    }
+  }
+
+  .metric-range-bar {
+    width: 100%;
+    height: 10px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+
+    .range-fill {
+      height: 100%;
+      border-radius: 5px;
+      transition: width 0.5s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  .metric-current {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 8px;
+
+    .metric-value {
+      font-size: 32px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .metric-unit {
+      font-size: 18px;
+      font-weight: 600;
+      color: #6c757d;
+    }
+  }
+
+  .metric-interpretation {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    padding: 6px 10px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 6px;
+    display: inline-block;
+  }
+
+  .metric-stats {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 10px;
+
+    .stat-box {
+      flex: 1;
+      padding: 8px;
+      background: rgba(0, 0, 0, 0.03);
+      border-radius: 6px;
+      border-left: 3px solid;
+
+      .stat-label {
+        display: block;
+        font-size: 11px;
+        color: #495057;
+        margin-bottom: 3px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .stat-value {
+        display: block;
+        font-size: 14px;
+        font-weight: 800;
+        color: #212529;
+      }
+    }
+  }
+
+  .metric-range-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+
+    .range-fill {
+      height: 100%;
+      border-radius: 6px;
+      transition: width 0.5s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  .carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid rgba(0, 114, 255, 0.3);
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    font-size: 22px;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0072ff;
+    box-shadow: 0 4px 15px rgba(0, 114, 255, 0.25);
+
+    &:hover {
+      background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+      color: white;
+      transform: translateY(-50%) scale(1.15);
+      box-shadow: 0 6px 20px rgba(0, 114, 255, 0.4);
+      border-color: white;
+    }
+
+    &.prev {
+      left: 8px;
+    }
+
+    &.next {
+      right: 8px;
+    }
+  }
+
+  .carousel-indicators {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+
+    .indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.5);
+      border: 2px solid rgba(255, 255, 255, 0.7);
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &.active {
+        background: white;
+        width: 24px;
+        border-radius: 5px;
+        box-shadow: 0 2px 8px rgba(255, 255, 255, 0.5);
+      }
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.8);
+        transform: scale(1.2);
+      }
+    }
+  }
+
+  // Original styles
+  .stats {
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+
+      .stat-label {
+        font-weight: 600;
+        color: #6c757d;
+      }
+
+      .stat-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #007bff;
+      }
+    }
+  }
+
+  .actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  // Admin Footer Styles
+  .admin-footer {
+    margin-top: 30px;
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 8px 24px rgba(255, 107, 107, 0.3);
+
+    .admin-section {
+      h3 {
+        color: white;
+        margin: 0 0 20px 0;
+        font-size: 1.5rem;
+        text-align: center;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .admin-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 15px;
+
+        .btn-admin {
+          background: white;
+          color: #ff6b6b;
+          padding: 12px 24px;
+          border: none;
+          border-radius: 8px;
+          font-weight: 600;
+          font-size: 1rem;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+          &:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+            background: #fff;
+            color: #ee5a6f;
+          }
+
+          &:active {
+            transform: translateY(-1px);
+          }
+        }
+      }
+
+      .admin-note {
+        color: rgba(255, 255, 255, 0.9);
+        text-align: center;
+        margin: 15px 0 0 0;
+        font-size: 0.95rem;
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 8px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+    }
+  }
+}
+

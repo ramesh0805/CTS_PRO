@@ -1,0 +1,138 @@
+﻿import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { DeviceService } from '../../services/device.service';
+import { Device, DeviceDto } from '../../models/device.model';
+import { AuthService } from '../../services/auth.service';
+import { NotificationService } from '../../services/notification.service';
+
+@Component({
+  selector: 'app-devices',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './devices.component.html',
+  styleUrls: ['./devices.component.scss']
+})
+export class DevicesComponent implements OnInit {
+  devices: Device[] = [];
+  loading: boolean = true;
+
+  showForm: boolean = false;
+  editingDevice: Device | null = null;
+
+  deviceForm: DeviceDto = {
+    deviceId: '',
+    name: '',
+    description: ''
+  };
+
+  constructor(
+    private deviceService: DeviceService,
+    public authService: AuthService,
+    private notificationService: NotificationService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadDevices();
+  }
+
+  loadDevices(): void {
+    this.loading = true;
+
+    this.deviceService.getAllDevices().subscribe({
+      next: (devices) => {
+        this.devices = devices;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.notificationService.error('Failed to load devices');
+        this.loading = false;
+        console.error(err);
+      }
+    });
+  }
+
+  showAddForm(): void {
+    this.showForm = true;
+    this.editingDevice = null;
+    this.deviceForm = {
+      deviceId: '',
+      name: '',
+      description: ''
+    };
+  }
+
+  showEditForm(device: Device): void {
+    this.showForm = true;
+    this.editingDevice = device;
+    this.deviceForm = {
+      deviceId: device.deviceId,
+      name: device.name,
+      description: device.description || ''
+    };
+  }
+
+  cancelForm(): void {
+    this.showForm = false;
+    this.editingDevice = null;
+    this.deviceForm = {
+      deviceId: '',
+      name: '',
+      description: ''
+    };
+  }
+
+  submitForm(): void {
+    if (this.editingDevice) {
+      this.deviceService.updateDevice(this.editingDevice.id, this.deviceForm).subscribe({
+        next: () => {
+          this.notificationService.success('Device updated successfully');
+          this.cancelForm();
+          this.loadDevices();
+        },
+        error: (err) => {
+          this.notificationService.error(err.error?.error || 'Failed to update device');
+          console.error(err);
+        }
+      });
+    } else {
+      this.deviceService.createDevice(this.deviceForm).subscribe({
+        next: () => {
+          this.notificationService.success('Device created successfully');
+          this.cancelForm();
+          this.loadDevices();
+        },
+        error: (err) => {
+          this.notificationService.error(err.error?.error || 'Failed to create device');
+          console.error(err);
+        }
+      });
+    }
+  }
+
+  deleteDevice(device: Device): void {
+    // Show custom confirmation notification
+    if (!confirm(`Are you sure you want to delete device "${device.name}"?`)) {
+      return;
+    }
+
+    this.deviceService.deleteDevice(device.id).subscribe({
+      next: () => {
+        this.notificationService.success(`Device "${device.name}" deleted successfully`);
+        this.loadDevices();
+      },
+      error: (err) => {
+        this.notificationService.error(err.error?.error || 'Failed to delete device');
+        console.error(err);
+      }
+    });
+  }
+
+  refresh(): void {
+    this.loadDevices();
+  }
+
+  isAdmin(): boolean {
+    return this.authService.isAdmin();
+  }
+}

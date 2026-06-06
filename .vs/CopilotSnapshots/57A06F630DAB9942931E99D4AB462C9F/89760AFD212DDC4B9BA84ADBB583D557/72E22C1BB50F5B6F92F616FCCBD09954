@@ -1,0 +1,544 @@
+﻿import { Component, OnInit, HostListener, ElementRef } from '@angular/core';
+import { RouterOutlet, RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { AuthService } from './services/auth.service';
+import { NotificationComponent } from './components/notification/notification.component';
+import { NavbarAlertsComponent } from './components/navbar-alerts/navbar-alerts.component';
+import { TelemetryMonitorService } from './services/telemetry-monitor.service';
+import { filter } from 'rxjs/operators';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, NotificationComponent, NavbarAlertsComponent],
+  template: `
+    <app-notification></app-notification>
+    <nav class="navbar" *ngIf="shouldShowNavbar() && (authService.currentUser$ | async) as currentUser">
+      <div class="navbar-container">
+        <div class="navbar-brand">
+          <div class="brand-text">
+            <span class="brand-name">IoT Monitor</span>
+            <span class="brand-subtitle">IoT Operations Center</span>
+          </div>
+        </div>
+
+        <ul class="navbar-menu">
+          <li class="menu-item">
+            <a routerLink="/dashboard" routerLinkActive="active" class="menu-link">
+              <span class="menu-text">Overview</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a routerLink="/devices" routerLinkActive="active" class="menu-link">
+              <span class="menu-text">Device Explorer</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a routerLink="/telemetry" routerLinkActive="active" class="menu-link">
+              <span class="menu-text">Data Explorer</span>
+            </a>
+          </li>
+          <li class="menu-item" *ngIf="authService.isAdmin()">
+            <a routerLink="/simulator" routerLinkActive="active" class="menu-link">
+              <span class="menu-text">Data Simulator</span>
+            </a>
+          </li>
+          <li class="menu-item" *ngIf="authService.isAdmin()">
+            <a routerLink="/user-management" routerLinkActive="active" class="menu-link">
+              <span class="menu-text">Administration</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="navbar-user">
+          <app-navbar-alerts></app-navbar-alerts>
+
+          <div class="user-menu-wrapper">
+            <button class="user-pill" type="button" [class.open]="userMenuOpen" (click)="toggleUserMenu($event)" title="{{ currentUser.username }}">
+              <div class="user-avatar">{{ getInitials() }}</div>
+              <span class="user-name">{{ currentUser.username }}</span>
+              <span class="user-caret">▾</span>
+            </button>
+
+            <div class="user-dropdown" *ngIf="userMenuOpen">
+              <div class="dropdown-user">
+                <span class="dropdown-label">Signed in as</span>
+                <span class="dropdown-name">{{ currentUser.username }}</span>
+              </div>
+              <button class="dropdown-item" *ngIf="authService.isAdmin()" (click)="goToAdministration()">
+                <span class="item-icon">ADM</span>
+                <span>Administration</span>
+              </button>
+              <button class="dropdown-item danger" (click)="logout()">
+                <span class="item-icon">OUT</span>
+                <span>Sign out</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+  `,
+  styles: [`
+    /* Navbar Container */
+    .navbar {
+      background: linear-gradient(90deg, #0b3a75 0%, #005a9e 55%, #0078d4 100%);
+      box-shadow: 0 2px 12px rgba(8, 44, 92, 0.32);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .navbar-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+    }
+
+    /* Brand Section */
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .navbar-brand:hover {
+      transform: translateY(-2px);
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      color: white;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+      animation: pulse 3s ease-in-out infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .brand-icon svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .brand-name {
+      color: white;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .brand-subtitle {
+      color: rgba(255, 255, 255, 0.86);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
+    /* Menu Section */
+    .navbar-menu {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      gap: 8px;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .menu-item {
+      position: relative;
+    }
+
+    .menu-link {
+      display: flex;
+      align-items: center;
+      padding: 10px 18px;
+      color: rgba(255, 255, 255, 0.92);
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 14px;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .menu-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      transition: left 0.3s ease;
+    }
+
+    .menu-link:hover::before {
+      left: 0;
+    }
+
+    .menu-link:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .menu-link.active {
+      background: rgba(255, 255, 255, 0.18);
+      color: white;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .menu-link.active::after {
+      content: '';
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 4px;
+      height: 2px;
+      border-radius: 2px;
+      background: #ffffff;
+    }
+
+    .menu-text {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* User Section */
+    .navbar-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-menu-wrapper {
+      position: relative;
+    }
+
+    .user-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px 4px 4px;
+      max-width: 190px;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 999px;
+      backdrop-filter: blur(8px);
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.24);
+      }
+
+      &.open {
+        background: rgba(255, 255, 255, 0.3);
+      }
+    }
+
+    .user-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #fff 0%, #e8f0ff 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 12px;
+      color: #1d4ed8;
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        right: -1px;
+        bottom: -1px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #22c55e;
+        border: 1.5px solid #ffffff;
+        box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2);
+      }
+    }
+
+    .user-name {
+      color: #fff;
+      font-weight: 600;
+      font-size: 12px;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .user-caret {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.9);
+      margin-left: auto;
+      transition: transform 0.2s ease;
+    }
+
+    .user-pill.open .user-caret {
+      transform: rotate(180deg);
+    }
+
+    .user-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 210px;
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid rgba(15, 78, 168, 0.18);
+      box-shadow: 0 12px 28px rgba(14, 41, 92, 0.22);
+      padding: 8px;
+      z-index: 1200;
+      animation: fadeInMenu 0.15s ease;
+    }
+
+    .dropdown-user {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 8px 10px;
+      border-bottom: 1px solid #e7edfa;
+      margin-bottom: 6px;
+
+      .dropdown-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: #6b769a;
+        font-weight: 700;
+      }
+
+      .dropdown-name {
+        font-size: 13px;
+        color: #1e2f62;
+        font-weight: 700;
+      }
+    }
+
+    .dropdown-item {
+      width: 100%;
+      text-align: left;
+      border: none;
+      background: transparent;
+      color: #1f2f62;
+      border-radius: 8px;
+      padding: 9px 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .item-icon {
+        min-width: 28px;
+        padding: 2px 6px;
+        border-radius: 999px;
+        text-align: center;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+        background: #e9f1ff;
+        color: #0f4ea8;
+      }
+
+      &:hover {
+        background: #edf3ff;
+      }
+
+      &.danger {
+        color: #c62828;
+
+        &:hover {
+          background: #fdecec;
+        }
+      }
+    }
+
+    @keyframes fadeInMenu {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Main Content */
+    .main-content {
+      min-height: calc(100vh - 70px);
+      background: radial-gradient(circle at top left, #ffffff 0%, #f4f7ff 45%, #edf2ff 100%);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .menu-text {
+        display: none;
+      }
+
+      .menu-link {
+        padding: 10px 12px;
+      }
+
+      .user-pill {
+        max-width: 42px;
+        padding-right: 4px;
+      }
+
+      .user-name {
+        display: none;
+      }
+
+      .logout-text {
+        display: none;
+      }
+
+      .user-dropdown {
+        right: -6px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .navbar-container {
+        height: 60px;
+        padding: 0 12px;
+      }
+
+      .brand-icon {
+        font-size: 28px;
+      }
+
+      .brand-name {
+        font-size: 16px;
+      }
+
+      .user-pill {
+        max-width: 36px;
+        padding: 3px;
+      }
+
+      .navbar-menu {
+        gap: 4px;
+      }
+
+      .menu-icon {
+        font-size: 20px;
+      }
+    }
+  `]
+})
+export class AppComponent implements OnInit {
+  title = 'MQTTR Dashboard';
+  currentRoute = '';
+  userMenuOpen = false;
+
+  constructor(
+    public authService: AuthService,
+    private router: Router,
+    private telemetryMonitor: TelemetryMonitorService,
+    private elementRef: ElementRef
+  ) {}
+
+  ngOnInit(): void {
+    // Track current route
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      this.currentRoute = event.urlAfterRedirects || event.url;
+      console.log('[AppComponent] Route changed to:', this.currentRoute);
+    });
+
+    // Start telemetry monitoring when user is authenticated
+    this.authService.currentUser$.subscribe(user => {
+      if (user) {
+        console.log('[AppComponent] User authenticated, starting telemetry monitoring');
+        this.telemetryMonitor.startMonitoring();
+      } else {
+        console.log('[AppComponent] User logged out, stopping telemetry monitoring');
+        this.telemetryMonitor.stopMonitoring();
+      }
+    });
+  }
+
+  shouldShowNavbar(): boolean {
+    // Hide navbar on login and register pages
+    const publicRoutes = ['/login', '/register'];
+    const isPublicRoute = publicRoutes.some(route => this.currentRoute.startsWith(route));
+
+    if (isPublicRoute) {
+      console.log('[AppComponent] Hiding navbar on public route:', this.currentRoute);
+      return false;
+    }
+
+    return true;
+  }
+
+  getInitials(): string {
+    const user = this.authService.getCurrentUser();
+    if (!user || !user.username) {
+      return '??';
+    }
+    return user.username.substring(0, 2).toUpperCase();
+  }
+
+  toggleUserMenu(event: Event): void {
+    event.stopPropagation();
+    this.userMenuOpen = !this.userMenuOpen;
+  }
+
+  closeUserMenu(): void {
+    this.userMenuOpen = false;
+  }
+
+  goToAdministration(): void {
+    this.closeUserMenu();
+    this.router.navigate(['/user-management']);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (!this.elementRef.nativeElement.contains(event.target)) {
+      this.closeUserMenu();
+    }
+  }
+
+  logout(): void {
+    this.closeUserMenu();
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
+}

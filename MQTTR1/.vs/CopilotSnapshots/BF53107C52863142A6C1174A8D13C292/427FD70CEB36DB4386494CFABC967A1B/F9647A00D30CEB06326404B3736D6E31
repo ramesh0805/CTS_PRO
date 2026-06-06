@@ -1,0 +1,150 @@
+﻿<div class="simulator">
+  <div class="header">
+    <h1>IoT Data Simulator</h1>
+    <p class="subtitle">Generate and visualize telemetry data in real-time</p>
+  </div>
+
+  <div *ngIf="success" class="alert alert-success">
+    {{ success }}
+  </div>
+
+  <div *ngIf="error" class="alert alert-error">
+    {{ error }}
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <p>Processing...</p>
+  </div>
+
+  <!-- Controls -->
+  <div class="card">
+    <h3>Simulation Controls</h3>
+
+    <div class="controls-grid">
+      <div class="form-group">
+        <label for="device">Select Device</label>
+        <select 
+          id="device" 
+          [(ngModel)]="selectedDevice" 
+          (ngModelChange)="onDeviceChange()"
+          [disabled]="simulationRunning">
+          <option *ngFor="let device of devices" [ngValue]="device">
+            {{ device.name }} ({{ device.deviceId }})
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="interval">Update Interval (seconds)</label>
+        <input 
+          type="number" 
+          id="interval" 
+          [(ngModel)]="updateIntervalSeconds" 
+          min="1" 
+          max="60"
+          [disabled]="simulationRunning">
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button 
+        class="btn btn-success" 
+        (click)="startSimulation()" 
+        [disabled]="simulationRunning || !selectedDevice">
+        <span *ngIf="!simulationRunning">▶ Start Simulation</span>
+        <span *ngIf="simulationRunning">⏸ Running...</span>
+      </button>
+
+      <button 
+        class="btn btn-danger" 
+        (click)="stopSimulation()" 
+        [disabled]="!simulationRunning">
+        ⏹ Stop Simulation
+      </button>
+
+      <button 
+        class="btn btn-primary" 
+        (click)="generateSampleData()" 
+        [disabled]="!selectedDevice || loading">
+        📊 Generate Sample Data
+      </button>
+
+      <button 
+        class="btn btn-secondary" 
+        (click)="clearData()">
+        🗑️ Clear Charts
+      </button>
+    </div>
+
+    <div class="info-box" *ngIf="simulationRunning">
+      <span class="status-indicator active"></span>
+      Simulation active - Sending data every {{ updateIntervalSeconds }} seconds
+    </div>
+  </div>
+
+  <!-- Metrics Info -->
+  <div class="card">
+    <h3>Monitored Metrics</h3>
+    <div class="metrics-grid">
+      <div class="metric-card" *ngFor="let metric of metrics">
+        <div class="metric-header">
+          <h4>{{ metric.name | titlecase }}</h4>
+          <span class="metric-unit">{{ metric.unit }}</span>
+        </div>
+        <div class="metric-info">
+          <span>Base: {{ metric.baseValue }}{{ metric.unit }}</span>
+          <span>Variance: ±{{ metric.variance }}{{ metric.unit }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Section -->
+  <div *ngIf="selectedDevice">
+    <div class="card chart-card" *ngFor="let metric of metrics">
+      <div class="chart-header">
+        <h3>{{ metric.name | titlecase }} - {{ selectedDevice.name }}</h3>
+
+        <div class="stats" *ngIf="getStats(metric.name)">
+          <div class="stat-item">
+            <span class="stat-label">Current:</span>
+            <span class="stat-value">{{ getStats(metric.name).latest }}{{ metric.unit }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Min:</span>
+            <span class="stat-value">{{ getStats(metric.name).min }}{{ metric.unit }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Max:</span>
+            <span class="stat-value">{{ getStats(metric.name).max }}{{ metric.unit }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Avg:</span>
+            <span class="stat-value">{{ getStats(metric.name).avg }}{{ metric.unit }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Points:</span>
+            <span class="stat-value">{{ getStats(metric.name).count }}</span>
+          </div>
+        </div>
+      </div>
+
+      <app-telemetry-chart
+        *ngIf="getChartData(metric.name).length > 0"
+        [chartData]="getChartData(metric.name)"
+        [chartLabel]="metric.name + ' (' + metric.unit + ')'"
+        [chartType]="'line'"
+        [xAxisLabel]="'Time'"
+        [yAxisLabel]="metric.name + ' (' + metric.unit + ')'">
+      </app-telemetry-chart>
+
+      <p *ngIf="getChartData(metric.name).length === 0" class="no-data">
+        No data available. Click "Generate Sample Data" or "Start Simulation" to begin.
+      </p>
+    </div>
+  </div>
+
+  <div *ngIf="!selectedDevice" class="card">
+    <p class="info-message">Please select a device to start simulation.</p>
+  </div>
+</div>

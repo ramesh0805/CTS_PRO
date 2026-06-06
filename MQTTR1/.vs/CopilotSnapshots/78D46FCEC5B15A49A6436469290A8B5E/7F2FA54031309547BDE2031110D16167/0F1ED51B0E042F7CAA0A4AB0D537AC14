@@ -1,0 +1,325 @@
+﻿import { Component, OnInit, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { TelemetryService } from '../../services/telemetry.service';
+import { DeviceService } from '../../services/device.service';
+import { TelemetryChartComponent } from '../telemetry-chart/telemetry-chart.component';
+import { Telemetry, TelemetryDto, PagedResult } from '../../models/telemetry.model';
+import { Device } from '../../models/device.model';
+import { forkJoin } from 'rxjs';
+
+@Component({
+  selector: 'app-telemetry',
+  standalone: true,
+  imports: [CommonModule, FormsModule, TelemetryChartComponent],
+  templateUrl: './telemetry.component.html',
+  styleUrls: ['./telemetry.component.scss']
+})
+export class TelemetryComponent implements OnInit {
+  devices: Device[] = [];
+  telemetryData: Telemetry[] = [];
+  loading: boolean = false;
+  error: string = '';
+  success: string = '';
+
+  showForm: boolean = false;
+  showChart: boolean = true; // Toggle for chart view
+
+  // Pagination
+  currentPage: number = 1;
+  pageSize: number = 20;
+  totalPages: number = 0;
+  totalCount: number = 0;
+
+  // Filter
+  selectedDeviceId: string = '';
+  selectedMetric: string = '';
+
+  // Chart data grouped by metric
+  chartDataByMetric: Map<string, Telemetry[]> = new Map();
+
+  // Form
+  telemetryForm: TelemetryDto = {
+    deviceId: '',
+    metric: '',
+    value: 0,
+    timestamp: new Date().toISOString()
+  };
+
+  constructor(
+    private telemetryService: TelemetryService,
+    private deviceService: DeviceService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadDevices();
+    this.loadDefaultTelemetryData();
+  }
+
+  // Get unique metrics from current data (filtered by device capability)
+  get uniqueMetrics(): string[] {
+    const metrics = new Set(this.telemetryData.map(t => t.metric));
+    const allMetrics = Array.from(metrics);
+
+    // Filter to only show metrics that this device should have
+    const deviceMetrics = this.availableMetrics;
+    return allMetrics.filter(m => deviceMetrics.includes(m));
+  }
+
+  // Get available metrics for the selected device based on device capabilities
+  get availableMetrics(): string[] {
+    if (!this.selectedDeviceId) {
+      return ['temperature', 'humidity', 'pressure']; // All metrics
+    }
+
+    const selectedDevice = this.devices.find(d => d.deviceId === this.selectedDeviceId);
+    if (!selectedDevice) {
+      return ['temperature', 'humidity', 'pressure'];
+    }
+
+    // Determine metrics based on device name/description
+    const deviceName = selectedDevice.name.toLowerCase();
+    const deviceDesc = (selectedDevice.description || '').toLowerCase();
+    const combined = deviceName + ' ' + deviceDesc;
+
+    const metrics: string[] = [];
+
+    // Check for temperature capability
+    if (combined.includes('temperature') || combined.includes('thermostat') || 
+        combined.includes('temp') || selectedDevice.deviceId === 'device-001') {
+      metrics.push('temperature');
+    }
+
+    // Check for humidity capability
+    if (combined.includes('humidity') || combined.includes('moisture') || 
+        selectedDevice.deviceId === 'device-002') {
+      metrics.push('humidity');
+    }
+
+    // Check for pressure capability
+    if (combined.includes('pressure') || combined.includes('barometric') || 
+        combined.includes('barometer') || selectedDevice.deviceId === 'device-003') {
+      metrics.push('pressure');
+    }
+
+    // If no specific metrics detected, show all
+    return metrics.length > 0 ? metrics : ['temperature', 'humidity', 'pressure'];
+  }
+
+  // Get chart data for a specific metric
+  getChartDataForMetric(metric: string): Telemetry[] {
+    return this.telemetryData
+      .filter(t => t.metric === metric)
+      .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+  }
+
+  loadDevices(): void {
+    this.deviceService.getAllDevices().subscribe({
+      next: (devices) => {
+        this.devices = devices;
+      },
+      error: (err) => {
+        console.error('Failed to load devices', err);
+      }
+    });
+  }
+
+  loadDefaultTelemetryData(): void {
+    this.loading = true;
+    this.error = '';
+
+    // Load devices first, then load telemetry from all of them
+    this.deviceService.getAllDevices().subscribe({
+      next: (devices) => {
+        if (devices.length === 0) {
+          this.loading = false;
+          this.error = 'No devices available';
+          return;
+        }
+
+        // Load hourly data from all devices
+        const requests = devices.map(device =>
+          this.telemetryService.getHourlyData(device.deviceId, '')
+        );
+
+        // Combine all requests
+        forkJoin(requests).subscribe({
+          next: (results: any[]) => {
+            this.telemetryData = [];
+
+            // Process each device's data
+            results.forEach((result: any) => {
+              if (result.metrics && Array.isArray(result.metrics)) {
+                result.metrics.forEach((metricGroup: any) => {
+                  if (metricGroup.data && Array.isArray(metricGroup.data)) {
+                    metricGroup.data.forEach((dataPoint: any) => {
+                      this.telemetryData.push({
+                        id: 0,
+                        deviceId: result.deviceId || '',
+                        metric: dataPoint.metric,
+                        value: dataPoint.averageValue,
+                        timestamp: dataPoint.hour
+                      });
+                    });
+                  }
+                });
+              }
+            });
+
+            this.totalCount = this.telemetryData.length;
+            this.totalPages = 1;
+            this.loading = false;
+
+            console.log(`Loaded ${this.telemetryData.length} default hourly data points from ${devices.length} devices`);
+          },
+          error: (err) => {
+            this.error = 'Failed to load default telemetry data';
+            this.loading = false;
+            console.error(err);
+          }
+        });
+      },
+      error: (err) => {
+        this.error = 'Failed to load devices';
+        this.loading = false;
+        console.error(err);
+      }
+    });
+  }
+
+  loadTelemetry(): void {
+    this.loading = true;
+    this.error = '';
+
+    // If no device selected, load data from all devices
+    const deviceId = this.selectedDeviceId || '';
+    const metric = this.selectedMetric || '';
+
+    // Use hourly data for charts (last 10 hours, 10 data points)
+    this.telemetryService.getHourlyData(deviceId, metric).subscribe({
+      next: (result: any) => {
+        // Transform hourly averages to match telemetry format
+        this.telemetryData = [];
+
+        if (result.metrics && Array.isArray(result.metrics)) {
+          // Response when no metric filter (grouped by metric)
+          result.metrics.forEach((metricGroup: any) => {
+            if (metricGroup.data && Array.isArray(metricGroup.data)) {
+              metricGroup.data.forEach((dataPoint: any) => {
+                this.telemetryData.push({
+                  id: 0,
+                  deviceId: deviceId || dataPoint.deviceId || '',
+                  metric: dataPoint.metric,
+                  value: dataPoint.averageValue,
+                  timestamp: dataPoint.hour
+                });
+              });
+            }
+          });
+        } else if (result.data && Array.isArray(result.data)) {
+          // Response when metric filter applied
+          this.telemetryData = result.data.map((avg: any) => ({
+            id: 0,
+            deviceId: deviceId || avg.deviceId || '',
+            metric: avg.metric,
+            value: avg.averageValue,
+            timestamp: avg.hour
+          }));
+        }
+
+        // For pagination info, use smaller dataset
+        this.totalCount = this.telemetryData.length;
+        this.totalPages = 1;
+        this.loading = false;
+
+        console.log(`Loaded ${this.telemetryData.length} hourly data points for ${deviceId || 'all devices'}`);
+      },
+      error: (err) => {
+        this.error = 'Failed to load telemetry data';
+        this.loading = false;
+        console.error(err);
+      }
+    });
+  }
+
+  showAddForm(): void {
+    this.showForm = true;
+    this.telemetryForm = {
+      deviceId: this.devices.length > 0 ? this.devices[0].deviceId : '',
+      metric: '',
+      value: 0,
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  cancelForm(): void {
+    this.showForm = false;
+  }
+
+  submitForm(): void {
+    this.error = '';
+    this.success = '';
+
+    this.telemetryService.postTelemetry(this.telemetryForm).subscribe({
+      next: () => {
+        this.success = 'Telemetry data submitted successfully';
+        this.cancelForm();
+        if (this.selectedDeviceId) {
+          this.loadTelemetry();
+        }
+      },
+      error: (err) => {
+        this.error = err.error?.error || 'Failed to submit telemetry data';
+        console.error(err);
+      }
+    });
+  }
+
+  onDeviceChange(): void {
+    this.currentPage = 1;
+    // Always reload telemetry (even if no device selected, show all devices)
+    this.loadTelemetry();
+  }
+
+  onMetricChange(): void {
+    this.currentPage = 1;
+    // Always reload telemetry (even if no device selected, show all devices)
+    this.loadTelemetry();
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.loadTelemetry();
+    }
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.loadTelemetry();
+    }
+  }
+
+  goToPage(page: number): void {
+    this.currentPage = page;
+    this.loadTelemetry();
+  }
+
+  get pageNumbers(): number[] {
+    const pages: number[] = [];
+    const maxPages = 5;
+    let startPage = Math.max(1, this.currentPage - Math.floor(maxPages / 2));
+    let endPage = Math.min(this.totalPages, startPage + maxPages - 1);
+
+    if (endPage - startPage < maxPages - 1) {
+      startPage = Math.max(1, endPage - maxPages + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
+    return pages;
+  }
+}

@@ -1,0 +1,205 @@
+﻿import { Component, OnInit, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { TelemetryService } from '../../services/telemetry.service';
+import { DeviceService } from '../../services/device.service';
+import { TelemetryChartComponent } from '../telemetry-chart/telemetry-chart.component';
+import { Telemetry, TelemetryDto, PagedResult } from '../../models/telemetry.model';
+import { Device } from '../../models/device.model';
+
+@Component({
+  selector: 'app-telemetry',
+  standalone: true,
+  imports: [CommonModule, FormsModule, TelemetryChartComponent],
+  templateUrl: './telemetry.component.html',
+  styleUrls: ['./telemetry.component.scss']
+})
+export class TelemetryComponent implements OnInit {
+  devices: Device[] = [];
+  telemetryData: Telemetry[] = [];
+  loading: boolean = false;
+  error: string = '';
+  success: string = '';
+
+  showForm: boolean = false;
+  showChart: boolean = true; // Toggle for chart view
+
+  // Pagination
+  currentPage: number = 1;
+  pageSize: number = 20;
+  totalPages: number = 0;
+  totalCount: number = 0;
+
+  // Filter
+  selectedDeviceId: string = '';
+  selectedMetric: string = '';
+
+  // Chart data grouped by metric
+  chartDataByMetric: Map<string, Telemetry[]> = new Map();
+
+  // Form
+  telemetryForm: TelemetryDto = {
+    deviceId: '',
+    metric: '',
+    value: 0,
+    timestamp: new Date().toISOString()
+  };
+
+  constructor(
+    private telemetryService: TelemetryService,
+    private deviceService: DeviceService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadDevices();
+  }
+
+  // Get unique metrics from current data
+  get uniqueMetrics(): string[] {
+    const metrics = new Set(this.telemetryData.map(t => t.metric));
+    return Array.from(metrics);
+  }
+
+  // Get chart data for a specific metric
+  getChartDataForMetric(metric: string): Telemetry[] {
+    return this.telemetryData
+      .filter(t => t.metric === metric)
+      .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+  }
+
+  loadDevices(): void {
+    this.deviceService.getAllDevices().subscribe({
+      next: (devices) => {
+        this.devices = devices;
+      },
+      error: (err) => {
+        console.error('Failed to load devices', err);
+      }
+    });
+  }
+
+  loadTelemetry(): void {
+    if (!this.selectedDeviceId) {
+      this.error = 'Please select a device';
+      return;
+    }
+
+    this.loading = true;
+    this.error = '';
+
+    if (this.selectedMetric) {
+      this.telemetryService.getTelemetry(this.selectedDeviceId, this.selectedMetric, this.currentPage, this.pageSize).subscribe({
+        next: (result: PagedResult<Telemetry>) => {
+          this.telemetryData = result.data;
+          this.totalPages = result.totalPages;
+          this.totalCount = result.totalCount;
+          this.loading = false;
+        },
+        error: (err) => {
+          this.error = 'Failed to load telemetry data';
+          this.loading = false;
+          console.error(err);
+        }
+      });
+    } else {
+      this.telemetryService.getTelemetryByDevice(this.selectedDeviceId, this.currentPage, this.pageSize).subscribe({
+        next: (result: PagedResult<Telemetry>) => {
+          this.telemetryData = result.data;
+          this.totalPages = result.totalPages;
+          this.totalCount = result.totalCount;
+          this.loading = false;
+        },
+        error: (err) => {
+          this.error = 'Failed to load telemetry data';
+          this.loading = false;
+          console.error(err);
+        }
+      });
+    }
+  }
+
+  showAddForm(): void {
+    this.showForm = true;
+    this.telemetryForm = {
+      deviceId: this.devices.length > 0 ? this.devices[0].deviceId : '',
+      metric: '',
+      value: 0,
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  cancelForm(): void {
+    this.showForm = false;
+  }
+
+  submitForm(): void {
+    this.error = '';
+    this.success = '';
+
+    this.telemetryService.postTelemetry(this.telemetryForm).subscribe({
+      next: () => {
+        this.success = 'Telemetry data submitted successfully';
+        this.cancelForm();
+        if (this.selectedDeviceId) {
+          this.loadTelemetry();
+        }
+      },
+      error: (err) => {
+        this.error = err.error?.error || 'Failed to submit telemetry data';
+        console.error(err);
+      }
+    });
+  }
+
+  onDeviceChange(): void {
+    this.currentPage = 1;
+    if (this.selectedDeviceId) {
+      this.loadTelemetry();
+    } else {
+      this.telemetryData = [];
+    }
+  }
+
+  onMetricChange(): void {
+    this.currentPage = 1;
+    if (this.selectedDeviceId) {
+      this.loadTelemetry();
+    }
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.loadTelemetry();
+    }
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.loadTelemetry();
+    }
+  }
+
+  goToPage(page: number): void {
+    this.currentPage = page;
+    this.loadTelemetry();
+  }
+
+  get pageNumbers(): number[] {
+    const pages: number[] = [];
+    const maxPages = 5;
+    let startPage = Math.max(1, this.currentPage - Math.floor(maxPages / 2));
+    let endPage = Math.min(this.totalPages, startPage + maxPages - 1);
+
+    if (endPage - startPage < maxPages - 1) {
+      startPage = Math.max(1, endPage - maxPages + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
+    return pages;
+  }
+}

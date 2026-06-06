@@ -1,0 +1,306 @@
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using MQTTR1.DTOs;
+using MQTTR1.Repositories;
+using MQTTR1.Services;
+using MQTTR1.Utilities;
+
+namespace MQTTR1.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+[Authorize]
+public class TelemetryController : ControllerBase
+{
+    private readonly ITelemetryRepository _telemetryRepository;
+    private readonly TelemetryIngestor _telemetryIngestor;
+    private readonly ILogger<TelemetryController> _logger;
+
+    public TelemetryController(
+        ITelemetryRepository telemetryRepository,
+        TelemetryIngestor telemetryIngestor,
+        ILogger<TelemetryController> logger)
+    {
+        _telemetryRepository = telemetryRepository;
+        _telemetryIngestor = telemetryIngestor;
+        _logger = logger;
+    }
+
+    /// <summary>
+    /// POST /api/telemetry - Ingest telemetry data
+    /// </summary>
+    [HttpPost]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> PostTelemetry([FromBody] TelemetryDto telemetryDto)
+    {
+        _logger.LogInformation("Receiving telemetry for device {DeviceId}, metric {Metric}", 
+            telemetryDto.DeviceId, telemetryDto.Metric);
+
+        // Additional validation
+        if (!TelemetryValidator.IsValidDeviceId(telemetryDto.DeviceId))
+        {
+            return BadRequest(new { error = "Invalid DeviceId format" });
+        }
+
+        if (!TelemetryValidator.IsValidMetricName(telemetryDto.Metric))
+        {
+            return BadRequest(new { error = "Invalid Metric name format" });
+        }
+
+        if (!TelemetryValidator.IsValidValue(telemetryDto.Value))
+        {
+            return BadRequest(new { error = "Invalid Value (NaN or Infinity)" });
+        }
+
+        if (!TelemetryValidator.IsValidTimestamp(telemetryDto.Timestamp))
+        {
+            return BadRequest(new { error = "Invalid Timestamp (too far in past/future)" });
+        }
+
+        var (success, errorMessage, telemetry) = await _telemetryIngestor.ValidateAndStore(telemetryDto);
+
+        if (!success)
+        {
+            _logger.LogWarning("Telemetry validation failed: {Error}", errorMessage);
+            return BadRequest(new { error = errorMessage });
+        }
+
+        _logger.LogInformation("Telemetry stored successfully with ID {TelemetryId}", telemetry!.Id);
+
+        return CreatedAtAction(
+            nameof(GetTelemetry), 
+            new { deviceId = telemetryDto.DeviceId, metric = telemetryDto.Metric },
+            new TelemetryResponseDto
+            {
+                Id = telemetry.Id,
+                DeviceId = telemetryDto.DeviceId,
+                Metric = telemetry.Metric,
+                Value = telemetry.Value,
+                Timestamp = telemetry.Timestamp
+            });
+    }
+
+    /// <summary>
+    /// POST /api/telemetry/batch - Ingest multiple telemetry records
+    /// </summary>
+    [HttpPost("batch")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> PostTelemetryBatch([FromBody] List<TelemetryDto> telemetryDtos)
+    {
+        _logger.LogInformation("Receiving batch of {Count} telemetry records", telemetryDtos.Count);
+
+        if (telemetryDtos.Count == 0)
+        {
+            return BadRequest(new { error = "Empty batch" });
+        }
+
+        var (success, errorMessage, telemetries) = await _telemetryIngestor.ValidateAndStoreBatch(telemetryDtos);
+
+        if (!success)
+        {
+            _logger.LogWarning("Batch telemetry had errors: {Error}", errorMessage);
+            return BadRequest(new { error = errorMessage, successCount = telemetries?.Count ?? 0 });
+        }
+
+        _logger.LogInformation("Batch telemetry stored successfully: {Count} records", telemetries!.Count);
+
+        return Ok(new { 
+            message = "Batch processed successfully", 
+            count = telemetries.Count 
+        });
+    }
+
+    /// <summary>
+    /// GET /api/telemetry - Get telemetry with paging and filters
+    /// </summary>
+    [HttpGet]
+    public async Task<IActionResult> GetTelemetry(
+        [FromQuery] int? page,
+        [FromQuery] int? pageSize,
+        [FromQuery] string? deviceId,
+        [FromQuery] string? metric,
+        [FromQuery] DateTime? startDate,
+        [FromQuery] DateTime? endDate)
+    {
+        var (validPage, validPageSize) = PagingHelper.ValidatePagingParameters(page, pageSize);
+
+        _logger.LogInformation("Getting telemetry: page={Page}, pageSize={PageSize}, deviceId={DeviceId}, metric={Metric}",
+            validPage, validPageSize, deviceId, metric);
+
+        var (data, totalCount) = await _telemetryRepository.GetPagedAsync(
+            validPage, validPageSize, deviceId, metric, startDate, endDate);
+
+        var responseDtos = data.Select(t => new TelemetryResponseDto
+        {
+            Id = t.Id,
+            DeviceId = t.Device.DeviceId,
+            Metric = t.Metric,
+            Value = t.Value,
+            Timestamp = t.Timestamp
+        });
+
+        var result = new PagedResultDto<TelemetryResponseDto>
+        {
+            Data = responseDtos,
+            Page = validPage,
+            PageSize = validPageSize,
+            TotalCount = totalCount
+        };
+
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// GET /api/telemetry/last - Get last value for a specific device and metric
+    /// </summary>
+    [HttpGet("last")]
+    public async Task<IActionResult> GetLastValue(
+        [FromQuery] string deviceId,
+        [FromQuery] string metric)
+    {
+        if (string.IsNullOrWhiteSpace(deviceId))
+        {
+            return BadRequest(new { error = "DeviceId is required" });
+        }
+
+        if (string.IsNullOrWhiteSpace(metric))
+        {
+            return BadRequest(new { error = "Metric is required" });
+        }
+
+        _logger.LogInformation("Getting last value for device={DeviceId}, metric={Metric}", deviceId, metric);
+
+        var telemetry = await _telemetryRepository.GetLastValueAsync(deviceId, metric);
+
+        if (telemetry == null)
+        {
+            return NotFound(new { error = "No telemetry found for specified device and metric" });
+        }
+
+        return Ok(new TelemetryResponseDto
+        {
+            Id = telemetry.Id,
+            DeviceId = telemetry.Device.DeviceId,
+            Metric = telemetry.Metric,
+            Value = telemetry.Value,
+            Timestamp = telemetry.Timestamp
+        });
+    }
+
+    /// <summary>
+    /// GET /api/telemetry/average/hourly - Get hourly average for a device and metric
+    /// </summary>
+    [HttpGet("average/hourly")]
+    public async Task<IActionResult> GetHourlyAverage(
+        [FromQuery] string deviceId,
+        [FromQuery] string metric,
+        [FromQuery] DateTime? startDate,
+        [FromQuery] DateTime? endDate)
+    {
+        if (string.IsNullOrWhiteSpace(deviceId))
+        {
+            return BadRequest(new { error = "DeviceId is required" });
+        }
+
+        if (string.IsNullOrWhiteSpace(metric))
+        {
+            return BadRequest(new { error = "Metric is required" });
+        }
+
+        var start = startDate ?? DateTime.UtcNow.AddDays(-1);
+        var end = endDate ?? DateTime.UtcNow;
+
+        _logger.LogInformation("Getting hourly average for device={DeviceId}, metric={Metric}, start={Start}, end={End}",
+            deviceId, metric, start, end);
+
+        var averages = await _telemetryRepository.GetHourlyAverageAsync(deviceId, metric, start, end);
+
+        return Ok(new
+        {
+            deviceId,
+            metric,
+            startDate = start,
+            endDate = end,
+            averages
+        });
+    }
+
+    /// <summary>
+    /// GET /api/telemetry/hourly/{deviceId} - Get last 10 hours of hourly data for charts
+    /// </summary>
+    [HttpGet("hourly/{deviceId}")]
+    public async Task<IActionResult> GetHourlyData(
+        string deviceId,
+        [FromQuery] string? metric)
+    {
+        if (string.IsNullOrWhiteSpace(deviceId))
+        {
+            return BadRequest(new { error = "DeviceId is required" });
+        }
+
+        _logger.LogInformation("Getting last 10 hours of hourly data for device={DeviceId}, metric={Metric}",
+            deviceId, metric);
+
+        // Get data from last 10 hours
+        var endTime = DateTime.UtcNow;
+        var startTime = endTime.AddHours(-10);
+
+        // If no metric specified, get all metrics for this device
+        if (string.IsNullOrWhiteSpace(metric))
+        {
+            // Get all telemetry for this device in the last 10 hours
+            var allData = await _telemetryRepository.GetPagedAsync(
+                1, 1000, deviceId, null, startTime, endTime);
+
+            var groupedByMetric = allData.Data
+                .GroupBy(t => t.Metric)
+                .Select(g => new
+                {
+                    metric = g.Key,
+                    data = g.GroupBy(t => new DateTime(t.Timestamp.Year, t.Timestamp.Month, t.Timestamp.Day, t.Timestamp.Hour, 0, 0))
+                        .OrderBy(hg => hg.Key)
+                        .Select(hg => new
+                        {
+                            hour = hg.Key,
+                            metric = g.Key,
+                            averageValue = hg.Average(t => t.Value)
+                        })
+                        .ToList()
+                })
+                .ToList();
+
+            return Ok(new
+            {
+                deviceId,
+                startTime,
+                endTime,
+                metrics = groupedByMetric
+            });
+        }
+        else
+        {
+            // Get specific metric
+            var hourlyData = await _telemetryRepository.GetHourlyAverageAsync(deviceId, metric, startTime, endTime);
+
+            var formattedData = hourlyData
+                .OrderBy(kvp => kvp.Key)
+                .Select(kvp => new
+                {
+                    hour = DateTime.Parse(kvp.Key),
+                    metric = metric,
+                    averageValue = kvp.Value
+                })
+                .ToList();
+
+            return Ok(new
+            {
+                deviceId,
+                metric,
+                startTime,
+                endTime,
+                dataPoints = formattedData.Count,
+                data = formattedData
+            });
+        }
+    }
+}

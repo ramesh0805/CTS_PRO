@@ -1,0 +1,509 @@
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using MQTTR1.DTOs;
+using MQTTR1.Repositories;
+using MQTTR1.Services;
+using MQTTR1.Utilities;
+
+namespace MQTTR1.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+[Authorize]
+public class TelemetryController : ControllerBase
+{
+    private readonly ITelemetryRepository _telemetryRepository;
+    private readonly TelemetryIngestor _telemetryIngestor;
+    private readonly ILogger<TelemetryController> _logger;
+    private readonly IMemoryCache _cache;
+
+    public TelemetryController(
+        ITelemetryRepository telemetryRepository,
+        TelemetryIngestor telemetryIngestor,
+        ILogger<TelemetryController> logger,
+        IMemoryCache cache)
+    {
+        _telemetryRepository = telemetryRepository;
+        _telemetryIngestor = telemetryIngestor;
+        _logger = logger;
+        _cache = cache;
+    }
+
+    /// <summary>
+    /// POST /api/telemetry - Ingest telemetry data
+    /// </summary>
+    [HttpPost]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> PostTelemetry([FromBody] TelemetryDto telemetryDto)
+    {
+        _logger.LogInformation("Receiving telemetry for device {DeviceId}, metric {Metric}", 
+            telemetryDto.DeviceId, telemetryDto.Metric);
+
+        // Optimized validation - fail fast with single validation call
+        var validationError = ValidateTelemetryDto(telemetryDto);
+        if (validationError != null)
+        {
+            return BadRequest(new { error = validationError });
+        }
+
+        var (success, errorMessage, telemetry) = await _telemetryIngestor.ValidateAndStore(telemetryDto);
+
+        if (!success)
+        {
+            _logger.LogWarning("Telemetry validation failed: {Error}", errorMessage);
+            return BadRequest(new { error = errorMessage });
+        }
+
+        _logger.LogInformation("Telemetry stored successfully with ID {TelemetryId}", telemetry!.Id);
+
+        return CreatedAtAction(
+            nameof(GetTelemetry), 
+            new { deviceId = telemetryDto.DeviceId, metric = telemetryDto.Metric },
+            new TelemetryResponseDto
+            {
+                Id = telemetry.Id,
+                DeviceId = telemetryDto.DeviceId,
+                Metric = telemetry.Metric,
+                Value = telemetry.Value,
+                Timestamp = telemetry.Timestamp
+            });
+    }
+
+    // Helper method for optimized validation
+    private string? ValidateTelemetryDto(TelemetryDto dto)
+    {
+        if (!TelemetryValidator.IsValidDeviceId(dto.DeviceId))
+            return "Invalid DeviceId format";
+
+        if (!TelemetryValidator.IsValidMetricName(dto.Metric))
+            return "Invalid Metric name format";
+
+        if (!TelemetryValidator.IsValidValue(dto.Value))
+            return "Invalid Value (NaN or Infinity)";
+
+        if (!TelemetryValidator.IsValidTimestamp(dto.Timestamp))
+            return "Invalid Timestamp (too far in past/future)";
+
+        return null;
+    }
+
+    /// <summary>
+    /// POST /api/telemetry/batch - Ingest multiple telemetry records
+    /// </summary>
+    [HttpPost("batch")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> PostTelemetryBatch([FromBody] List<TelemetryDto> telemetryDtos)
+    {
+        _logger.LogInformation("Receiving batch of {Count} telemetry records", telemetryDtos.Count);
+
+        if (telemetryDtos.Count == 0)
+        {
+            return BadRequest(new { error = "Empty batch" });
+        }
+
+        var (success, errorMessage, telemetries) = await _telemetryIngestor.ValidateAndStoreBatch(telemetryDtos);
+
+        if (!success)
+        {
+            _logger.LogWarning("Batch telemetry had errors: {Error}", errorMessage);
+            return BadRequest(new { error = errorMessage, successCount = telemetries?.Count ?? 0 });
+        }
+
+        _logger.LogInformation("Batch telemetry stored successfully: {Count} records", telemetries!.Count);
+
+        return Ok(new { 
+            message = "Batch processed successfully", 
+            count = telemetries.Count 
+        });
+    }
+
+    /// <summary>
+    /// GET /api/telemetry - Get telemetry with paging and filters
+    /// </summary>
+    [HttpGet]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetTelemetry(
+        [FromQuery] int? page,
+        [FromQuery] int? pageSize,
+        [FromQuery] string? deviceId,
+        [FromQuery] string? metric,
+        [FromQuery] DateTime? startDate,
+        [FromQuery] DateTime? endDate)
+    {
+        var (validPage, validPageSize) = PagingHelper.ValidatePagingParameters(page, pageSize);
+
+        _logger.LogInformation("Getting telemetry: page={Page}, pageSize={PageSize}, deviceId={DeviceId}, metric={Metric}",
+            validPage, validPageSize, deviceId, metric);
+
+        var (data, totalCount) = await _telemetryRepository.GetPagedAsync(
+            validPage, validPageSize, deviceId, metric, startDate, endDate);
+
+        var responseDtos = data.Select(t => new TelemetryResponseDto
+        {
+            Id = t.Id,
+            DeviceId = t.Device.DeviceId,
+            Metric = t.Metric,
+            Value = t.Value,
+            Timestamp = t.Timestamp
+        });
+
+        var result = new PagedResultDto<TelemetryResponseDto>
+        {
+            Data = responseDtos,
+            Page = validPage,
+            PageSize = validPageSize,
+            TotalCount = totalCount
+        };
+
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// GET /api/telemetry/last - Get last value for a specific device and metric
+    /// </summary>
+    [HttpGet("last")]
+    [AllowAnonymous]
+    [ResponseCache(Duration = 5, VaryByQueryKeys = new[] { "deviceId", "metric" })] // Cache for 5 seconds
+    public async Task<IActionResult> GetLastValue(
+        [FromQuery] string deviceId,
+        [FromQuery] string metric)
+    {
+        if (string.IsNullOrWhiteSpace(deviceId))
+        {
+            return BadRequest(new { error = "DeviceId is required" });
+        }
+
+        if (string.IsNullOrWhiteSpace(metric))
+        {
+            return BadRequest(new { error = "Metric is required" });
+        }
+
+        _logger.LogDebug("Getting last value for device={DeviceId}, metric={Metric}", deviceId, metric);
+
+        var telemetry = await _telemetryRepository.GetLastValueAsync(deviceId, metric);
+
+        if (telemetry == null)
+        {
+            return NotFound(new { error = "No telemetry found for specified device and metric" });
+        }
+
+        return Ok(new TelemetryResponseDto
+        {
+            Id = telemetry.Id,
+            DeviceId = telemetry.Device.DeviceId,
+            Metric = telemetry.Metric,
+            Value = telemetry.Value,
+            Timestamp = telemetry.Timestamp
+        });
+    }
+
+    /// <summary>
+    /// GET /api/telemetry/average/hourly - Get hourly average for a device and metric
+    /// </summary>
+    [HttpGet("average/hourly")]
+    [AllowAnonymous]
+    [ResponseCache(Duration = 30, VaryByQueryKeys = new[] { "deviceId", "metric", "startDate", "endDate" })] // Cache for 30 seconds
+    public async Task<IActionResult> GetHourlyAverage(
+        [FromQuery] string deviceId,
+        [FromQuery] string metric,
+        [FromQuery] DateTime? startDate,
+        [FromQuery] DateTime? endDate)
+    {
+        if (string.IsNullOrWhiteSpace(deviceId))
+        {
+            return BadRequest(new { error = "DeviceId is required" });
+        }
+
+        if (string.IsNullOrWhiteSpace(metric))
+        {
+            return BadRequest(new { error = "Metric is required" });
+        }
+
+        var start = startDate ?? DateTime.UtcNow.AddDays(-1);
+        var end = endDate ?? DateTime.UtcNow;
+
+        _logger.LogDebug("Getting hourly average for device={DeviceId}, metric={Metric}, start={Start}, end={End}",
+            deviceId, metric, start, end);
+
+        var averages = await _telemetryRepository.GetHourlyAverageAsync(deviceId, metric, start, end);
+
+        return Ok(new
+        {
+            deviceId,
+            metric,
+            startDate = start,
+            endDate = end,
+            averages
+        });
+    }
+
+    /// <summary>
+    /// GET /api/telemetry/hourly/{deviceId} - Get last 10 hours of hourly data for charts
+    /// </summary>
+    [HttpGet("hourly/{deviceId}")]
+    [AllowAnonymous]
+    [ResponseCache(Duration = 60, VaryByQueryKeys = new[] { "deviceId", "metric" })] // Cache for 1 minute
+    public async Task<IActionResult> GetHourlyData(
+        string deviceId,
+        [FromQuery] string? metric)
+    {
+        if (string.IsNullOrWhiteSpace(deviceId))
+        {
+
+        }
+
+        // Create cache key
+        var cacheKey = $"hourly_{deviceId}_{metric ?? "all"}";
+
+        // Try to get from cache
+        if (_cache.TryGetValue(cacheKey, out object? cachedResult))
+        {
+            _logger.LogDebug("Returning cached hourly data for {CacheKey}", cacheKey);
+            return Ok(cachedResult);
+        }
+
+        _logger.LogInformation("Getting last 10 hours of hourly data for device={DeviceId}, metric={Metric}",
+            deviceId, metric);
+
+        // Get data from last 10 hours
+        var endTime = DateTime.UtcNow;
+        var startTime = endTime.AddHours(-10);
+
+        object result;
+
+        // If no metric specified, get all metrics for this device
+        if (string.IsNullOrWhiteSpace(metric))
+        {
+            // Get all unique metrics for this device
+            var metrics = new[] { "temperature", "humidity", "pressure" };
+
+            var groupedByMetric = new List<object>();
+
+            foreach (var metricName in metrics)
+            {
+                var hourlyData = await _telemetryRepository.GetHourlyAverageAsync(deviceId, metricName, startTime, endTime);
+
+                if (hourlyData.Any())
+                {
+                    var formattedData = hourlyData
+                        .OrderBy(kvp => kvp.Key)
+                        .Select(kvp => new
+                        {
+                            hour = DateTime.Parse(kvp.Key),
+                            metric = metricName,
+                            averageValue = kvp.Value
+                        })
+                        .ToList();
+
+                    groupedByMetric.Add(new
+                    {
+                        metric = metricName,
+                        data = formattedData
+                    });
+                }
+            }
+
+            result = new
+            {
+                deviceId,
+                startTime,
+                endTime,
+                metrics = groupedByMetric
+            };
+        }
+        else
+        {
+            // Get specific metric
+            var hourlyData = await _telemetryRepository.GetHourlyAverageAsync(deviceId, metric, startTime, endTime);
+
+            var formattedData = hourlyData
+                .OrderBy(kvp => kvp.Key)
+                .Select(kvp => new
+                {
+                    hour = DateTime.Parse(kvp.Key),
+                    metric = metric,
+                    averageValue = kvp.Value
+                })
+                .ToList();
+
+            result = new
+            {
+                deviceId,
+                metric,
+                startTime,
+                endTime,
+                dataPoints = formattedData.Count,
+                data = formattedData
+            };
+        }
+
+        // Cache the result for 30 seconds (frequently updated data)
+        var cacheOptions = new MemoryCacheEntryOptions
+        {
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30),
+            SlidingExpiration = TimeSpan.FromSeconds(15)
+        };
+        _cache.Set(cacheKey, result, cacheOptions);
+
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// GET /api/telemetry/chart-data/{deviceId} - Get 24-hour time-series data optimized for Chart.js
+    /// Returns data points with 1-hour intervals for last 24 hours
+    /// </summary>
+    [HttpGet("chart-data/{deviceId}")]
+    [AllowAnonymous]
+    [ResponseCache(Duration = 30, VaryByQueryKeys = new[] { "deviceId", "metric" })] // Cache for 30 seconds
+    public async Task<IActionResult> GetChartData(
+        string deviceId,
+        [FromQuery] string? metric,
+        [FromQuery] int? hours = 24)
+    {
+        if (string.IsNullOrWhiteSpace(deviceId))
+        {
+            return BadRequest(new { error = "DeviceId is required" });
+        }
+
+        var validHours = hours ?? 24;
+        if (validHours < 1 || validHours > 720) // Max 30 days
+        {
+            validHours = 24;
+        }
+
+        // Create cache key
+        var cacheKey = $"chartdata_{deviceId}_{metric ?? "all"}_{validHours}h";
+
+        // Try to get from cache
+        if (_cache.TryGetValue(cacheKey, out object? cachedResult))
+        {
+            _logger.LogDebug("Returning cached chart data for {CacheKey}", cacheKey);
+            return Ok(cachedResult);
+        }
+
+        _logger.LogInformation("Getting {Hours}-hour chart data for device={DeviceId}, metric={Metric}",
+            validHours, deviceId, metric);
+
+        var endTime = DateTime.UtcNow;
+        var startTime = endTime.AddHours(-validHours);
+
+        object chartResult;
+
+        // If no metric specified, get all metrics for this device
+        if (string.IsNullOrWhiteSpace(metric))
+        {
+            var metricsArray = new[] { "temperature", "humidity", "pressure" };
+            var datasets = new List<object>();
+            var labels = new List<string>();
+
+            foreach (var metricName in metricsArray)
+            {
+                var hourlyData = await _telemetryRepository.GetHourlyAverageAsync(deviceId, metricName, startTime, endTime);
+
+                if (hourlyData.Any())
+                {
+                    var formattedData = hourlyData
+                        .OrderBy(kvp => kvp.Key)
+                        .Select(kvp => new { hour = kvp.Key, value = kvp.Value })
+                        .ToList();
+
+                    // Build labels from first metric
+                    if (labels.Count == 0)
+                    {
+                        labels = formattedData.Select(d => d.hour).ToList();
+                    }
+
+                    // Define colors for each metric
+                    var (borderColor, backgroundColor) = metricName.ToLower() switch
+                    {
+                        "temperature" => ("#ff6b6b", "rgba(255, 107, 107, 0.1)"),
+                        "humidity" => ("#4ecdc4", "rgba(78, 205, 196, 0.1)"),
+                        "pressure" => ("#95e1d3", "rgba(149, 225, 211, 0.1)"),
+                        _ => ("#808080", "rgba(128, 128, 128, 0.1)")
+                    };
+
+                    datasets.Add(new
+                    {
+                        label = metricName.Substring(0, 1).ToUpper() + metricName.Substring(1),
+                        data = formattedData.Select(d => d.value).ToList(),
+                        borderColor,
+                        backgroundColor,
+                        borderWidth = 2,
+                        fill = true,
+                        tension = 0.4,
+                        pointRadius = 3,
+                        pointBackgroundColor = borderColor,
+                        pointBorderColor = "#fff",
+                        pointBorderWidth = 1
+                    });
+                }
+            }
+
+            chartResult = new
+            {
+                deviceId,
+                startTime,
+                endTime,
+                labels,
+                datasets,
+                dataPointCount = labels.Count
+            };
+        }
+        else
+        {
+            // Get specific metric
+            var hourlyData = await _telemetryRepository.GetHourlyAverageAsync(deviceId, metric, startTime, endTime);
+
+            var formattedData = hourlyData
+                .OrderBy(kvp => kvp.Key)
+                .Select(kvp => new { hour = kvp.Key, value = kvp.Value })
+                .ToList();
+
+            var (borderColor, backgroundColor) = metric.ToLower() switch
+            {
+                "temperature" => ("#ff6b6b", "rgba(255, 107, 107, 0.1)"),
+                "humidity" => ("#4ecdc4", "rgba(78, 205, 196, 0.1)"),
+                "pressure" => ("#95e1d3", "rgba(149, 225, 211, 0.1)"),
+                _ => ("#808080", "rgba(128, 128, 128, 0.1)")
+            };
+
+            var labels = formattedData.Select(d => d.hour).ToList();
+            var values = formattedData.Select(d => d.value).ToList();
+
+            chartResult = new
+            {
+                deviceId,
+                metric,
+                startTime,
+                endTime,
+                labels,
+                dataset = new
+                {
+                    label = metric.Substring(0, 1).ToUpper() + metric.Substring(1),
+                    data = values,
+                    borderColor,
+                    backgroundColor,
+                    borderWidth = 2,
+                    fill = true,
+                    tension = 0.4,
+                    pointRadius = 3,
+                    pointBackgroundColor = borderColor,
+                    pointBorderColor = "#fff",
+                    pointBorderWidth = 1
+                },
+                dataPointCount = labels.Count
+            };
+        }
+
+        // Cache the result for 30 seconds
+        var cacheOptions = new MemoryCacheEntryOptions
+        {
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30),
+            SlidingExpiration = TimeSpan.FromSeconds(15)
+        };
+        _cache.Set(cacheKey, chartResult, cacheOptions);
+
+        return Ok(chartResult);
+    }
+}

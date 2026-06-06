@@ -1,0 +1,301 @@
+﻿import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { TelemetryService } from '../../services/telemetry.service';
+import { DeviceService } from '../../services/device.service';
+import { TelemetryChartComponent } from '../telemetry-chart/telemetry-chart.component';
+import { Device } from '../../models/device.model';
+import { Subscription, interval } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+
+@Component({
+  selector: 'app-simulator',
+  standalone: true,
+  imports: [CommonModule, FormsModule, TelemetryChartComponent],
+  templateUrl: './simulator.component.html',
+  styleUrls: ['./simulator.component.scss']
+})
+export class SimulatorComponent implements OnInit, OnDestroy {
+  devices: Device[] = [];
+  selectedDevice: Device | null = null;
+
+  // Live monitoring settings
+  simulationRunning = false;
+  simulationInterval: any;
+  updateIntervalSeconds = 60; // Refresh every 60 seconds to match hourly data updates
+
+  // Metrics to display (ONLY from database - no random generation)
+  metrics = [
+    { name: 'temperature', unit: '°C', color: '#ff6384' },
+    { name: 'humidity', unit: '%', color: '#36a2eb' },
+    { name: 'pressure', unit: 'hPa', color: '#ffce56' }
+  ];
+
+  // Chart data from database (live hourly aggregated values)
+  chartDataMap: Map<string, any[]> = new Map();
+
+  // Statistics calculated from database values
+  statsMap: Map<string, any> = new Map();
+
+  // Messages
+  loading = false;
+  error = '';
+  success = '';
+
+  // Data stream subscriptions
+  private subscriptions: Subscription[] = [];
+  private liveDataSubscription?: Subscription;
+
+  constructor(
+    private deviceService: DeviceService,
+    private telemetryService: TelemetryService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadDevices();
+  }
+
+  ngOnDestroy(): void {
+    this.stopSimulation();
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+    if (this.liveDataSubscription) {
+      this.liveDataSubscription.unsubscribe();
+    }
+  }
+
+  loadDevices(): void {
+    this.loading = true;
+    this.deviceService.getAllDevices().subscribe({
+      next: (devices) => {
+        this.devices = devices;
+        if (devices.length > 0) {
+          this.selectedDevice = devices[0];
+          this.loadLiveDataFromDatabase();
+        }
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = 'Failed to load devices';
+        this.loading = false;
+        console.error(err);
+      }
+    });
+  }
+
+  onDeviceChange(): void {
+    if (this.selectedDevice) {
+      this.loadLiveDataFromDatabase();
+    }
+  }
+
+  loadLiveDataFromDatabase(): void {
+    if (!this.selectedDevice) return;
+
+    this.loading = true;
+    this.error = ''; // Clear any previous errors
+
+    // ✅ FETCH LIVE DATA FROM DATABASE ONLY - NO RANDOM GENERATION
+    // Uses the same hourly API endpoint as Dashboard and Telemetry pages
+    // Returns last 10 hours of hourly aggregated data from TelemetryDb
+    this.telemetryService.getHourlyData(this.selectedDevice.deviceId).subscribe({
+      next: (result: any) => {
+        console.log('✅ Loaded live data from database (no random generation):', result);
+
+        // Clear existing data first
+        this.chartDataMap.clear();
+        this.statsMap.clear();
+
+        // Process the hourly data for each metric from database
+        if (result.metrics && Array.isArray(result.metrics)) {
+          result.metrics.forEach((metricGroup: any) => {
+            const metricName = metricGroup.metric;
+            const key = `${this.selectedDevice!.deviceId}-${metricName}`;
+
+            if (metricGroup.data && Array.isArray(metricGroup.data)) {
+              // Transform database hourly data to chart format
+              // Each dataPoint contains: hour, metric, averageValue, minValue, maxValue, count
+              const chartData = metricGroup.data.map((dataPoint: any) => ({
+                deviceId: this.selectedDevice!.deviceId,
+                metric: dataPoint.metric,
+                value: dataPoint.averageValue, // ✅ Using averageValue from database
+                timestamp: dataPoint.hour
+              }));
+
+              this.chartDataMap.set(key, chartData);
+              this.statsMap.set(key, this.calculateStats(chartData));
+
+              console.log(`✅ Loaded ${chartData.length} data points for ${metricName} from database`);
+            }
+          });
+        } else if (result.data && Array.isArray(result.data)) {
+          // Single metric response from database
+          const key = `${this.selectedDevice!.deviceId}-${result.metric}`;
+          const chartData = result.data.map((dataPoint: any) => ({
+            deviceId: this.selectedDevice!.deviceId,
+            metric: dataPoint.metric,
+            value: dataPoint.averageValue, // ✅ Using averageValue from database
+            timestamp: dataPoint.hour
+          }));
+
+          this.chartDataMap.set(key, chartData);
+          this.statsMap.set(key, this.calculateStats(chartData));
+
+          console.log(`✅ Loaded ${chartData.length} data points for ${result.metric} from database`);
+        }
+
+        this.loading = false;
+
+        if (this.chartDataMap.size === 0) {
+          this.error = 'No data found in database for this device. Please wait for data generation or check device configuration.';
+          console.warn('⚠️ No data loaded from database - chartDataMap is empty');
+        } else {
+          this.success = `Successfully loaded data for ${this.chartDataMap.size} metric(s) from database`;
+          // Auto-clear success message after 5 seconds
+          setTimeout(() => {
+            this.success = '';
+          }, 5000);
+        }
+      },
+      error: (err) => {
+        this.error = 'Failed to load live data from database. Please check console for details.';
+        this.loading = false;
+        console.error('❌ Database load error:', err);
+        console.error('Error details:', {
+          message: err.message,
+          status: err.status,
+          statusText: err.statusText,
+          url: err.url
+        });
+      }
+    });
+  }
+
+  calculateStats(data: any[]): any {
+    if (!data || data.length === 0) {
+      return { min: 0, max: 0, avg: 0, current: 0 };
+    }
+
+    const values = data.map(d => d.value);
+    return {
+      min: Math.min(...values),
+      max: Math.max(...values),
+      avg: values.reduce((a, b) => a + b, 0) / values.length,
+      current: values[values.length - 1]
+    };
+  }
+
+  startSimulation(): void {
+    if (!this.selectedDevice) {
+      this.error = 'Please select a device first';
+      return;
+    }
+
+    this.simulationRunning = true;
+    this.error = '';
+    this.success = 'Live data monitoring started - refreshing every minute from database';
+
+    // ✅ AUTO-REFRESH DATABASE DATA EVERY MINUTE
+    // NO random generation - only fetches live hourly data from TelemetryDb
+    this.liveDataSubscription = interval(this.updateIntervalSeconds * 1000)
+      .pipe(
+        switchMap(() => this.telemetryService.getHourlyData(this.selectedDevice!.deviceId))
+      )
+      .subscribe({
+        next: (result: any) => {
+          console.log('✅ Refreshed live data from database (auto-refresh)', result);
+
+          // Update charts with latest database data
+          if (result.metrics && Array.isArray(result.metrics)) {
+            result.metrics.forEach((metricGroup: any) => {
+              const key = `${this.selectedDevice!.deviceId}-${metricGroup.metric}`;
+
+              if (metricGroup.data && Array.isArray(metricGroup.data)) {
+                const chartData = metricGroup.data.map((dataPoint: any) => ({
+                  deviceId: this.selectedDevice!.deviceId,
+                  metric: dataPoint.metric,
+                  value: dataPoint.averageValue, // ✅ Database value only
+                  timestamp: dataPoint.hour
+                }));
+
+                this.chartDataMap.set(key, chartData);
+                this.statsMap.set(key, this.calculateStats(chartData));
+
+                console.log(`✅ Auto-refreshed ${chartData.length} points for ${metricGroup.metric}`);
+              }
+            });
+            this.success = `Data refreshed successfully at ${new Date().toLocaleTimeString()}`;
+            // Auto-clear success message after 5 seconds
+            setTimeout(() => {
+              this.success = '';
+            }, 5000);
+          }
+        },
+        error: (err) => {
+          console.error('❌ Failed to refresh live data from database:', err);
+          this.error = 'Auto-refresh failed. Will retry in next cycle.';
+        }
+      });
+  }
+
+  stopSimulation(): void {
+    this.simulationRunning = false;
+    if (this.simulationInterval) {
+      clearInterval(this.simulationInterval);
+    }
+    if (this.liveDataSubscription) {
+      this.liveDataSubscription.unsubscribe();
+    }
+    this.success = 'Live monitoring stopped';
+    // Auto-clear success message after 5 seconds
+    setTimeout(() => {
+      this.success = '';
+    }, 5000);
+  }
+
+  generateAndSendData(): void {
+    // ✅ REMOVED: This method previously generated random data
+    // Now all data comes from database via LiveTelemetryGeneratorService
+    console.log('✅ Using live database data only - no manual generation');
+  }
+
+  generateSampleData(): void {
+    // ✅ RENAMED TO: Refresh database data (no generation)
+    // Fetches latest hourly data from TelemetryDb
+    if (!this.selectedDevice) {
+      this.error = 'Please select a device first';
+      return;
+    }
+
+    this.loading = true;
+    this.loadLiveDataFromDatabase(); // ✅ Only fetches from database
+    this.success = 'Refreshed latest data from database';
+    // Auto-clear success message after 5 seconds
+    setTimeout(() => {
+      this.success = '';
+    }, 5000);
+  }
+
+  getChartData(metric: string): any[] {
+    if (!this.selectedDevice) return [];
+    const key = `${this.selectedDevice.deviceId}-${metric}`;
+    return this.chartDataMap.get(key) || [];
+  }
+
+  getStats(metric: string): any {
+    if (!this.selectedDevice) return null;
+    const key = `${this.selectedDevice.deviceId}-${metric}`;
+    return this.statsMap.get(key);
+  }
+
+  clearData(): void {
+    this.chartDataMap.clear();
+    this.statsMap.clear();
+    this.success = 'Chart data cleared';
+  }
+
+  refreshData(): void {
+    if (this.selectedDevice) {
+      this.loadLiveDataFromDatabase();
+    }
+  }
+}

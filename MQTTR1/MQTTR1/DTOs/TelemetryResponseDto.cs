@@ -1,0 +1,14 @@
+namespace MQTTR1.DTOs;
+
+public class TelemetryResponseDto
+{
+    public int Id { get; set; }
+
+    public required string DeviceId { get; set; }
+
+    public required string Metric { get; set; }
+
+    public decimal Value { get; set; }
+
+    public DateTime Timestamp { get; set; }
+}

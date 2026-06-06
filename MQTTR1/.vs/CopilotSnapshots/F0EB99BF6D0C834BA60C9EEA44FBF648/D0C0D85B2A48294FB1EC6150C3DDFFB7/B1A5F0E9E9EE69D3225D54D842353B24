@@ -1,0 +1,57 @@
+﻿.telemetry {
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .filter-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h3 {
+      margin: 0;
+    }
+  }
+
+  .chart-header {
+    margin-bottom: 20px;
+
+    h3 {
+      margin-bottom: 5px;
+    }
+
+    .chart-info {
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+  }
+
+  .page-info {
+    text-align: center;
+    margin-top: 15px;
+    color: #6c757d;
+    font-size: 14px;
+  }
+
+  .info-message {
+    text-align: center;
+    color: #6c757d;
+    padding: 40px;
+  }
+}

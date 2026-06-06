@@ -1,0 +1,54 @@
+<div class="navbar-alerts">
+  <div class="alert-bell" (click)="toggleDropdown()">
+    <span class="bell-icon">🔔</span>
+    <span class="unread-badge" *ngIf="(unreadCount$ | async) as unreadCount">
+      {{ unreadCount > 99 ? '99+' : unreadCount }}
+    </span>
+  </div>
+
+  <div class="alerts-dropdown" *ngIf="showDropdown" [@slideDown]>
+    <div class="dropdown-header">
+      <h3>Critical Alerts</h3>
+      <div class="header-actions">
+        <button class="btn-text" (click)="markAllAsRead()" *ngIf="(unreadCount$ | async) as count">
+          Mark all read
+        </button>
+        <button class="btn-text" (click)="clearAll()">
+          Clear all
+        </button>
+      </div>
+    </div>
+
+    <div class="alerts-list">
+      <div *ngIf="(alerts$ | async)?.length === 0" class="no-alerts">
+        <span class="no-alerts-icon">✓</span>
+        <p>No critical alerts</p>
+        <small>All systems normal</small>
+      </div>
+
+      <div *ngFor="let alert of alerts$ | async" 
+           [class]="'alert-item alert-' + alert.severity"
+           [class.unread]="!alert.read"
+           (click)="markAsRead(alert, $event)">
+
+        <div class="alert-icon">
+          {{ alertService.getIcon(alert.type) }}
+        </div>
+
+        <div class="alert-content">
+          <div class="alert-message">{{ alert.message }}</div>
+          <div class="alert-meta">
+            <span class="alert-device">{{ alert.deviceName }}</span>
+            <span class="alert-time">{{ getTimeAgo(alert.timestamp) }}</span>
+          </div>
+        </div>
+
+        <div class="alert-actions">
+          <button class="btn-remove" (click)="removeAlert(alert, $event)" title="Dismiss">
+            ×
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

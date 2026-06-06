@@ -1,0 +1,232 @@
+﻿import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { DeviceService } from '../../services/device.service';
+import { Device, DeviceDto } from '../../models/device.model';
+import { AuthService } from '../../services/auth.service';
+import { NotificationService } from '../../services/notification.service';
+import { TelemetryService } from '../../services/telemetry.service';
+import { forkJoin, of, Subscription } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+
+@Component({
+  selector: 'app-devices',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './devices.component.html',
+  styleUrls: ['./devices.component.scss']
+})
+export class DevicesComponent implements OnInit, OnDestroy {
+  devices: Device[] = [];
+  loading: boolean = true;
+  private readonly DEVICE_STALE_HOURS = 2;
+  private deviceLastSeenMap: Record<string, Date | null> = {};
+  private deviceStatusMap: Record<string, 'Connected' | 'Stale' | 'No Data'> = {};
+  private deviceLastSeenLabelMap: Record<string, string> = {};
+  private devicesSubscription?: Subscription;
+  private deviceHealthSubscription?: Subscription;
+
+  showForm: boolean = false;
+  editingDevice: Device | null = null;
+
+  deviceForm: DeviceDto = {
+    deviceId: '',
+    name: '',
+    description: ''
+  };
+
+  constructor(
+    private deviceService: DeviceService,
+    private telemetryService: TelemetryService,
+    public authService: AuthService,
+    private notificationService: NotificationService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  ngOnInit(): void {
+    this.loadDevices();
+  }
+
+  ngOnDestroy(): void {
+    this.devicesSubscription?.unsubscribe();
+    this.deviceHealthSubscription?.unsubscribe();
+  }
+
+  loadDevices(): void {
+    this.loading = true;
+    this.cdr.detectChanges();
+
+    this.devicesSubscription?.unsubscribe();
+    this.devicesSubscription = this.deviceService.getAllDevices().subscribe({
+      next: (devices) => {
+        this.devices = devices;
+        this.loadDeviceHealth(devices);
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.notificationService.error('Failed to load devices');
+        this.loading = false;
+        this.cdr.detectChanges();
+        console.error(err);
+      }
+    });
+  }
+
+  showAddForm(): void {
+    this.showForm = true;
+    this.editingDevice = null;
+    this.deviceForm = {
+      deviceId: '',
+      name: '',
+      description: ''
+    };
+  }
+
+  showEditForm(device: Device): void {
+    this.showForm = true;
+    this.editingDevice = device;
+    this.deviceForm = {
+      deviceId: device.deviceId,
+      name: device.name,
+      description: device.description || ''
+    };
+  }
+
+  cancelForm(): void {
+    this.showForm = false;
+    this.editingDevice = null;
+    this.deviceForm = {
+      deviceId: '',
+      name: '',
+      description: ''
+    };
+  }
+
+  submitForm(): void {
+    if (this.editingDevice) {
+      this.deviceService.updateDevice(this.editingDevice.id, this.deviceForm).subscribe({
+        next: () => {
+          this.notificationService.success('Device updated successfully');
+          this.cancelForm();
+          this.loadDevices();
+        },
+        error: (err) => {
+          this.notificationService.error(err.error?.error || 'Failed to update device');
+          console.error(err);
+        }
+      });
+    } else {
+      this.deviceService.createDevice(this.deviceForm).subscribe({
+        next: () => {
+          this.notificationService.success('Device created successfully');
+          this.cancelForm();
+          this.loadDevices();
+        },
+        error: (err) => {
+          this.notificationService.error(err.error?.error || 'Failed to create device');
+          console.error(err);
+        }
+      });
+    }
+  }
+
+  deleteDevice(device: Device): void {
+    // Show custom confirmation notification
+    if (!confirm(`Are you sure you want to delete device "${device.name}"?`)) {
+      return;
+    }
+
+    this.deviceService.deleteDevice(device.id).subscribe({
+      next: () => {
+        this.notificationService.success(`Device "${device.name}" deleted successfully`);
+        this.loadDevices();
+      },
+      error: (err) => {
+        this.notificationService.error(err.error?.error || 'Failed to delete device');
+        console.error(err);
+      }
+    });
+  }
+
+  refresh(): void {
+    this.loadDevices();
+  }
+
+  private loadDeviceHealth(devices: Device[]): void {
+    if (devices.length === 0) {
+      this.deviceLastSeenMap = {};
+      this.deviceStatusMap = {};
+      this.deviceLastSeenLabelMap = {};
+      return;
+    }
+
+    const requests = devices.map(device =>
+      this.telemetryService.getTelemetry(device.deviceId, undefined, 1, 1).pipe(
+        map(result => {
+          const timestamp = result?.data?.[0]?.timestamp;
+          return {
+            deviceId: device.deviceId,
+            lastSeen: timestamp ? new Date(timestamp) : null
+          };
+        }),
+        catchError(() => of({ deviceId: device.deviceId, lastSeen: null }))
+      )
+    );
+
+    this.deviceHealthSubscription?.unsubscribe();
+    this.deviceHealthSubscription = forkJoin(requests).subscribe(entries => {
+      const mapData: Record<string, Date | null> = {};
+      const statusMap: Record<string, 'Connected' | 'Stale' | 'No Data'> = {};
+      const labelMap: Record<string, string> = {};
+
+      entries.forEach(entry => {
+        mapData[entry.deviceId] = entry.lastSeen;
+
+        if (!entry.lastSeen) {
+          statusMap[entry.deviceId] = 'No Data';
+          labelMap[entry.deviceId] = 'No telemetry yet';
+          return;
+        }
+
+        const ageMs = Date.now() - entry.lastSeen.getTime();
+        const staleMs = this.DEVICE_STALE_HOURS * 60 * 60 * 1000;
+        statusMap[entry.deviceId] = ageMs <= staleMs ? 'Connected' : 'Stale';
+        labelMap[entry.deviceId] = entry.lastSeen.toLocaleString();
+      });
+
+      this.deviceLastSeenMap = mapData;
+      this.deviceStatusMap = statusMap;
+      this.deviceLastSeenLabelMap = labelMap;
+      this.cdr.detectChanges();
+    });
+  }
+
+  get connectedCount(): number {
+    return Object.values(this.deviceStatusMap).filter(status => status === 'Connected').length;
+  }
+
+  get attentionCount(): number {
+    return this.devices.length - this.connectedCount;
+  }
+
+  getHealthLabel(device: Device): 'Connected' | 'Stale' | 'No Data' {
+    return this.deviceStatusMap[device.deviceId] ?? 'No Data';
+  }
+
+  getLastSeenLabel(device: Device): string {
+    return this.deviceLastSeenLabelMap[device.deviceId] ?? 'No telemetry yet';
+  }
+
+  isDeviceConnected(device: Device): boolean {
+    return this.getHealthLabel(device) === 'Connected';
+  }
+
+  trackByDeviceId(_: number, device: Device): string {
+    return device.deviceId;
+  }
+
+  isAdmin(): boolean {
+    return this.authService.isAdmin();
+  }
+}

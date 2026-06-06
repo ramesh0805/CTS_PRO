@@ -1,0 +1,142 @@
+﻿<div class="telemetry">
+  <div class="header">
+    <h1>Telemetry Data</h1>
+  </div>
+
+  <div *ngIf="success" class="alert alert-success">
+    {{ success }}
+  </div>
+
+  <div *ngIf="error" class="alert alert-error">
+    {{ error }}
+  </div>
+
+  <div class="card">
+    <h3>Filter Telemetry</h3>
+    <div class="filter-form">
+      <div class="form-group">
+        <label for="filterDevice">Device</label>
+        <select 
+          id="filterDevice" 
+          [(ngModel)]="selectedDeviceId" 
+          (ngModelChange)="onDeviceChange()">
+          <option value="">All Devices</option>
+          <option *ngFor="let device of devices" [value]="device.deviceId">
+            {{ device.name }} ({{ device.deviceId }})
+          </option>
+        </select>
+      </div>
+
+      <app-metric-filter
+        [availableMetrics]="availableMetrics"
+        [selectedMetric]="selectedMetric"
+        (metricChange)="onMetricChange($event)">
+      </app-metric-filter>
+
+      <div class="form-group">
+        <label for="filterDateFrom">From</label>
+        <input
+          id="filterDateFrom"
+          type="datetime-local"
+          [(ngModel)]="filterDateFrom"
+          (ngModelChange)="onDateRangeChange()" />
+      </div>
+
+      <div class="form-group">
+        <label for="filterDateTo">To</label>
+        <input
+          id="filterDateTo"
+          type="datetime-local"
+          [(ngModel)]="filterDateTo"
+          (ngModelChange)="onDateRangeChange()" />
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <p>Loading telemetry data...</p>
+  </div>
+
+  <!-- Charts Section -->
+  <div *ngIf="!loading && telemetryData.length > 0 && showChart">
+    <div class="card" *ngFor="let metric of uniqueMetrics">
+      <div class="chart-header">
+        <h3>{{ metric | titlecase }} Chart</h3>
+        <p class="chart-info">Showing data for {{ selectedDeviceId || 'All Devices' }} • {{ localTimeZone }}</p>
+      </div>
+      <app-telemetry-chart
+        [chartData]="getChartDataForMetric(metric)"
+        [chartLabel]="metric"
+        [chartType]="'line'"
+        [xAxisLabel]="'Time'"
+        [yAxisLabel]="metric"
+        [metric]="metric">
+      </app-telemetry-chart>
+    </div>
+  </div>
+
+  <!-- Table Section -->
+  <div *ngIf="!loading && telemetryData.length > 0" class="card">
+    <div class="table-header">
+      <h3>Telemetry Records ({{ totalCount }})</h3>
+      <button class="btn btn-secondary" (click)="showChart = !showChart">
+        {{ showChart ? 'Hide Charts' : 'Show Charts' }}
+      </button>
+    </div>
+
+    <table class="table" *ngIf="telemetryData.length > 0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Device ID</th>
+          <th>Metric</th>
+          <th>Value</th>
+          <th>Timestamp</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let telemetry of telemetryData">
+          <td>{{ telemetry.id }}</td>
+          <td>{{ telemetry.deviceId }}</td>
+          <td>{{ telemetry.metric }}</td>
+          <td>{{ telemetry.value | number:'1.2-2' }}</td>
+          <td>{{ formatTelemetryTimestamp(telemetry.timestamp) }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p *ngIf="telemetryData.length === 0">No telemetry data found for the selected filters.</p>
+
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button 
+        (click)="previousPage()" 
+        [disabled]="currentPage === 1"
+        class="btn">
+        Previous
+      </button>
+
+      <button 
+        *ngFor="let page of pageNumbers" 
+        (click)="goToPage(page)"
+        [class.active]="page === currentPage"
+        class="btn">
+        {{ page }}
+      </button>
+
+      <button 
+        (click)="nextPage()" 
+        [disabled]="currentPage === totalPages"
+        class="btn">
+        Next
+      </button>
+    </div>
+
+    <div class="page-info" *ngIf="totalPages > 0">
+      Page {{ currentPage }} of {{ totalPages }} ({{ totalCount }} total records)
+    </div>
+  </div>
+
+  <div *ngIf="!loading && telemetryData.length === 0" class="card">
+    <p class="info-message">No telemetry data available. Live data will be generated automatically every 5 minutes.</p>
+  </div>
+</div>

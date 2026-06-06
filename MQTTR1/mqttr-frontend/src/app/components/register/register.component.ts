@@ -1,0 +1,999 @@
+import { Component, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService, RegisterDto } from '../../services/auth.service';
+
+@Component({
+  selector: 'app-register',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  template: `
+    <div class="container">
+      <div class="background">
+        <!-- Animated Grid Background -->
+        <div class="grid-overlay">
+          <div class="grid-line vertical" *ngFor="let l of gridLines" [style.left.%]="l * 10"></div>
+          <div class="grid-line horizontal" *ngFor="let l of gridLines" [style.top.%]="l * 10"></div>
+        </div>
+
+        <!-- Floating Hexagons -->
+        <div class="hex-container">
+          <div class="hexagon hex-1">
+            <div class="hex-inner"></div>
+          </div>
+          <div class="hexagon hex-2">
+            <div class="hex-inner"></div>
+          </div>
+          <div class="hexagon hex-3">
+            <div class="hex-inner"></div>
+          </div>
+          <div class="hexagon hex-4">
+            <div class="hex-inner"></div>
+          </div>
+        </div>
+
+        <!-- IoT Sensor Network with Enhanced Visuals -->
+        <div class="sensor-node node-1">
+          <div class="node-glow temp-glow"></div>
+          <div class="node-pulse"></div>
+          <div class="node-icon">📡</div>
+          <div class="node-data">
+            <span class="data-value">{{sensorData[0]}}°C</span>
+            <span class="data-label">TEMP</span>
+          </div>
+          <div class="signal-bars">
+            <div class="signal-bar" *ngFor="let b of [1,2,3,4]" [style.animation-delay.s]="b * 0.1"></div>
+          </div>
+        </div>
+
+        <div class="sensor-node node-2">
+          <div class="node-glow wind-glow"></div>
+          <div class="node-pulse"></div>
+          <div class="node-icon">💨</div>
+          <div class="node-data">
+            <span class="data-value">{{sensorData[1]}} m/s</span>
+            <span class="data-label">WIND</span>
+          </div>
+          <div class="signal-bars">
+            <div class="signal-bar" *ngFor="let b of [1,2,3,4]" [style.animation-delay.s]="b * 0.1"></div>
+          </div>
+        </div>
+
+        <div class="sensor-node node-3">
+          <div class="node-glow power-glow"></div>
+          <div class="node-pulse"></div>
+          <div class="node-icon">⚡</div>
+          <div class="node-data">
+            <span class="data-value">{{sensorData[2]}}W</span>
+            <span class="data-label">POWER</span>
+          </div>
+          <div class="signal-bars">
+            <div class="signal-bar" *ngFor="let b of [1,2,3,4]" [style.animation-delay.s]="b * 0.1"></div>
+          </div>
+        </div>
+
+        <div class="sensor-node node-4">
+          <div class="node-glow water-glow"></div>
+          <div class="node-pulse"></div>
+          <div class="node-icon">🌊</div>
+          <div class="node-data">
+            <span class="data-value">{{sensorData[3]}}L</span>
+            <span class="data-label">FLOW</span>
+          </div>
+          <div class="signal-bars">
+            <div class="signal-bar" *ngFor="let b of [1,2,3,4]" [style.animation-delay.s]="b * 0.1"></div>
+          </div>
+        </div>
+
+        <!-- Enhanced Data Flow Lines with Particles -->
+        <svg class="connection-lines" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="lineGradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style="stop-color:rgba(74,222,128,0.3);stop-opacity:1" />
+              <stop offset="50%" style="stop-color:rgba(74,222,128,0.8);stop-opacity:1" />
+              <stop offset="100%" style="stop-color:rgba(74,222,128,0.3);stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <path class="data-line line-1" d="M 15 20 Q 50 40, 85 35" stroke="url(#lineGradient1)" />
+          <path class="data-line line-2" d="M 15 65 Q 50 55, 85 70" stroke="url(#lineGradient1)" />
+          <path class="data-line line-3" d="M 20 30 Q 50 50, 80 65" stroke="url(#lineGradient1)" />
+
+          <!-- Data Packets Traveling -->
+          <circle class="data-packet packet-1" r="2" fill="#4ade80">
+            <animateMotion dur="4s" repeatCount="indefinite" path="M 15 20 Q 50 40, 85 35" />
+          </circle>
+          <circle class="data-packet packet-2" r="2" fill="#4ade80">
+            <animateMotion dur="4s" repeatCount="indefinite" begin="1.3s" path="M 15 65 Q 50 55, 85 70" />
+          </circle>
+          <circle class="data-packet packet-3" r="2" fill="#4ade80">
+            <animateMotion dur="4s" repeatCount="indefinite" begin="2.6s" path="M 20 30 Q 50 50, 80 65" />
+          </circle>
+        </svg>
+
+        <!-- Enhanced Real-time Chart -->
+        <div class="mini-chart">
+          <div class="chart-title">Live Metrics</div>
+          <div class="chart-bars">
+            <div class="bar" *ngFor="let height of chartData; let i = index" 
+                 [style.height.%]="height"
+                 [style.animation-delay.s]="i * 0.1"></div>
+          </div>
+          <div class="chart-axis"></div>
+        </div>
+
+        <!-- Radar Sweep Effect -->
+        <div class="radar-container">
+          <div class="radar-sweep"></div>
+          <div class="radar-ring ring-1"></div>
+          <div class="radar-ring ring-2"></div>
+          <div class="radar-ring ring-3"></div>
+          <div class="radar-dot" *ngFor="let dot of radarDots" 
+               [style.left.%]="dot.x" 
+               [style.top.%]="dot.y"></div>
+        </div>
+
+        <!-- Digital Rain Effect -->
+        <div class="digital-rain">
+          <div class="rain-column" *ngFor="let col of rainColumns" 
+               [style.left.%]="col.x"
+               [style.animation-delay.s]="col.delay">
+            {{col.chars}}
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Create Account</h2>
+
+        <div *ngIf="isFirstUser" class="info">
+          You will become an Admin!
+        </div>
+
+        <form (ngSubmit)="onSubmit()" #form="ngForm">
+          <div class="field">
+            <label for="username">Username</label>
+            <input 
+              type="text" 
+              id="username" 
+              name="username"
+              [(ngModel)]="registerDto.username" 
+              required
+              minlength="3"
+              placeholder="Username">
+          </div>
+
+          <div class="field">
+            <label for="email">Email</label>
+            <input 
+              type="email" 
+              id="email" 
+              name="email"
+              [(ngModel)]="registerDto.email" 
+              #emailModel="ngModel"
+              required
+              email
+              placeholder="Email">
+            <div class="validation-message" *ngIf="emailModel.invalid && (emailModel.dirty || emailModel.touched)">
+              Please enter a valid email address.
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <input 
+              type="password" 
+              id="password" 
+              name="password"
+              [(ngModel)]="registerDto.password" 
+              #passwordModel="ngModel"
+              required
+              minlength="8"
+              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z\\d]).{8,}$"
+              placeholder="Password">
+            <div class="validation-message" *ngIf="passwordModel.invalid && (passwordModel.dirty || passwordModel.touched)">
+              Password must be at least 8 characters and include uppercase, lowercase, number, and special character.
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="confirmPassword">Confirm Password</label>
+            <input 
+              type="password" 
+              id="confirmPassword" 
+              name="confirmPassword"
+              [(ngModel)]="confirmPassword" 
+              required
+              placeholder="Confirm Password">
+          </div>
+
+          <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+          <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
+
+          <button type="submit" [disabled]="!form.valid || isLoading">
+            {{ isLoading ? 'Registering...' : 'Register' }}
+          </button>
+        </form>
+
+        <p class="link">
+          Already have an account? <a (click)="goToLogin()">Login</a>
+        </p>
+      </div>
+    </div>
+  `,
+  styles: [`
+    /* Reset and ensure full coverage */
+    :host {
+      display: block;
+      position: fixed;
+      inset: 0;
+      overflow: auto;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      min-width: 100vw;
+      padding: 20px;
+      background: linear-gradient(135deg, #11998e, #38ef7d);
+      position: relative;
+      overflow: hidden;
+      margin: 0;
+    }
+
+    .background {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    /* Sensor Nodes with Enhanced Effects */
+    .sensor-node {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-radius: 50%;
+      width: 120px;
+      height: 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      animation: nodeFloat 5s infinite ease-in-out;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      transition: transform 0.3s ease;
+      z-index: 2;
+    }
+
+    .sensor-node:hover {
+      transform: scale(1.15) !important;
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Grid Overlay */
+    .grid-overlay {
+      position: absolute;
+      inset: 0;
+      opacity: 0.08;
+    }
+
+    .grid-line {
+      position: absolute;
+      background: white;
+    }
+
+    .grid-line.vertical {
+      width: 1px;
+      height: 100%;
+      top: 0;
+      animation: gridPulse 3s infinite ease-in-out;
+    }
+
+    .grid-line.horizontal {
+      height: 1px;
+      width: 100%;
+      left: 0;
+      animation: gridPulse 3s infinite ease-in-out;
+    }
+
+    @keyframes gridPulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.6; }
+    }
+
+    /* Floating Hexagons */
+    .hex-container {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .hexagon {
+      position: absolute;
+      width: 60px;
+      height: 35px;
+      animation: hexFloat 12s infinite ease-in-out;
+    }
+
+    .hex-1 {
+      top: 15%;
+      left: 40%;
+      animation-delay: 0s;
+    }
+
+    .hex-2 {
+      top: 70%;
+      right: 25%;
+      animation-delay: 3s;
+    }
+
+    .hex-3 {
+      bottom: 25%;
+      left: 20%;
+      animation-delay: 6s;
+    }
+
+    .hex-4 {
+      top: 40%;
+      right: 15%;
+      animation-delay: 9s;
+    }
+
+    @keyframes hexFloat {
+      0%, 100% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+      25% {
+        transform: translate(30px, -20px) rotate(90deg);
+      }
+      50% {
+        transform: translate(-20px, 30px) rotate(180deg);
+      }
+      75% {
+        transform: translate(20px, 20px) rotate(270deg);
+      }
+    }
+
+    .hex-inner {
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      position: relative;
+      border-left: 2px solid rgba(255, 255, 255, 0.3);
+      border-right: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .hex-inner::before,
+    .hex-inner::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      border-left: 30px solid transparent;
+      border-right: 30px solid transparent;
+    }
+
+    .hex-inner::before {
+      bottom: 100%;
+      border-bottom: 17.5px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .hex-inner::after {
+      top: 100%;
+      border-top: 17.5px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Node Glow Effects */
+    .node-glow {
+      position: absolute;
+      inset: -15px;
+      border-radius: 50%;
+      opacity: 0.4;
+      filter: blur(20px);
+      animation: nodeGlowPulse 3s infinite ease-in-out;
+    }
+
+    .temp-glow {
+      background: linear-gradient(135deg, #ef4444, #f59e0b);
+    }
+
+    .wind-glow {
+      background: linear-gradient(135deg, #3b82f6, #06b6d4);
+    }
+
+    .power-glow {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    }
+
+    .water-glow {
+      background: linear-gradient(135deg, #06b6d4, #3b82f6);
+    }
+
+    @keyframes nodeGlowPulse {
+      0%, 100% { opacity: 0.3; transform: scale(0.9); }
+      50% { opacity: 0.6; transform: scale(1.1); }
+    }
+
+    /* Signal Bars */
+    .signal-bars {
+      position: absolute;
+      bottom: 8px;
+      display: flex;
+      gap: 2px;
+    }
+
+    .signal-bar {
+      width: 3px;
+      background: #4ade80;
+      border-radius: 2px;
+      animation: signalPulse 1s infinite ease-in-out;
+    }
+
+    .signal-bar:nth-child(1) { height: 6px; }
+    .signal-bar:nth-child(2) { height: 10px; }
+    .signal-bar:nth-child(3) { height: 14px; }
+    .signal-bar:nth-child(4) { height: 18px; }
+
+    @keyframes signalPulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+
+    /* Enhanced Node Data Display */
+    .node-data {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 4px;
+    }
+
+    .data-value {
+      font-size: 14px;
+      font-weight: 700;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      animation: dataValuePulse 2s infinite ease-in-out;
+    }
+
+    .data-label {
+      font-size: 9px;
+      opacity: 0.8;
+      letter-spacing: 1px;
+      margin-top: 2px;
+    }
+
+    @keyframes dataValuePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    /* Radar Container */
+    .radar-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 200px;
+      height: 200px;
+      transform: translate(-50%, -50%);
+      opacity: 0.15;
+    }
+
+    .radar-sweep {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 0deg,
+        transparent 0deg,
+        rgba(74, 222, 128, 0.5) 90deg,
+        transparent 90deg
+      );
+      animation: radarSweep 4s infinite linear;
+    }
+
+    @keyframes radarSweep {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .radar-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .ring-1 {
+      width: 60px;
+      height: 60px;
+    }
+
+    .ring-2 {
+      width: 120px;
+      height: 120px;
+    }
+
+    .ring-3 {
+      width: 180px;
+      height: 180px;
+    }
+
+    .radar-dot {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: #4ade80;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #4ade80;
+      animation: radarDotPulse 2s infinite ease-in-out;
+      transition: all 0.5s ease;
+    }
+
+    @keyframes radarDotPulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; transform: scale(1.5); }
+    }
+
+    /* Digital Rain */
+    .digital-rain {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      opacity: 0.06;
+      font-family: 'Courier New', monospace;
+      pointer-events: none;
+    }
+
+    .rain-column {
+      position: absolute;
+      top: -100%;
+      font-size: 14px;
+      color: white;
+      line-height: 1.5;
+      animation: digitalRainFall 12s infinite linear;
+      white-space: pre;
+    }
+
+    @keyframes digitalRainFall {
+      0% {
+        top: -100%;
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        top: 100%;
+        opacity: 0;
+      }
+    }
+
+    /* Enhanced Mini Chart */
+    .mini-chart {
+      position: absolute;
+      bottom: 8%;
+      right: 8%;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 12px;
+      padding: 15px;
+      width: 180px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    }
+
+    .chart-title {
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+      text-align: center;
+      opacity: 0.9;
+    }
+
+    .chart-bars {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      height: 80px;
+      gap: 4px;
+      position: relative;
+    }
+
+    .bar {
+      flex: 1;
+      background: linear-gradient(to top, #4ade80, #22c55e);
+      border-radius: 3px 3px 0 0;
+      min-height: 10%;
+      transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: barGrow 1s ease-out;
+      box-shadow: 0 -2px 10px rgba(74, 222, 128, 0.4);
+      position: relative;
+    }
+
+    .bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 2px;
+    }
+
+    @keyframes barGrow {
+      from { 
+        height: 0;
+        opacity: 0;
+      }
+      to { 
+        opacity: 1;
+      }
+    }
+
+    .chart-axis {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Enhanced Connection Lines */
+    .connection-lines {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .data-line {
+      fill: none;
+      stroke: rgba(74, 222, 128, 0.4);
+      stroke-width: 2;
+      stroke-dasharray: 5, 5;
+      animation: lineDashFlow 3s infinite linear;
+      filter: drop-shadow(0 0 5px rgba(74, 222, 128, 0.6));
+    }
+
+    @keyframes lineDashFlow {
+      to { stroke-dashoffset: -10; }
+    }
+
+    .data-packet {
+      filter: drop-shadow(0 0 8px #4ade80);
+      animation: packetPulse 1s infinite ease-in-out;
+    }
+
+    @keyframes packetPulse {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 1; r: 3; }
+    }
+
+    /* Node Positioning */
+    .node-1 { top: 12%; left: 10%; animation-delay: 0s; }
+    .node-2 { top: 50%; left: 8%; animation-delay: 1.5s; }
+    .node-3 { top: 25%; right: 12%; animation-delay: 3s; }
+    .node-4 { top: 65%; right: 10%; animation-delay: 4.5s; }
+
+    @keyframes nodeFloat {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(10px, -10px); }
+    }
+
+    /* Node Pulse Animation */
+    .node-pulse {
+      position: absolute;
+      inset: -10px;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      animation: nodePulse 2s infinite;
+    }
+
+    @keyframes nodePulse {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(1.3); opacity: 0; }
+    }
+
+    /* Node Icon and Data */
+    .node-icon {
+      font-size: 32px;
+      margin-bottom: 5px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+      animation: iconBounce 3s infinite ease-in-out;
+    }
+
+    @keyframes iconBounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    .card {
+      background: white;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 450px;
+      position: relative;
+      z-index: 1;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+      margin: 0 0 20px;
+      font-size: 24px;
+    }
+
+    .info {
+      background: #d1ecf1;
+      color: #0c5460;
+      padding: 12px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: #555;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #11998e;
+    }
+
+    .validation-message {
+      color: #721c24;
+      font-size: 12px;
+      margin-top: 6px;
+    }
+
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    .success {
+      background: #d4edda;
+      color: #155724;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #11998e;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover:not(:disabled) {
+      background: #0d7a6f;
+    }
+
+    button:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+    }
+
+    .link {
+      text-align: center;
+      margin: 20px 0 0;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .link a {
+      color: #11998e;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .link a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .sensor-node {
+        transform: scale(0.75);
+      }
+
+      .node-1 { top: 8%; left: 5%; }
+      .node-2 { top: 55%; left: 5%; }
+      .node-3 { top: 20%; right: 5%; }
+      .node-4 { top: 72%; right: 5%; }
+
+      .mini-chart {
+        transform: scale(0.85);
+        bottom: 5%;
+        right: 5%;
+      }
+    }
+  `]
+})
+export class RegisterComponent implements OnDestroy {
+  registerDto: RegisterDto = {
+    username: '',
+    email: '',
+    password: ''
+  };
+
+  confirmPassword = '';
+  errorMessage = '';
+  successMessage = '';
+  isLoading = false;
+  isFirstUser = false;
+
+  // Sensor animation data
+  sensorData = [24, 12, 450, 87];
+  chartData = [40, 60, 45, 70, 55, 80, 50, 65];
+
+  // Grid and visual effects
+  gridLines = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+  // Radar dots
+  radarDots = Array(12).fill(0).map(() => ({
+    x: 20 + Math.random() * 60,
+    y: 20 + Math.random() * 60
+  }));
+
+  // Digital rain
+  rainColumns = Array(20).fill(0).map((_, i) => ({
+    x: i * 5,
+    delay: Math.random() * 5,
+    chars: this.generateRandomChars()
+  }));
+
+  private intervals: any[] = [];
+
+  constructor(private authService: AuthService, private router: Router) {
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/dashboard']);
+    }
+    this.startSensorAnimation();
+  }
+
+  ngOnDestroy(): void {
+    this.intervals.forEach(interval => clearInterval(interval));
+  }
+
+  generateRandomChars(): string {
+    const chars = '01ABCDEFαβγδ⚡☁✓';
+    return Array(15).fill(0).map(() => 
+      chars[Math.floor(Math.random() * chars.length)]
+    ).join('');
+  }
+
+  startSensorAnimation(): void {
+    // Update sensor readings
+    this.intervals.push(setInterval(() => {
+      this.sensorData = [
+        Math.floor(20 + Math.random() * 10),  // Temperature
+        Math.floor(10 + Math.random() * 8),   // Wind speed
+        Math.floor(400 + Math.random() * 100), // Power
+        Math.floor(80 + Math.random() * 20)   // Flow
+      ];
+    }, 2500));
+
+    // Update chart data
+    this.intervals.push(setInterval(() => {
+      this.chartData = this.chartData.map(() => 
+        Math.floor(40 + Math.random() * 50)
+      );
+    }, 2000));
+
+    // Update radar dots
+    this.intervals.push(setInterval(() => {
+      this.radarDots = this.radarDots.map(dot => ({
+        x: Math.max(20, Math.min(80, dot.x + (Math.random() - 0.5) * 10)),
+        y: Math.max(20, Math.min(80, dot.y + (Math.random() - 0.5) * 10))
+      }));
+    }, 3000));
+
+    // Update rain columns
+    this.intervals.push(setInterval(() => {
+      this.rainColumns = this.rainColumns.map(col => ({
+        ...col,
+        chars: this.generateRandomChars()
+      }));
+    }, 4000));
+  }
+
+  onSubmit(): void {
+    if (!this.validateForm()) return;
+
+    this.isLoading = true;
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    this.authService.register(this.registerDto).subscribe({
+      next: (response) => {
+        this.successMessage = `Welcome ${response.username}!`;
+        setTimeout(() => this.router.navigate(['/dashboard']), 2000);
+      },
+      error: (error) => {
+        this.errorMessage = error.error?.message || 'Registration failed';
+        this.isLoading = false;
+      }
+    });
+  }
+
+  validateForm(): boolean {
+    this.errorMessage = '';
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/;
+
+    if (this.registerDto.username.length < 3) {
+      this.errorMessage = 'Username must be at least 3 characters';
+      return false;
+    }
+
+    if (!emailRegex.test(this.registerDto.email)) {
+      this.errorMessage = 'Please enter a valid email address';
+      return false;
+    }
+
+    if (!passwordRegex.test(this.registerDto.password)) {
+      this.errorMessage = 'Password must be at least 8 characters and include uppercase, lowercase, number, and special character';
+      return false;
+    }
+
+    if (this.registerDto.password !== this.confirmPassword) {
+      this.errorMessage = 'Passwords do not match';
+      return false;
+    }
+
+    return true;
+  }
+
+  goToLogin(): void {
+    this.router.navigate(['/login']);
+  }
+}

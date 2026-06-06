@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="ConsolePublisher/ConsolePublisher.csproj" />
+  <Project Path="MQTTR1/MQTTR1.csproj" />
+</Solution>

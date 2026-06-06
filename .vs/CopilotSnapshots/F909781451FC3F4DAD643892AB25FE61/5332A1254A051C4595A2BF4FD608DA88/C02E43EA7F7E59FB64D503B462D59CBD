@@ -1,0 +1,139 @@
+﻿using Microsoft.EntityFrameworkCore;
+using MQTTR1.Data;
+using MQTTR1.Models;
+using System.Linq.Expressions;
+
+namespace MQTTR1.Repositories;
+
+public class TelemetryRepository : ITelemetryRepository
+{
+    private readonly ApplicationDbContext _context;
+
+    // Compiled queries for frequently used operations (better performance)
+    private static readonly Func<ApplicationDbContext, string, string, Task<Telemetry?>> GetLastValueQuery =
+        EF.CompileAsyncQuery((ApplicationDbContext context, string deviceId, string metric) =>
+            context.Telemetries
+                .AsNoTracking()
+                .Where(t => t.Device.DeviceId == deviceId && t.Metric == metric)
+                .OrderByDescending(t => t.Timestamp)
+                .Include(t => t.Device)
+                .FirstOrDefault());
+
+    public TelemetryRepository(ApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<Telemetry> CreateAsync(Telemetry telemetry)
+    {
+        _context.Telemetries.Add(telemetry);
+        await _context.SaveChangesAsync();
+        return telemetry;
+    }
+
+    public async Task<List<Telemetry>> CreateBatchAsync(IEnumerable<Telemetry> telemetries)
+    {
+        var list = telemetries.ToList();
+        _context.Telemetries.AddRange(list);
+        await _context.SaveChangesAsync();
+        return list;
+    }
+
+    public async Task<(IEnumerable<Telemetry> Data, int TotalCount)> GetPagedAsync(
+        int page,
+        int pageSize,
+        string? deviceId = null,
+        string? metric = null,
+        DateTime? startDate = null,
+        DateTime? endDate = null)
+    {
+        // Use AsNoTracking for better read performance since we don't modify these entities
+        var query = _context.Telemetries
+            .AsNoTracking()
+            .Include(t => t.Device)
+            .AsQueryable();
+
+        // Apply filters in optimal order (most selective first)
+        if (!string.IsNullOrEmpty(deviceId))
+        {
+            query = query.Where(t => t.Device.DeviceId == deviceId);
+        }
+
+        if (!string.IsNullOrEmpty(metric))
+        {
+            query = query.Where(t => t.Metric == metric);
+        }
+
+        // Date filters together for index usage
+        if (startDate.HasValue && endDate.HasValue)
+        {
+            query = query.Where(t => t.Timestamp >= startDate.Value && t.Timestamp <= endDate.Value);
+        }
+        else if (startDate.HasValue)
+        {
+            query = query.Where(t => t.Timestamp >= startDate.Value);
+        }
+        else if (endDate.HasValue)
+        {
+            query = query.Where(t => t.Timestamp <= endDate.Value);
+        }
+
+        // Get count more efficiently - avoid loading data twice
+        var totalCount = await query.CountAsync();
+
+        if (totalCount == 0)
+        {
+            return (Enumerable.Empty<Telemetry>(), 0);
+        }
+
+        // Apply ordering and pagination with optimized query
+        var data = await query
+            .OrderByDescending(t => t.Timestamp)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .AsSplitQuery() // Optimize for Include operations
+            .ToListAsync();
+
+        return (data, totalCount);
+    }
+
+    public async Task<Telemetry?> GetLastValueAsync(string deviceId, string metric)
+    {
+        // Use compiled query for better performance on frequently called operation
+        return await GetLastValueQuery(_context, deviceId, metric);
+    }
+
+    public async Task<Dictionary<string, decimal>> GetHourlyAverageAsync(
+        string deviceId,
+        string metric,
+        DateTime startDate,
+        DateTime endDate)
+    {
+        // Group directly in the database query — avoids loading raw rows into memory
+        var hourlyAverages = await _context.Telemetries
+            .AsNoTracking()
+            .TagWith("GetHourlyAverageAsync - DB-level hourly aggregation")
+            .Where(t => t.Device.DeviceId == deviceId
+                && t.Metric == metric
+                && t.Timestamp >= startDate
+                && t.Timestamp <= endDate)
+            .GroupBy(t => new
+            {
+                Year = t.Timestamp.Year,
+                Month = t.Timestamp.Month,
+                Day = t.Timestamp.Day,
+                Hour = t.Timestamp.Hour
+            })
+            .Select(g => new
+            {
+                Hour = new DateTime(g.Key.Year, g.Key.Month, g.Key.Day, g.Key.Hour, 0, 0),
+                Average = g.Average(t => t.Value)
+            })
+            .OrderBy(x => x.Hour)
+            .ToDictionaryAsync(
+                x => x.Hour.ToString("yyyy-MM-dd HH:00"),
+                x => x.Average);
+
+        return hourlyAverages;
+    }
+}

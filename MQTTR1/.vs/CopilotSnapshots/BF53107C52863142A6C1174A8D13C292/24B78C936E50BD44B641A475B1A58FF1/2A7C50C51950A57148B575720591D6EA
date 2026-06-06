@@ -1,0 +1,186 @@
+﻿import { Component, Input, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Chart, ChartConfiguration, registerables } from 'chart.js';
+
+Chart.register(...registerables);
+
+@Component({
+  selector: 'app-telemetry-chart',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    <div class="chart-container">
+      <canvas #chartCanvas></canvas>
+    </div>
+  `,
+  styles: [`
+    .chart-container {
+      position: relative;
+      height: 400px;
+      width: 100%;
+    }
+  `]
+})
+export class TelemetryChartComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('chartCanvas', { static: false }) chartCanvas!: ElementRef<HTMLCanvasElement>;
+  @Input() chartData: any[] = [];
+  @Input() chartLabel: string = 'Telemetry Data';
+  @Input() chartType: 'line' | 'bar' = 'line';
+  @Input() xAxisLabel: string = 'Time';
+  @Input() yAxisLabel: string = 'Value';
+
+  private chart?: Chart;
+
+  ngOnInit(): void {}
+
+  ngAfterViewInit(): void {
+    this.createChart();
+  }
+
+  ngOnDestroy(): void {
+    if (this.chart) {
+      this.chart.destroy();
+    }
+  }
+
+  private createChart(): void {
+    if (!this.chartCanvas) return;
+
+    const ctx = this.chartCanvas.nativeElement.getContext('2d');
+    if (!ctx) return;
+
+    // Calculate time span to determine best X-axis format
+    const timeSpanHours = this.calculateTimeSpan(this.chartData);
+
+    const labels = this.chartData.map((d, index) => {
+      return this.formatTimestampForAxis(d.timestamp, index, this.chartData.length, timeSpanHours);
+    });
+
+    const data = this.chartData.map(d => d.value);
+
+    const config: ChartConfiguration = {
+      type: this.chartType,
+      data: {
+        labels: labels,
+        datasets: [{
+          label: this.chartLabel,
+          data: data,
+          borderColor: 'rgb(75, 192, 192)',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          tension: 0.4,
+          fill: true,
+          pointRadius: timeSpanHours > 12 ? 0 : 2,  // Hide points for large datasets
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false,
+            callbacks: {
+              title: (context) => {
+                const dataIndex = context[0].dataIndex;
+                const timestamp = this.chartData[dataIndex].timestamp;
+                return new Date(timestamp).toLocaleString();
+              },
+              label: (context) => {
+                const value = context.parsed.y;
+                return `${this.chartLabel}: ${value.toFixed(2)}`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            display: true,
+            title: {
+              display: true,
+              text: timeSpanHours >= 12 ? 'Time (Hours)' : 'Time'
+            },
+            ticks: {
+              maxRotation: 45,
+              minRotation: 0,
+              autoSkip: true,
+              maxTicksLimit: timeSpanHours > 24 ? 24 : 12
+            }
+          },
+          y: {
+            display: true,
+            title: {
+              display: true,
+              text: this.yAxisLabel
+            },
+            ticks: {
+              callback: (value) => {
+                return Number(value).toFixed(1);
+              }
+            }
+          }
+        },
+        interaction: {
+          mode: 'nearest',
+          axis: 'x',
+          intersect: false
+        }
+      }
+    };
+
+    this.chart = new Chart(ctx, config);
+  }
+
+  private calculateTimeSpan(data: any[]): number {
+    if (data.length < 2) return 0;
+
+    const firstTime = new Date(data[0].timestamp).getTime();
+    const lastTime = new Date(data[data.length - 1].timestamp).getTime();
+    const diffMs = Math.abs(lastTime - firstTime);
+    const diffHours = diffMs / (1000 * 60 * 60);
+
+    return diffHours;
+  }
+
+  private formatTimestampForAxis(timestamp: string, index: number, totalPoints: number, timeSpanHours: number): string {
+    const date = new Date(timestamp);
+
+    // For data spanning more than 12 hours, show hours from start
+    if (timeSpanHours >= 12) {
+      const firstDate = new Date(this.chartData[0].timestamp);
+      const hoursFromStart = (date.getTime() - firstDate.getTime()) / (1000 * 60 * 60);
+
+      // Show only key points to avoid crowding
+      if (index === 0) {
+        return '0h';
+      } else if (index === totalPoints - 1) {
+        return `${Math.round(hoursFromStart)}h`;
+      } else if (hoursFromStart % Math.ceil(timeSpanHours / 8) < 0.5) {
+        return `${Math.round(hoursFromStart)}h`;
+      }
+      return '';
+    } else {
+      // For shorter time spans, show time
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+  }
+
+  public updateChart(newData: any[]): void {
+    if (!this.chart) return;
+
+    const labels = newData.map(d => {
+      const date = new Date(d.timestamp);
+      return date.toLocaleTimeString();
+    });
+
+    const data = newData.map(d => d.value);
+
+    this.chart.data.labels = labels;
+    this.chart.data.datasets[0].data = data;
+    this.chart.update();
+  }
+}

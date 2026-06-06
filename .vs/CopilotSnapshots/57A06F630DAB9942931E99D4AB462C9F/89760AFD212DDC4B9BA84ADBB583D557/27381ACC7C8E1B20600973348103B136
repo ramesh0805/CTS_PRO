@@ -1,0 +1,403 @@
+﻿<div class="page dashboard">
+
+  <!-- ── Live Sensor Ribbon ───────────────────────────── -->
+  <div class="sensor-ribbon">
+    <div class="ribbon-time">
+      <span class="ribbon-time__dot"></span>
+      <span>{{ currentTime }}</span>
+    </div>
+
+    <div class="ribbon-loading" *ngIf="loading && liveMetrics.length === 0">
+      <div class="spinner"></div>
+      <span>Loading sensors…</span>
+    </div>
+
+    <div class="ribbon-cards" *ngIf="liveMetrics.length > 0">
+      <div class="sensor-card"
+           *ngFor="let metric of liveMetrics"
+           [style.--accent]="metric.color">
+
+        <div class="sensor-card__head">
+          <span class="sensor-card__icon">{{ metric.icon }}</span>
+          <span class="sensor-card__name">{{ metric.name }}</span>
+        </div>
+
+        <div class="sensor-card__value">
+          {{ metric.value | number:'1.1-1' }}<span class="sensor-card__unit">{{ metric.unit }}</span>
+        </div>
+
+        <div class="sensor-card__interp" [style.color]="metric.color">
+          {{ metric.interpretation }}
+        </div>
+
+        <div class="sensor-card__stats">
+          <div class="sensor-card__stat">
+            <span>Min</span><strong>{{ metric.min | number:'1.1-1' }}</strong>
+          </div>
+          <div class="sensor-card__stat">
+            <span>Avg</span><strong>{{ metric.average | number:'1.1-1' }}</strong>
+          </div>
+          <div class="sensor-card__stat">
+            <span>Max</span><strong>{{ metric.max | number:'1.1-1' }}</strong>
+          </div>
+        </div>
+
+        <div class="sensor-card__bar-track">
+          <div class="sensor-card__bar-fill"
+               [style.width.%]="((metric.value - metric.absMin) / (metric.absMax - metric.absMin)) * 100"
+               [style.background]="metric.color">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Page Header ──────────────────────────────────── -->
+  <div class="page-header">
+    <div class="page-header__text">
+      <h1>Operations Overview</h1>
+      <p>Track device performance, telemetry health, and recent activity in a single workspace.</p>
+    </div>
+    <div class="page-header__actions">
+      <button class="btn btn-ghost btn-sm" (click)="refresh()">↺ Refresh</button>
+    </div>
+  </div>
+
+  <!-- ── Loading / Error ─────────────────────────────── -->
+  <div class="loading-state" *ngIf="loading">
+    <div class="spinner"></div>
+    <span>Loading dashboard…</span>
+  </div>
+
+  <div class="alert alert-error" *ngIf="error">
+    {{ error }}
+    <button class="btn btn-ghost btn-sm" (click)="refresh()">Retry</button>
+  </div>
+
+  <!-- ── Body ────────────────────────────────────────── -->
+  <ng-container *ngIf="!loading && !error">
+
+    <!-- Stat row -->
+    <div class="grid grid-4" style="margin-bottom:20px">
+      <div class="stat-tile stat-tile--blue">
+        <span class="stat-tile__icon">🖥️</span>
+        <div>
+          <div class="stat-tile__label">Total Devices</div>
+          <div class="stat-tile__val">{{ totalDevices }}</div>
+        </div>
+      </div>
+      <div class="stat-tile stat-tile--green">
+        <span class="stat-tile__icon">✅</span>
+        <div>
+          <div class="stat-tile__label">Connected</div>
+          <div class="stat-tile__val">{{ connectedCount }}</div>
+        </div>
+      </div>
+      <div class="stat-tile stat-tile--orange">
+        <span class="stat-tile__icon">⚠️</span>
+        <div>
+          <div class="stat-tile__label">Offline</div>
+          <div class="stat-tile__val">{{ totalDevices - connectedCount }}</div>
+        </div>
+      </div>
+      <div class="stat-tile stat-tile--purple">
+        <span class="stat-tile__icon">📡</span>
+        <div>
+          <div class="stat-tile__label">Active Sensors</div>
+          <div class="stat-tile__val">{{ liveMetrics.length }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fleet + Actions -->
+    <div class="grid grid-2" style="margin-bottom:20px">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-header__icon">📊</span>
+          <h3>Fleet Summary</h3>
+        </div>
+        <div class="fleet-row" *ngFor="let metric of liveMetrics">
+          <span class="fleet-row__icon">{{ metric.icon }}</span>
+          <span class="fleet-row__name">{{ metric.name }}</span>
+          <div class="fleet-row__bar">
+            <div class="fleet-row__fill"
+                 [style.width.%]="((metric.value - metric.absMin) / (metric.absMax - metric.absMin)) * 100"
+                 [style.background]="metric.color">
+            </div>
+          </div>
+          <span class="fleet-row__val">{{ metric.value | number:'1.1-1' }}{{ metric.unit }}</span>
+        </div>
+        <p class="empty-hint" *ngIf="liveMetrics.length === 0">No sensor data yet.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-header__icon">⚡</span>
+          <h3>Quick Actions</h3>
+        </div>
+        <div class="action-list">
+          <button class="action-row action-row--blue" routerLink="/devices">
+            <span class="action-row__icon">🖥️</span>
+            <span class="action-row__body">
+              <strong>Device Explorer</strong>
+              <small>View and manage all registered devices</small>
+            </span>
+            <span class="action-row__arrow">›</span>
+          </button>
+          <button class="action-row action-row--green" routerLink="/telemetry">
+            <span class="action-row__icon">📈</span>
+            <span class="action-row__body">
+              <strong>Data Explorer</strong>
+              <small>Browse and analyse telemetry records</small>
+            </span>
+            <span class="action-row__arrow">›</span>
+          </button>
+          <button class="action-row action-row--purple" routerLink="/simulator">
+            <span class="action-row__icon">🔴</span>
+            <span class="action-row__body">
+              <strong>Live Monitor</strong>
+              <small>Watch real-time sensor readings</small>
+            </span>
+            <span class="action-row__arrow">›</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Devices table -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-header__icon">🗂️</span>
+        <h3>Recently Registered Devices</h3>
+        <span class="card-header__badge">{{ devices.length }} total</span>
+        <button class="btn btn-ghost btn-sm" routerLink="/devices">View all →</button>
+      </div>
+
+      <table class="table" *ngIf="devices.length > 0">
+        <thead>
+          <tr>
+            <th>Device ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Registered</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let device of devices.slice(0,5)">
+            <td><code class="id-chip">{{ device.deviceId }}</code></td>
+            <td><strong>{{ device.name }}</strong></td>
+            <td class="muted">{{ device.description || '—' }}</td>
+            <td>
+              <span class="badge"
+                    [class.badge-green]="device.lastSeenAt && (now - toMs(device.lastSeenAt)) <= 86400000"
+                    [class.badge-red]="!device.lastSeenAt || (now - toMs(device.lastSeenAt)) > 86400000">
+                {{ device.lastSeenAt && (now - toMs(device.lastSeenAt)) <= 86400000 ? 'Connected' : 'Offline' }}
+              </span>
+            </td>
+            <td class="muted">{{ device.createdAt | date:'dd MMM yyyy' }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="empty-state" *ngIf="devices.length === 0">
+        <div class="empty-icon">🖥️</div>
+        <p>No devices registered yet.</p>
+      </div>
+    </div>
+
+  </ng-container>
+</div>
+
+  <!-- Live Metrics Grid -->
+  <div class="metrics-section">
+    <div class="time-display">
+      <span class="time-text">{{ currentTime }}</span>
+    </div>
+
+    <!-- Loading state for metrics -->
+    <div class="metrics-loading" *ngIf="loading && liveMetrics.length === 0">
+      <p>Loading live metrics...</p>
+    </div>
+
+    <!-- Metrics grid -->
+    <div class="metrics-grid" *ngIf="liveMetrics.length > 0">
+      <div class="metric-card" 
+           *ngFor="let metric of liveMetrics"
+           [style.border-left-color]="metric.color">
+
+        <div class="metric-header">
+          <div class="metric-icon">{{ metric.icon }}</div>
+          <h3 class="metric-name">{{ metric.name }}</h3>
+        </div>
+
+        <div class="metric-current">
+          <span class="metric-value">{{ metric.value | number:'1.1-1' }}</span>
+          <span class="metric-unit">{{ metric.unit }}</span>
+        </div>
+
+        <div class="metric-interpretation" [style.color]="metric.color">
+          {{ metric.interpretation }}
+        </div>
+
+        <div class="metric-stats">
+          <div class="stat-box" [style.border-left-color]="metric.color">
+            <span class="stat-label">Range</span>
+            <span class="stat-value">{{ metric.min | number:'1.1-1' }} - {{ metric.max | number:'1.1-1' }}</span>
+          </div>
+          <div class="stat-box" [style.border-left-color]="metric.color">
+            <span class="stat-label">Average</span>
+            <span class="stat-value">{{ metric.average | number:'1.1-1' }}{{ metric.unit }}</span>
+          </div>
+        </div>
+
+        <div class="metric-range-bar">
+          <div class="range-fill" 
+               [style.width.%]="((metric.value - metric.absMin) / (metric.absMax - metric.absMin)) * 100"
+               [style.background]="metric.color">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Operations Overview Header -->
+  <div class="overview-header">
+    <div class="overview-title-block">
+      <h1>Operations Overview</h1>
+      <p class="overview-subtitle">Track device performance, telemetry health, and recent activity in a single workspace.</p>
+    </div>
+    <button class="btn btn-secondary refresh-btn" (click)="refresh()">↺ Refresh</button>
+  </div>
+
+  <div *ngIf="loading" class="overview-loading">
+    <div class="loading-spinner"></div>
+    <span>Loading dashboard...</span>
+  </div>
+
+  <div *ngIf="error" class="alert alert-error">
+    {{ error }}
+    <button class="btn btn-secondary" (click)="refresh()">Retry</button>
+  </div>
+
+  <div *ngIf="!loading && !error" class="overview-body">
+
+    <!-- Stats Row -->
+    <div class="stat-cards-row">
+      <div class="stat-card stat-card--blue">
+        <div class="stat-card__icon">🖥️</div>
+        <div class="stat-card__body">
+          <span class="stat-card__label">Total Devices</span>
+          <span class="stat-card__value">{{ totalDevices }}</span>
+        </div>
+      </div>
+      <div class="stat-card stat-card--green">
+        <div class="stat-card__icon">✅</div>
+        <div class="stat-card__body">
+          <span class="stat-card__label">Connected</span>
+          <span class="stat-card__value">{{ connectedCount }}</span>
+        </div>
+      </div>
+      <div class="stat-card stat-card--orange">
+        <div class="stat-card__icon">⚠️</div>
+        <div class="stat-card__body">
+          <span class="stat-card__label">Needs Attention</span>
+          <span class="stat-card__value">{{ totalDevices - connectedCount }}</span>
+        </div>
+      </div>
+      <div class="stat-card stat-card--purple">
+        <div class="stat-card__icon">📡</div>
+        <div class="stat-card__body">
+          <span class="stat-card__label">Sensors Active</span>
+          <span class="stat-card__value">{{ liveMetrics.length }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fleet Summary + Quick Actions -->
+    <div class="overview-grid">
+      <div class="card fleet-card">
+        <div class="card-header">
+          <span class="card-header__icon">📊</span>
+          <h3>Fleet Summary</h3>
+        </div>
+        <div class="fleet-bar-row" *ngFor="let metric of liveMetrics">
+          <div class="fleet-bar__meta">
+            <span class="fleet-bar__icon">{{ metric.icon }}</span>
+            <span class="fleet-bar__name">{{ metric.name }}</span>
+            <span class="fleet-bar__val">{{ metric.value | number:'1.1-1' }}{{ metric.unit }}</span>
+          </div>
+          <div class="fleet-bar__track">
+            <div class="fleet-bar__fill"
+                 [style.width.%]="((metric.value - metric.absMin) / (metric.absMax - metric.absMin)) * 100"
+                 [style.background]="metric.color">
+            </div>
+          </div>
+        </div>
+        <p *ngIf="liveMetrics.length === 0" class="no-data-msg">No sensor data available.</p>
+      </div>
+
+      <div class="card actions-card">
+        <div class="card-header">
+          <span class="card-header__icon">⚡</span>
+          <h3>Quick Actions</h3>
+        </div>
+        <div class="action-list">
+          <button class="action-btn action-btn--primary" routerLink="/devices">
+            <span class="action-btn__icon">🖥️</span>
+            <span class="action-btn__text">
+              <strong>Device Explorer</strong>
+              <small>View and manage all devices</small>
+            </span>
+            <span class="action-btn__arrow">›</span>
+          </button>
+          <button class="action-btn action-btn--success" routerLink="/telemetry">
+            <span class="action-btn__icon">📈</span>
+            <span class="action-btn__text">
+              <strong>Data Explorer</strong>
+              <small>Browse telemetry records</small>
+            </span>
+            <span class="action-btn__arrow">›</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recently Registered Devices -->
+    <div class="card devices-card">
+      <div class="card-header">
+        <span class="card-header__icon">🗂️</span>
+        <h3>Recently Registered Devices</h3>
+        <span class="card-header__badge">{{ devices.length }} total</span>
+      </div>
+      <table class="table" *ngIf="devices.length > 0">
+        <thead>
+          <tr>
+            <th>Device ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Registered</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let device of devices.slice(0, 5)">
+            <td><code class="device-id-chip">{{ device.deviceId }}</code></td>
+            <td><strong>{{ device.name }}</strong></td>
+            <td class="desc-cell">{{ device.description || '—' }}</td>
+            <td>
+              <span class="status-badge"
+                    [class.status-badge--on]="device.lastSeenAt && (now - toMs(device.lastSeenAt)) <= 86400000"
+                    [class.status-badge--off]="!device.lastSeenAt || (now - toMs(device.lastSeenAt)) > 86400000">
+                {{ device.lastSeenAt && (now - toMs(device.lastSeenAt)) <= 86400000 ? 'Connected' : 'Offline' }}
+              </span>
+            </td>
+            <td class="date-cell">{{ device.createdAt | date:'dd MMM yyyy' }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p *ngIf="devices.length === 0" class="no-data-msg">No devices found.</p>
+    </div>
+
+  </div>
+</div>
+

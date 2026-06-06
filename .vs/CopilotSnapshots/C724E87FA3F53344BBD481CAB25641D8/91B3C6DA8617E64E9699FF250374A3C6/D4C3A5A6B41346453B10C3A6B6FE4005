@@ -1,0 +1,240 @@
+﻿# Live Data Monitoring - Complete Setup Guide
+
+## System Architecture
+
+```
+ConsolePublisher (IoT Simulator)
+		↓ (HTTP + JWT)
+   Backend API (ASP.NET Core)
+		↓ (Store data)
+	SQL Database
+		↓ (Query hourly)
+  Angular Dashboard
+		↓ (Chart.js)
+   Live Graphs
+```
+
+## Prerequisites
+
+- **Backend**: .NET 8.0+, SQL Server (LocalDB)
+- **Frontend**: Node.js 18+, npm
+- **Database**: SQL Server LocalDB (automatically initialized)
+
+## Running the Application
+
+### Step 1: Start Backend API
+
+```bash
+cd MQTTR1/MQTTR1
+dotnet run
+```
+
+**Expected Output:**
+- Application starts on `https://localhost:7124`
+- Database automatically created/migrated
+- 3 seed devices initialized
+- Ready to accept telemetry data
+
+### Step 2: Start Angular Frontend
+
+```bash
+cd MQTTR1/mqttr-frontend
+npm install (if needed)
+ng serve
+```
+
+**Expected Output:**
+- Angular dev server on `http://localhost:4200`
+- Dashboard loads with empty metrics initially
+- Charts section visible with chart containers
+
+### Step 3: Run IoT Simulator (ConsolePublisher)
+
+```bash
+cd MQTTR1/ConsolePublisher
+dotnet run
+```
+
+**Expected Output:**
+```
+╔════════════════════════════════════════════════════════╗
+║   MQTT Telemetry Console Publisher (IoT Simulator)    ║
+╚════════════════════════════════════════════════════════╝
+
+API Base URL: https://localhost:7124/api
+
+✓ Authenticated successfully. Token will expire at: 2025-12-24 14:30:00
+```
+
+## Complete Data Flow Testing
+
+### Test 1: Single Telemetry Post
+
+1. In ConsolePublisher, select **Option 1** (Post Single Telemetry)
+2. Enter:
+   - Device ID: `device-001`
+   - Metric: `temperature`
+   - Value: `32.5`
+
+3. **Expected Result:**
+   - Backend stores in database
+   - Response shows `✓ Success: 201 Created`
+
+### Test 2: Continuous Simulation
+
+1. In ConsolePublisher, select **Option 3** (Simulate IoT Device)
+2. Configure:
+   - Number of readings: `10`
+   - Interval (seconds): `5`
+
+3. **Expected Result:**
+   - Simulator sends 10 readings
+   - Each marked as `✓ Posted successfully`
+   - Data flows into database
+
+### Test 3: Dashboard Live Monitoring
+
+1. Navigate to `http://localhost:4200`
+2. **Observe:**
+   - Live Metrics Section (top):
+	 - Temperature, Humidity, Pressure cards update
+	 - Shows current value, min/max, average
+	 - Color-coded indicators
+
+   - Charts Section:
+	 - Multiple chart containers visible
+	 - For each device: 1 multi-metric chart + 3 single-metric charts
+	 - Charts auto-refresh every 30 seconds
+	 - Spinner indicates refresh in progress
+
+### Test 4: API Verification
+
+Query the API directly:
+
+```bash
+# Get 24-hour chart data for all metrics
+curl -X GET "https://localhost:7124/api/telemetry/chart-data/device-001" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+
+# Response: Chart-ready JSON with labels, datasets, colors
+
+# Get hourly averaged data
+curl -X GET "https://localhost:7124/api/telemetry/hourly/device-001" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+## Troubleshooting
+
+### Charts Not Displaying
+
+**Issue**: Charts load but show no data
+
+**Solution**:
+1. Check browser console for errors (F12)
+2. Verify API responses in Network tab
+3. Ensure simulator has posted at least 1 data point
+4. Wait 30+ seconds for auto-refresh
+
+### Authentication Failed
+
+**Issue**: ConsolePublisher shows "Authentication failed"
+
+**Solution**:
+1. Verify API is running on correct port (7124)
+2. Default credentials: `admin` / `AdminPassword123!`
+3. Check backend is not using self-signed cert issues
+4. Restart both backend and simulator
+
+### No Data in Dashboard
+
+**Issue**: Dashboard shows "No data available"
+
+**Solution**:
+1. Verify simulator has posted data (check terminal output)
+2. Ensure database initialized (check LocalDB in SSMS)
+3. Check browser network tab for API errors
+4. Refresh page and wait for auto-refresh cycle
+
+### Database Not Initializing
+
+**Issue**: EF Core migrations not running
+
+**Solution**:
+```bash
+cd MQTTR1/MQTTR1
+dotnet ef database update
+```
+
+## Configuration
+
+### Change Chart Refresh Interval
+
+Edit `dashboard.component.ts`:
+```typescript
+chartRefreshInterval: number = 30000; // milliseconds (30 seconds)
+```
+
+### Change Time Range for Charts
+
+Edit `dashboard.component.ts`:
+```typescript
+chartTimeRange: number = 24; // hours
+```
+
+### Change Simulator Data Points
+
+Edit in ConsolePublisher menu - Option 3:
+- Adjust interval between readings
+- Adjust number of total readings
+
+## Key Features
+
+✅ **Real-time Data Flow**
+- Simulator → API → Database → UI in milliseconds
+
+✅ **Automatic Charts**
+- Multi-metric charts showing all 3 metrics
+- Single-metric charts for detailed view
+- Auto-refresh every 30 seconds
+
+✅ **Live Metrics Display**
+- Current values with color indicators
+- Min/Max/Average calculations
+- Metric interpretations (temperature: "Hot", etc.)
+
+✅ **Security**
+- JWT token authentication
+- Bearer token in all requests
+- Admin-only telemetry endpoints
+- Auto-token refresh
+
+✅ **Performance**
+- 30-second API caching
+- Memory-efficient polling
+- Indexed database queries
+- Responsive grid layout
+
+## API Endpoints
+
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/api/auth/login` | POST | Get JWT token |
+| `/api/telemetry` | POST | Submit single telemetry |
+| `/api/telemetry/batch` | POST | Submit multiple readings |
+| `/api/telemetry` | GET | Query paginated data |
+| `/api/telemetry/last` | GET | Get latest value |
+| `/api/telemetry/chart-data/{deviceId}` | GET | Get chart-formatted data (24h) |
+| `/api/telemetry/hourly/{deviceId}` | GET | Get hourly averages (10h) |
+
+## Next Steps
+
+1. **Add Real Devices**: Connect physical IoT devices instead of simulator
+2. **Configure MQTT**: Enable MQTT broker integration
+3. **Set Alerts**: Configure thresholds and notifications
+4. **Export Data**: Add CSV/Excel export functionality
+5. **Historical Analysis**: View trends over longer periods
+
+---
+
+**Last Updated**: 2025-12-24
+**Status**: ✅ Production Ready

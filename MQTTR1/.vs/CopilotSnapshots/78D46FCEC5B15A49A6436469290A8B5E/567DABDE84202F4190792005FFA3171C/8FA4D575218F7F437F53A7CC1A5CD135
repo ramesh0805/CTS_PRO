@@ -1,0 +1,117 @@
+﻿<div class="devices">
+  <div class="header">
+    <h1>Devices</h1>
+    <div class="actions">
+      <button class="btn btn-primary" (click)="showAddForm()" *ngIf="isAdmin()">Add Device</button>
+      <button class="btn btn-secondary" (click)="refresh()">Refresh</button>
+    </div>
+  </div>
+
+  <div *ngIf="success" class="alert alert-success">
+    {{ success }}
+  </div>
+
+  <div *ngIf="error" class="alert alert-error">
+    {{ error }}
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <p>Loading devices...</p>
+  </div>
+
+  <div *ngIf="!loading" class="card">
+    <h3>Device List ({{ devices.length }})</h3>
+
+    <table class="table" *ngIf="devices.length > 0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Device ID</th>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Created</th>
+          <th>Updated</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let device of devices" 
+            [class.clickable]="isAdmin()" 
+            (click)="isAdmin() ? showEditForm(device) : null"
+            [title]="isAdmin() ? 'Click to edit' : ''">
+          <td>{{ device.id }}</td>
+          <td>{{ device.deviceId }}</td>
+          <td>{{ device.name }}</td>
+          <td>{{ device.description || 'N/A' }}</td>
+          <td>{{ device.createdAt | date:'short' }}</td>
+          <td>{{ device.updatedAt ? (device.updatedAt | date:'short') : 'N/A' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p *ngIf="devices.length === 0">No devices found.</p>
+  </div>
+
+  <!-- Add/Edit Form Modal -->
+  <div class="modal" *ngIf="showForm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>{{ editingDevice ? 'Edit Device' : 'Add New Device' }}</h2>
+        <button class="close-btn" (click)="cancelForm()">&times;</button>
+      </div>
+
+      <!-- Delete button for editing mode only -->
+      <div *ngIf="editingDevice" class="delete-section">
+        <button type="button" class="btn btn-danger btn-sm" (click)="deleteDevice(editingDevice)">
+          🗑️ Delete Device
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <form (ngSubmit)="submitForm()" #deviceFormElement="ngForm">
+          <div class="form-group">
+            <label for="deviceId">Device ID</label>
+            <input
+              type="text"
+              id="deviceId"
+              name="deviceId"
+              [(ngModel)]="deviceForm.deviceId"
+              class="form-control"
+              required
+              [disabled]="editingDevice !== null"
+              placeholder="e.g., device-004">
+          </div>
+
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              [(ngModel)]="deviceForm.name"
+              class="form-control"
+              required
+              placeholder="e.g., Temperature Sensor">
+          </div>
+
+          <div class="form-group">
+            <label for="description">Description (Optional)</label>
+            <textarea
+              id="description"
+              name="description"
+              [(ngModel)]="deviceForm.description"
+              class="form-control"
+              rows="3"
+              placeholder="Enter device description"></textarea>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="cancelForm()">Cancel</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!deviceFormElement.valid">
+              {{ editingDevice ? 'Update' : 'Create' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

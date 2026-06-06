@@ -1,0 +1,300 @@
+﻿# Testing Guide
+
+This guide will walk you through testing the MQTT Telemetry Collector system.
+
+## Prerequisites
+
+- .NET 8.0 SDK installed
+- .NET 10.0 SDK installed (for Console Publisher)
+- Visual Studio 2022+ or VS Code
+
+## Step-by-Step Testing
+
+### Step 1: Build the Solution
+
+```powershell
+# Build both projects
+dotnet build
+```
+
+Expected output: `Build succeeded`
+
+### Step 2: Start the API
+
+```powershell
+# Navigate to API project
+cd MQTTR1
+
+# Run the API
+dotnet run
+```
+
+Expected output:
+```
+info: Microsoft.Hosting.Lifetime[14]
+	  Now listening on: https://localhost:7124
+```
+
+**Keep this terminal window open!**
+
+### Step 3: Verify API is Running
+
+Open your browser and navigate to:
+```
+https://localhost:7124/swagger
+```
+
+You should see the Swagger UI with all API endpoints.
+
+### Step 4: Test via Swagger UI
+
+1. **List Devices**:
+   - Expand `GET /api/devices`
+   - Click "Try it out"
+   - Click "Execute"
+   - You should see 3 pre-seeded devices
+
+2. **Post Telemetry**:
+   - Expand `POST /api/telemetry`
+   - Click "Try it out"
+   - Use this JSON:
+   ```json
+   {
+	 "deviceId": "device-001",
+	 "metric": "temperature",
+	 "value": 23.5
+   }
+   ```
+   - Click "Execute"
+   - Expected response: `201 Created`
+
+3. **Get Telemetry**:
+   - Expand `GET /api/telemetry`
+   - Click "Try it out"
+   - Click "Execute"
+   - You should see your posted telemetry
+
+### Step 5: Test Console Publisher
+
+**Open a NEW terminal window** (keep the API running):
+
+```powershell
+# Navigate to Console Publisher
+cd ConsolePublisher
+
+# Run the console app
+dotnet run
+```
+
+You should see the menu:
+```
+╔════════════════════════════════════════════════════════╗
+║   MQTT Telemetry Console Publisher (IoT Simulator)    ║
+╚════════════════════════════════════════════════════════╝
+
+API Base URL: https://localhost:7124/api
+
+┌────────────────────────────────────────┐
+│             MAIN MENU                  │
+├────────────────────────────────────────┤
+│ 1. Post Single Telemetry               │
+│ 2. Post Batch Telemetry                │
+│ 3. Simulate IoT Device (Continuous)    │
+│ 4. Post from JSON File                 │
+│ 5. List Devices                        │
+│ 6. Configure API URL                   │
+│ 0. Exit                                │
+└────────────────────────────────────────┘
+```
+
+### Step 6: Test Console Publisher Features
+
+#### Test 1: List Devices
+```
+Select option: 5
+```
+
+Expected output:
+```
+Found 3 device(s):
+
+┌─────┬──────────────┬─────────────────────────┬──────────────────────┐
+│ ID  │ Device ID    │ Name                    │ Created              │
+├─────┼──────────────┼─────────────────────────┼──────────────────────┤
+│ 1   │ device-001   │ Temperature Sensor 1    │ 2024-01-15 10:00     │
+│ 2   │ device-002   │ Humidity Sensor 1       │ 2024-01-15 10:00     │
+│ 3   │ device-003   │ Pressure Sensor 1       │ 2024-01-15 10:00     │
+└─────┴──────────────┴─────────────────────────┴──────────────────────┘
+```
+
+#### Test 2: Post Single Telemetry
+```
+Select option: 1
+Device ID: device-001
+Metric: temperature
+Value: 25.3
+```
+
+Expected output:
+```
+✓ Success: Created
+Response: {"id":1,"deviceId":"device-001","metric":"temperature","value":25.3,"timestamp":"..."}
+```
+
+#### Test 3: Simulate IoT Device
+```
+Select option: 3
+Device ID: device-001
+Metric: temperature
+Interval in seconds: 3
+Number of readings: 5
+```
+
+Expected output:
+```
+[10:30:15] Sending: temperature=22.3°C... ✓ Sent
+[10:30:18] Sending: temperature=23.1°C... ✓ Sent
+[10:30:21] Sending: temperature=22.8°C... ✓ Sent
+[10:30:24] Sending: temperature=23.5°C... ✓ Sent
+[10:30:27] Sending: temperature=22.9°C... ✓ Sent
+
+Simulation completed. 5 readings sent.
+```
+
+#### Test 4: Post from JSON File
+```
+Select option: 4
+Enter file path: sample-batch.json
+```
+
+Expected output:
+```
+✓ Batch posted successfully!
+Response: {"message":"Batch processed successfully","count":5}
+```
+
+### Step 7: Verify Data in API
+
+Go back to Swagger UI and test these endpoints:
+
+1. **Get All Telemetry**:
+   ```
+   GET /api/telemetry?page=1&pageSize=20
+   ```
+   You should see all the telemetry you posted.
+
+2. **Get Last Value**:
+   ```
+   GET /api/telemetry/last?deviceId=device-001&metric=temperature
+   ```
+   You should see the most recent temperature reading.
+
+3. **Get Filtered Data**:
+   ```
+   GET /api/telemetry?deviceId=device-001&metric=temperature
+   ```
+   You should see only temperature readings from device-001.
+
+### Step 8: Test Batch Operations
+
+In Console Publisher:
+```
+Select option: 2
+Number of records to generate: 50
+```
+
+This will generate 50 random telemetry records across all devices and metrics.
+
+Then in Swagger:
+```
+GET /api/telemetry?page=1&pageSize=10
+```
+
+You should see paginated results with 10 records per page.
+
+## Advanced Testing
+
+### Test API URL Configuration
+
+In Console Publisher:
+```
+Select option: 6
+Current URL: https://localhost:7124/api
+Enter new API URL: http://localhost:5000/api
+```
+
+### Test Error Handling
+
+Try posting telemetry for a non-existent device:
+
+In Console Publisher:
+```
+Select option: 1
+Device ID: device-999
+Metric: temperature
+Value: 25.3
+```
+
+Expected output:
+```
+✗ Failed: BadRequest
+Error: {"error":"Device with DeviceId 'device-999' not found"}
+```
+
+### Test Hourly Averages
+
+After posting multiple temperature readings, test:
+```
+GET /api/telemetry/average/hourly?deviceId=device-001&metric=temperature
+```
+
+## Using the Quick Start Script
+
+Instead of manually starting both applications:
+
+```powershell
+.\start-all.ps1
+```
+
+This will:
+1. Start the API in a new terminal window
+2. Wait 5 seconds for initialization
+3. Start the Console Publisher in another terminal window
+
+## Common Issues
+
+### Issue: "Connection refused"
+**Solution**: Make sure the API is running first and check the port number.
+
+### Issue: "Device not found"
+**Solution**: Use option 5 in Console Publisher to list available devices.
+
+### Issue: "Port already in use"
+**Solution**: Stop any other instances of the API or change the port in `launchSettings.json`.
+
+### Issue: JSON file not found
+**Solution**: Use full path or ensure you're in the ConsolePublisher directory.
+
+## Performance Testing
+
+To test with high volume:
+
+1. Use the batch option with large numbers:
+   ```
+   Select option: 2
+   Number of records: 1000
+   ```
+
+2. Run multiple simulations in parallel:
+   - Open 3 terminal windows
+   - Run Console Publisher in each
+   - Start IoT simulation with different device IDs
+
+## Next Steps
+
+Once basic testing is complete:
+- Test with SQL Server database (see DATABASE_MIGRATION.md)
+- Test paging with large datasets
+- Test date range filtering
+- Test concurrent requests
+- Prepare for Angular frontend integration

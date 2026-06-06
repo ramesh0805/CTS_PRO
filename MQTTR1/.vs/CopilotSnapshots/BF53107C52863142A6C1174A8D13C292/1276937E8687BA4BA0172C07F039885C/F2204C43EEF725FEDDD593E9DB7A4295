@@ -1,0 +1,68 @@
+﻿using Microsoft.EntityFrameworkCore;
+using MQTTR1.Models;
+
+namespace MQTTR1.Data;
+
+public class ApplicationDbContext : DbContext
+{
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : base(options)
+    {
+    }
+
+    public DbSet<Device> Devices { get; set; }
+    public DbSet<Telemetry> Telemetries { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        // Device configuration
+        modelBuilder.Entity<Device>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+
+            entity.HasIndex(e => e.DeviceId)
+                .IsUnique();
+
+            entity.Property(e => e.DeviceId)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            entity.Property(e => e.Name)
+                .IsRequired()
+                .HasMaxLength(200);
+
+            entity.Property(e => e.Description)
+                .HasMaxLength(500);
+
+            entity.Property(e => e.CreatedAt)
+                .IsRequired();
+        });
+
+        // Telemetry configuration
+        modelBuilder.Entity<Telemetry>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+
+            entity.HasIndex(e => new { e.DeviceId, e.Metric, e.Timestamp });
+
+            entity.HasIndex(e => e.Timestamp);
+
+            entity.Property(e => e.Metric)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            entity.Property(e => e.Value)
+                .IsRequired();
+
+            entity.Property(e => e.Timestamp)
+                .IsRequired();
+
+            entity.HasOne(e => e.Device)
+                .WithMany(d => d.Telemetries)
+                .HasForeignKey(e => e.DeviceId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+    }
+}

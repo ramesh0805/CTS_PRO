@@ -1,0 +1,138 @@
+﻿<div class="dashboard">
+  <!-- Live Metrics Carousel -->
+  <div class="carousel-section">
+    <div class="time-display">
+      <span class="time-text">{{ currentTime }}</span>
+    </div>
+
+    <div class="carousel-container" *ngIf="liveMetrics.length > 0">
+      <button class="carousel-btn prev" (click)="prevSlide()" aria-label="Previous">‹</button>
+
+      <div class="carousel-track">
+        <div class="carousel-slide" 
+             *ngFor="let metric of liveMetrics; let i = index"
+             [class.active]="i === currentCarouselIndex"
+             [style.background]="'linear-gradient(135deg, ' + metric.color + '20, ' + metric.color + '40)'">
+
+          <div class="metric-icon">{{ metric.icon }}</div>
+
+          <div class="metric-content">
+            <h3 class="metric-name">{{ metric.name }}</h3>
+
+            <div class="metric-current">
+              <span class="metric-value">{{ metric.value | number:'1.1-1' }}</span>
+              <span class="metric-unit">{{ metric.unit }}</span>
+            </div>
+
+            <div class="metric-interpretation" [style.color]="metric.color">
+              {{ metric.interpretation }}
+            </div>
+
+            <div class="metric-stats">
+              <div class="stat-box">
+                <span class="stat-label">Range</span>
+                <span class="stat-value">{{ metric.min | number:'1.1-1' }} - {{ metric.max | number:'1.1-1' }}</span>
+              </div>
+              <div class="stat-box">
+                <span class="stat-label">Average</span>
+                <span class="stat-value">{{ metric.average | number:'1.1-1' }}{{ metric.unit }}</span>
+              </div>
+            </div>
+
+            <div class="metric-range-bar">
+              <div class="range-fill" 
+                   [style.width.%]="((metric.value - metric.min) / (metric.max - metric.min)) * 100"
+                   [style.background]="metric.color">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="carousel-btn next" (click)="nextSlide()" aria-label="Next">›</button>
+
+      <div class="carousel-indicators">
+        <button *ngFor="let metric of liveMetrics; let i = index"
+                class="indicator"
+                [class.active]="i === currentCarouselIndex"
+                (click)="goToSlide(i)"
+                [attr.aria-label]="'Go to ' + metric.name">
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <h1>MQTTR Dashboard</h1>
+
+  <div *ngIf="loading" class="loading">
+    <p>Loading dashboard...</p>
+  </div>
+
+  <div *ngIf="error" class="alert alert-error">
+    {{ error }}
+    <button class="btn btn-secondary" (click)="refresh()">Retry</button>
+  </div>
+
+  <div *ngIf="!loading && !error">
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Overview</h3>
+        <div class="stats">
+          <div class="stat-item">
+            <span class="stat-label">Total Devices:</span>
+            <span class="stat-value">{{ totalDevices }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Quick Actions</h3>
+        <div class="actions">
+          <button class="btn btn-primary" routerLink="/devices">Manage Devices</button>
+          <button class="btn btn-success" routerLink="/telemetry">View Telemetry</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Recent Devices</h3>
+      <table class="table" *ngIf="devices.length > 0">
+        <thead>
+          <tr>
+            <th>Device ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Created</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let device of devices.slice(0, 5)">
+            <td>{{ device.deviceId }}</td>
+            <td>{{ device.name }}</td>
+            <td>{{ device.description || 'N/A' }}</td>
+            <td>{{ device.createdAt | date:'short' }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p *ngIf="devices.length === 0">No devices found.</p>
+    </div>
+
+    <!-- Admin Footer -->
+    <div class="admin-footer" *ngIf="isAdmin">
+      <div class="admin-section">
+        <h3>👨‍💼 Admin Controls</h3>
+        <div class="admin-actions">
+          <button class="btn btn-admin" routerLink="/user-management">
+            👥 Manage Users
+          </button>
+          <button class="btn btn-admin" routerLink="/simulator">
+            📊 Simulator
+          </button>
+        </div>
+        <p class="admin-note">
+          ℹ️ As an administrator, you can manage user accounts, view all telemetry data, and access advanced features.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

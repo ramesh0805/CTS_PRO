@@ -1,0 +1,75 @@
+﻿using Microsoft.EntityFrameworkCore;
+using MQTTR1.Data;
+using MQTTR1.Models;
+
+namespace MQTTR1.Services;
+
+public class TelemetryCleanupService : BackgroundService
+{
+    private readonly IServiceProvider _serviceProvider;
+    private readonly ILogger<TelemetryCleanupService> _logger;
+    private readonly TimeSpan _cleanupInterval = TimeSpan.FromHours(1); // Run every hour
+    private readonly TimeSpan _dataRetentionPeriod = TimeSpan.FromHours(10); // Keep only last 10 hours
+
+    public TelemetryCleanupService(
+        IServiceProvider serviceProvider,
+        ILogger<TelemetryCleanupService> logger)
+    {
+        _serviceProvider = serviceProvider;
+        _logger = logger;
+    }
+
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        _logger.LogInformation("Telemetry Cleanup Service started.");
+
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            try
+            {
+                await CleanupOldDataAsync();
+                await Task.Delay(_cleanupInterval, stoppingToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred during telemetry cleanup.");
+                await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken); // Wait 5 minutes on error
+            }
+        }
+    }
+
+    private async Task CleanupOldDataAsync()
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        var cutoffTime = DateTime.UtcNow.Subtract(_dataRetentionPeriod);
+
+        try
+        {
+            // Delete telemetry data older than 10 hours
+            var oldRecords = await context.Telemetries
+                .Where(t => t.Timestamp < cutoffTime)
+                .ToListAsync();
+
+            if (oldRecords.Any())
+            {
+                context.Telemetries.RemoveRange(oldRecords);
+                await context.SaveChangesAsync();
+
+                _logger.LogInformation(
+                    "Cleaned up {Count} old telemetry records older than {CutoffTime}",
+                    oldRecords.Count,
+                    cutoffTime);
+            }
+            else
+            {
+                _logger.LogInformation("No old records to clean up.");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to cleanup old telemetry data.");
+        }
+    }
+}

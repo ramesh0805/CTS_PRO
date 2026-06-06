@@ -1,0 +1,70 @@
+﻿import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-metric-filter',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  template: `
+    <div class="form-group">
+      <label for="filterMetric">Metric</label>
+      <select
+        id="filterMetric"
+        [(ngModel)]="selectedMetric"
+        (ngModelChange)="onMetricChange()"
+        [disabled]="availableMetrics.length === 0">
+        <option value="">{{ availableMetrics.length === 0 ? 'Select Device First' : 'All Metrics' }}</option>
+        <option *ngFor="let metric of availableMetrics" [value]="metric">
+          {{ metric | titlecase }}
+        </option>
+      </select>
+    </div>
+  `,
+  styles: [`
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    label {
+      font-weight: 600;
+      color: #333;
+      font-size: 14px;
+    }
+    select {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      background-color: white;
+      cursor: pointer;
+      transition: border-color 0.3s ease;
+    }
+    select:hover { border-color: #999; }
+    select:focus {
+      outline: none;
+      border-color: #0066cc;
+      box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.15);
+    }
+    select:disabled { background-color: #f5f5f5; color: #999; cursor: not-allowed; }
+  `]
+})
+export class MetricFilterComponent implements OnChanges {
+  @Input() availableMetrics: string[] = [];
+  @Input() selectedMetric: string = '';
+  @Output() metricChange = new EventEmitter<string>();
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['availableMetrics'] && this.selectedMetric) {
+      if (!this.availableMetrics.includes(this.selectedMetric)) {
+        this.selectedMetric = '';
+        this.metricChange.emit('');
+      }
+    }
+  }
+
+  onMetricChange(): void {
+    this.metricChange.emit(this.selectedMetric);
+  }
+}

@@ -1,0 +1,238 @@
+﻿import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+
+export interface CriticalAlert {
+  id: number;
+  type: 'temperature' | 'humidity' | 'pressure';
+  deviceId: string;
+  deviceName: string;
+  currentValue: number;
+  previousValue: number;
+  difference: number;
+  timestamp: Date;
+  severity: 'warning' | 'critical';
+  message: string;
+  read: boolean;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AlertService {
+  private alertsSubject = new BehaviorSubject<CriticalAlert[]>([]);
+  public alerts$: Observable<CriticalAlert[]> = this.alertsSubject.asObservable();
+  private nextId = 1;
+  private readonly ALERT_MIN_GAP_MS = 60 * 60 * 1000; // 1 hour
+  private readonly lastAlertTimeByKey = new Map<string, number>();
+
+  // Thresholds for detecting critical changes
+  private readonly THRESHOLDS = {
+    temperature: {
+      warning: 5,   // 5°C difference
+      critical: 10  // 10°C difference
+    },
+    humidity: {
+      warning: 10,  // 10% difference
+      critical: 20  // 20% difference
+    },
+    pressure: {
+      warning: 50,  // 50 hPa difference
+      critical: 100 // 100 hPa difference
+    }
+  };
+
+  constructor() {
+    this.seedInitialCriticalAlert();
+  }
+
+  private seedInitialCriticalAlert(): void {
+    const initialAlert: CriticalAlert = {
+      id: this.nextId++,
+      type: 'temperature',
+      deviceId: 'device-001',
+      deviceName: 'Smart Thermostat - Living Room',
+      currentValue: 46.2,
+      previousValue: 31.1,
+      difference: 15.1,
+      timestamp: new Date(Date.now() - (2 * 60 * 60 * 1000)), // 2 hours ago
+      severity: 'critical',
+      message: '🚨 CRITICAL: Smart Thermostat - Living Room temperature increased by 15.1°C (from 31.1°C to 46.2°C)',
+      read: false
+    };
+
+    this.alertsSubject.next([initialAlert]);
+  }
+
+  /**
+   * Check if a metric value is critical compared to previous value
+   */
+  checkMetric(
+    type: 'temperature' | 'humidity' | 'pressure',
+    deviceId: string,
+    deviceName: string,
+    currentValue: number,
+    previousValue: number
+  ): void {
+    const difference = Math.abs(currentValue - previousValue);
+    const threshold = this.THRESHOLDS[type];
+
+    let severity: 'warning' | 'critical' | null = null;
+    let message = '';
+
+    if (difference >= threshold.critical) {
+      severity = 'critical';
+      message = this.getCriticalMessage(type, deviceName, currentValue, previousValue, difference);
+    } else if (difference >= threshold.warning) {
+      severity = 'warning';
+      message = this.getWarningMessage(type, deviceName, currentValue, previousValue, difference);
+    }
+
+    if (severity) {
+      this.addAlert({
+        type,
+        deviceId,
+        deviceName,
+        currentValue,
+        previousValue,
+        difference,
+        severity,
+        message
+      });
+    }
+  }
+
+  /**
+   * Add a new alert
+   */
+  private addAlert(data: Omit<CriticalAlert, 'id' | 'timestamp' | 'read'>): void {
+    const alertKey = `${data.deviceId}-${data.type}`;
+    const nowMs = Date.now();
+    const lastAlertMs = this.lastAlertTimeByKey.get(alertKey);
+
+    if (lastAlertMs && (nowMs - lastAlertMs) < this.ALERT_MIN_GAP_MS) {
+      return;
+    }
+
+    const alert: CriticalAlert = {
+      id: this.nextId++,
+      ...data,
+      timestamp: new Date(nowMs),
+      read: false
+    };
+
+    const currentAlerts = this.alertsSubject.value;
+
+    // Add to beginning (newest first)
+    this.alertsSubject.next([alert, ...currentAlerts]);
+    this.lastAlertTimeByKey.set(alertKey, nowMs);
+
+    // Keep only last 50 alerts
+    if (this.alertsSubject.value.length > 50) {
+      this.alertsSubject.next(this.alertsSubject.value.slice(0, 50));
+    }
+  }
+
+  /**
+   * Mark alert as read
+   */
+  markAsRead(id: number): void {
+    const alerts = this.alertsSubject.value.map(alert =>
+      alert.id === id ? { ...alert, read: true } : alert
+    );
+    this.alertsSubject.next(alerts);
+  }
+
+  /**
+   * Mark all alerts as read
+   */
+  markAllAsRead(): void {
+    const alerts = this.alertsSubject.value.map(alert => ({ ...alert, read: true }));
+    this.alertsSubject.next(alerts);
+  }
+
+  /**
+   * Remove an alert
+   */
+  removeAlert(id: number): void {
+    const alerts = this.alertsSubject.value.filter(alert => alert.id !== id);
+    this.alertsSubject.next(alerts);
+  }
+
+  /**
+   * Clear all alerts
+   */
+  clearAll(): void {
+    this.alertsSubject.next([]);
+  }
+
+  /**
+   * Get unread count
+   */
+  getUnreadCount(): number {
+    return this.alertsSubject.value.filter(alert => !alert.read).length;
+  }
+
+  /**
+   * Get critical message
+   */
+  private getCriticalMessage(
+    type: string,
+    deviceName: string,
+    current: number,
+    previous: number,
+    diff: number
+  ): string {
+    const direction = current > previous ? 'increased' : 'decreased';
+    const unit = this.getUnit(type);
+
+    return `🚨 CRITICAL: ${deviceName} ${type} ${direction} by ${diff.toFixed(1)}${unit} (from ${previous.toFixed(1)}${unit} to ${current.toFixed(1)}${unit})`;
+  }
+
+  /**
+   * Get warning message
+   */
+  private getWarningMessage(
+    type: string,
+    deviceName: string,
+    current: number,
+    previous: number,
+    diff: number
+  ): string {
+    const direction = current > previous ? 'increased' : 'decreased';
+    const unit = this.getUnit(type);
+
+    return `⚠️ WARNING: ${deviceName} ${type} ${direction} by ${diff.toFixed(1)}${unit} (from ${previous.toFixed(1)}${unit} to ${current.toFixed(1)}${unit})`;
+  }
+
+  /**
+   * Get unit for metric type
+   */
+  private getUnit(type: string): string {
+    switch (type) {
+      case 'temperature':
+        return '°C';
+      case 'humidity':
+        return '%';
+      case 'pressure':
+        return ' hPa';
+      default:
+        return '';
+    }
+  }
+
+  /**
+   * Get icon for alert type
+   */
+  getIcon(type: string): string {
+    switch (type) {
+      case 'temperature':
+        return '🌡️';
+      case 'humidity':
+        return '💧';
+      case 'pressure':
+        return '📊';
+      default:
+        return '⚠️';
+    }
+  }
+}

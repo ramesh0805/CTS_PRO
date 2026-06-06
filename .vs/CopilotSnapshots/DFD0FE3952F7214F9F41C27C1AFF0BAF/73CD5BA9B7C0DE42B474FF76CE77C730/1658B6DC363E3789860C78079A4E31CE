@@ -1,0 +1,298 @@
+﻿import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, interval, BehaviorSubject } from 'rxjs';
+import { catchError, retry, shareReplay, timeout, switchMap, startWith } from 'rxjs/operators';
+import { Telemetry, TelemetryDto, PagedResult, ChartData } from '../models/telemetry.model';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class TelemetryService {
+  private apiUrl = 'http://localhost:5297/api/telemetry';
+  private readonly CACHE_SIZE = 1;
+  private readonly TIMEOUT_MS = 30000; // 30 seconds
+  private readonly RETRY_COUNT = 1; // Reduced retries for faster response
+  private readonly POLLING_INTERVAL_MS = 10000; // Poll every 10 seconds for live data
+
+  // Cache for frequently accessed data
+  private cache = new Map<string, Observable<any>>();
+
+  // Subject for live data updates
+  private liveDataSubject = new BehaviorSubject<any>(null);
+  public liveData$ = this.liveDataSubject.asObservable();
+
+  constructor(private http: HttpClient) {}
+
+
+  postTelemetry(telemetry: TelemetryDto): Observable<Telemetry> {
+    return this.http.post<Telemetry>(this.apiUrl, telemetry).pipe(
+      timeout(this.TIMEOUT_MS),
+      retry(1), // Retry once on failure
+      catchError(error => {
+        console.error('Failed to post telemetry:', error);
+        throw error;
+      })
+    );
+  }
+
+  postTelemetryBatch(telemetries: TelemetryDto[]): Observable<any> {
+    return this.http.post(`${this.apiUrl}/batch`, telemetries).pipe(
+      timeout(this.TIMEOUT_MS * 2), // Longer timeout for batch operations
+      retry(1),
+      catchError(error => {
+        console.error('Failed to post telemetry batch:', error);
+        throw error;
+      })
+    );
+  }
+
+  getTelemetry(
+    deviceId?: string,
+    metric?: string,
+    page: number = 1,
+    pageSize: number = 20,
+    startDate?: string,
+    endDate?: string
+  ): Observable<PagedResult<Telemetry>> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('pageSize', pageSize.toString());
+
+    if (deviceId) {
+      params = params.set('deviceId', deviceId);
+    }
+    if (metric) {
+      params = params.set('metric', metric);
+    }
+    if (startDate) {
+      params = params.set('startDate', startDate);
+    }
+    if (endDate) {
+      params = params.set('endDate', endDate);
+    }
+
+    return this.http.get<PagedResult<Telemetry>>(this.apiUrl, { params }).pipe(
+      timeout(this.TIMEOUT_MS),
+      retry(this.RETRY_COUNT),
+      catchError(error => {
+        console.error('Failed to get telemetry:', error);
+        throw error;
+      })
+    );
+  }
+
+  getTelemetryByDevice(deviceId: string, page: number = 1, pageSize: number = 20): Observable<PagedResult<Telemetry>> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('pageSize', pageSize.toString())
+      .set('deviceId', deviceId);
+
+    return this.http.get<PagedResult<Telemetry>>(this.apiUrl, { params }).pipe(
+      timeout(this.TIMEOUT_MS),
+      retry(this.RETRY_COUNT),
+      shareReplay(this.CACHE_SIZE),
+      catchError(error => {
+        console.error('Failed to get telemetry by device:', error);
+        throw error;
+      })
+    );
+  }
+
+  getLatestTelemetry(deviceId: string, count: number = 10, metric?: string): Observable<Telemetry[]> {
+    let url = `${this.apiUrl}/last?deviceId=${deviceId}&count=${count}`;
+    if (metric) {
+      url += `&metric=${metric}`;
+    }
+    return this.http.get<Telemetry[]>(url).pipe(
+      timeout(this.TIMEOUT_MS),
+      retry(this.RETRY_COUNT),
+      shareReplay(this.CACHE_SIZE),
+      catchError(error => {
+        console.error('Failed to get latest telemetry:', error);
+        throw error;
+      })
+    );
+  }
+
+  getTelemetryStats(deviceId: string, metric: string, startDate?: string, endDate?: string): Observable<any> {
+    let params = new HttpParams();
+    if (startDate) params = params.set('startDate', startDate);
+    if (endDate) params = params.set('endDate', endDate);
+
+    return this.http.get(`${this.apiUrl}/${deviceId}/${metric}/stats`, { params }).pipe(
+      timeout(this.TIMEOUT_MS),
+      retry(this.RETRY_COUNT),
+      shareReplay(this.CACHE_SIZE),
+      catchError(error => {
+        console.error('Failed to get telemetry stats:', error);
+        throw error;
+      })
+    );
+  }
+
+  // Get hourly data for charts — supports any time window up to 720 hours
+  // Optimized with caching for frequently accessed data
+  getHourlyData(deviceId: string, metric?: string, hours: number = 24): Observable<any> {
+    let params = new HttpParams().set('hours', hours.toString());
+    if (metric) {
+      params = params.set('metric', metric);
+    }
+
+    const cacheKey = `hourly_${deviceId}_${metric || 'all'}_${hours}h`;
+
+    // Return cached observable if available
+    if (this.cache.has(cacheKey)) {
+      const cached = this.cache.get(cacheKey);
+      if (cached) {
+        return cached;
+      }
+    }
+
+    // Create new observable with caching
+    const request$ = this.http.get(`${this.apiUrl}/hourly/${deviceId}`, { params }).pipe(
+      timeout(this.TIMEOUT_MS),
+      retry(0), // No retries for hourly data
+      shareReplay({ bufferSize: 1, refCount: true, windowTime: 30000 }), // Cache for 30 seconds
+      catchError(error => {
+        console.error('Failed to get hourly data for device:', deviceId, 'Error:', error);
+        // Remove from cache on error
+        this.cache.delete(cacheKey);
+        throw error;
+      })
+    );
+
+    // Store in cache
+    this.cache.set(cacheKey, request$);
+
+    // Clean up cache after 30 seconds
+    setTimeout(() => {
+      this.cache.delete(cacheKey);
+    }, 30000);
+
+    return request$;
+  }
+
+  // Clear cache manually if needed
+  clearCache(): void {
+    this.cache.clear();
+  }
+
+  /**
+   * Get 24-hour chart data optimized for Chart.js visualization
+   * @param deviceId - Device ID to fetch data for
+   * @param metric - Optional metric name (temperature, humidity, pressure)
+   * @param hours - Number of hours to retrieve (default 24, max 720)
+   */
+  getChartData(deviceId: string, metric?: string, hours: number = 24): Observable<ChartData> {
+    let params = new HttpParams()
+      .set('hours', hours.toString());
+
+    if (metric) {
+      params = params.set('metric', metric);
+    }
+
+    const cacheKey = `chartdata_${deviceId}_${metric || 'all'}_${hours}h`;
+
+    // Return cached observable if available
+    if (this.cache.has(cacheKey)) {
+      const cached = this.cache.get(cacheKey);
+      if (cached) {
+        return cached;
+      }
+    }
+
+    // Create new observable with caching
+    const request$ = this.http.get<ChartData>(`${this.apiUrl}/chart-data/${deviceId}`, { params }).pipe(
+      timeout(this.TIMEOUT_MS),
+      retry(1),
+      shareReplay({ bufferSize: 1, refCount: true, windowTime: 30000 }), // Cache for 30 seconds
+      catchError(error => {
+        console.error(`Failed to get chart data for device ${deviceId}:`, error);
+        this.cache.delete(cacheKey);
+        throw error;
+      })
+    );
+
+    // Store in cache
+    this.cache.set(cacheKey, request$);
+
+    // Clean up cache after 30 seconds
+    setTimeout(() => {
+      this.cache.delete(cacheKey);
+    }, 30000);
+
+    return request$;
+  }
+
+  /**
+   * Get live chart data with automatic polling
+   * Returns an observable that polls the API at specified intervals
+   * @param deviceId - Device ID to fetch data for
+   * @param metric - Optional metric name
+   * @param pollingIntervalMs - Polling interval in milliseconds (default 10000ms = 10 seconds)
+   */
+  getLiveChartData(deviceId: string, metric?: string, pollingIntervalMs: number = this.POLLING_INTERVAL_MS, hours: number = 24): Observable<ChartData> {
+    return interval(pollingIntervalMs).pipe(
+      startWith(0), // Emit immediately first, then at intervals
+      switchMap(() => this.getChartData(deviceId, metric, hours)),
+      shareReplay(1)
+    );
+  }
+
+  /**
+   * Get last recorded value for a specific device and metric
+   * Useful for live metric display
+   * @param deviceId - Device ID
+   * @param metric - Metric name
+   */
+  getLastValue(deviceId: string, metric: string): Observable<Telemetry> {
+    return this.http.get<Telemetry>(`${this.apiUrl}/last?deviceId=${deviceId}&metric=${metric}`).pipe(
+      timeout(this.TIMEOUT_MS),
+      retry(1),
+      catchError(error => {
+        console.error(`Failed to get last value for ${deviceId}/${metric}:`, error);
+        throw error;
+      })
+    );
+  }
+
+  /**
+   * Start continuous polling for live metric updates
+   * Updates the liveData$ subject with new data
+   * @param deviceIds - Array of device IDs to poll
+   * @param metrics - Array of metric names to poll
+   * @param intervalMs - Polling interval in milliseconds
+   */
+  startLivePolling(deviceIds: string[], metrics: string[], intervalMs: number = 15000): Observable<any> {
+    return interval(intervalMs).pipe(
+      startWith(0),
+      switchMap(async () => {
+        const updates: any[] = [];
+        for (const deviceId of deviceIds) {
+          for (const metric of metrics) {
+            try {
+              const lastValue = await this.getLastValue(deviceId, metric).toPromise();
+              if (lastValue) {
+                updates.push({
+                  deviceId,
+                  metric,
+                  value: lastValue.value,
+                  timestamp: lastValue.timestamp
+                });
+              }
+            } catch (error) {
+              console.error(`Error polling ${deviceId}/${metric}:`, error);
+            }
+          }
+        }
+        this.liveDataSubject.next({ timestamp: new Date(), updates });
+        return updates;
+      }),
+      shareReplay(1),
+      catchError(error => {
+        console.error('Error in live polling:', error);
+        throw error;
+      })
+    );
+  }
+}

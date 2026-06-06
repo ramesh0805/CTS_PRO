@@ -1,0 +1,15 @@
+using MQTTR1.Models;
+
+namespace MQTTR1.Repositories;
+
+public interface IDeviceRepository
+{
+    Task<Device?> GetByIdAsync(int id);
+    Task<Device?> GetByDeviceIdAsync(string deviceId);
+    Task<IEnumerable<Device>> GetAllAsync();
+    Task<Dictionary<string, DateTime?>> GetLastSeenMapAsync(IEnumerable<string> deviceIds);
+    Task<Device> CreateAsync(Device device);
+    Task<Device> UpdateAsync(Device device);
+    Task<bool> DeleteAsync(int id);
+    Task<bool> ExistsAsync(string deviceId);
+}

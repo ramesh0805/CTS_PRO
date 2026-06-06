@@ -1,0 +1,49 @@
+﻿<div class="devices">
+  <div class="header">
+    <h1>Devices</h1>
+    <div class="actions">
+      <button class="btn btn-secondary" (click)="refresh()">Refresh</button>
+    </div>
+  </div>
+
+  <div *ngIf="success" class="alert alert-success">
+    {{ success }}
+  </div>
+
+  <div *ngIf="error" class="alert alert-error">
+    {{ error }}
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <p>Loading devices...</p>
+  </div>
+
+  <div *ngIf="!loading" class="card">
+    <h3>Device List ({{ devices.length }})</h3>
+
+    <table class="table" *ngIf="devices.length > 0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Device ID</th>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Created</th>
+          <th>Updated</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let device of devices">
+          <td>{{ device.id }}</td>
+          <td>{{ device.deviceId }}</td>
+          <td>{{ device.name }}</td>
+          <td>{{ device.description || 'N/A' }}</td>
+          <td>{{ device.createdAt | date:'short' }}</td>
+          <td>{{ device.updatedAt ? (device.updatedAt | date:'short') : 'N/A' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p *ngIf="devices.length === 0">No devices found.</p>
+  </div>
+</div>

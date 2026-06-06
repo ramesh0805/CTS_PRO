@@ -1,0 +1,24 @@
+﻿export interface Telemetry {
+  id: number;
+  deviceId: string;
+  metric: string;
+  value: number;
+  timestamp: string;
+}
+
+export interface TelemetryDto {
+  deviceId: string;
+  metric: string;
+  value: number;
+  timestamp?: string;
+}
+
+export interface PagedResult<T> {
+  data: T[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  hasPrevious: boolean;
+  hasNext: boolean;
+}

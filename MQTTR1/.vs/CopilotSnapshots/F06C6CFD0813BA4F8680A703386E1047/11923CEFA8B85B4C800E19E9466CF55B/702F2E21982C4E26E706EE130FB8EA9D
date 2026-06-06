@@ -1,0 +1,348 @@
+﻿import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService, RegisterDto } from '../../services/auth.service';
+
+@Component({
+  selector: 'app-register',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  template: `
+    <div class="register-container">
+      <!-- Animated Background -->
+      <div class="background-animation">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+        <div class="circle circle-3"></div>
+        <div class="floating-icons">
+          <span class="icon">🔐</span>
+          <span class="icon">✨</span>
+          <span class="icon">🚀</span>
+          <span class="icon">💡</span>
+          <span class="icon">🎯</span>
+        </div>
+      </div>
+
+      <div class="register-card">
+        <!-- Logo/Icon Header -->
+        <div class="card-header">
+          <div class="logo-circle">
+            <span class="logo-icon">✨</span>
+          </div>
+          <h2 class="card-title">Create Your Account</h2>
+          <p class="card-subtitle">Join the IoT Telemetry Platform</p>
+        </div>
+
+        <div *ngIf="isFirstUser" class="info-message">
+          <span class="info-icon">👑</span>
+          <div>
+            <strong>First User Registration</strong>
+            <p>You will automatically become an Admin!</p>
+          </div>
+        </div>
+
+        <form (ngSubmit)="onSubmit()" #registerForm="ngForm" class="register-form">
+          <div class="form-group">
+            <label for="username">
+              <span class="label-icon">👤</span>
+              Username
+            </label>
+            <div class="input-wrapper">
+              <input 
+                type="text" 
+                id="username" 
+                name="username"
+                [(ngModel)]="registerDto.username" 
+                required
+                minlength="3"
+                class="form-control"
+                placeholder="Choose a username">
+              <span class="input-icon">✍️</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">
+              <span class="label-icon">📧</span>
+              Email Address
+            </label>
+            <div class="input-wrapper">
+              <input 
+                type="email" 
+                id="email" 
+                name="email"
+                [(ngModel)]="registerDto.email" 
+                required
+                email
+                class="form-control"
+                placeholder="your@email.com">
+              <span class="input-icon">📬</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="password">
+              <span class="label-icon">🔒</span>
+              Password
+            </label>
+            <div class="input-wrapper">
+              <input 
+                type="password" 
+                id="password" 
+                name="password"
+                [(ngModel)]="registerDto.password" 
+                required
+                minlength="6"
+                class="form-control"
+                placeholder="Create a strong password">
+              <span class="input-icon">🔑</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="confirmPassword">
+              <span class="label-icon">✅</span>
+              Confirm Password
+            </label>
+            <div class="input-wrapper">
+              <input 
+                type="password" 
+                id="confirmPassword" 
+                name="confirmPassword"
+                [(ngModel)]="confirmPassword" 
+                required
+                class="form-control"
+                placeholder="Re-enter your password">
+              <span class="input-icon">🔐</span>
+            </div>
+          </div>
+
+          <div *ngIf="errorMessage" class="error-message">
+            <span class="error-icon">⚠️</span>
+            {{ errorMessage }}
+          </div>
+
+          <div *ngIf="successMessage" class="success-message">
+            <span class="success-icon">🎉</span>
+            {{ successMessage }}
+          </div>
+
+          <button 
+            type="submit" 
+            class="btn-primary" 
+            [disabled]="!registerForm.valid || isLoading">
+            <span *ngIf="!isLoading">
+              <span class="btn-icon">🚀</span>
+              Create Account
+            </span>
+            <span *ngIf="isLoading" class="loading-spinner">
+              <span class="spinner"></span>
+              Creating Account...
+            </span>
+          </button>
+        </form>
+
+        <div class="card-footer">
+          <p class="login-link">
+            Already have an account? 
+            <a (click)="goToLogin()" class="login-btn">
+              <span class="link-icon">🔓</span>
+              Sign In
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  `,
+  styles: [`
+    .register-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 80vh;
+      padding: 20px;
+    }
+
+    .register-card {
+      background: white;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 450px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
+    }
+
+    .info-message {
+      background-color: #d1ecf1;
+      color: #0c5460;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      border: 1px solid #bee5eb;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #555;
+      font-weight: 500;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: #007bff;
+    }
+
+    .error-message {
+      background-color: #f8d7da;
+      color: #721c24;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      border: 1px solid #f5c6cb;
+    }
+
+    .success-message {
+      background-color: #d4edda;
+      color: #155724;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      border: 1px solid #c3e6cb;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 12px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background-color: #218838;
+    }
+
+    .btn-primary:disabled {
+      background-color: #6c757d;
+      cursor: not-allowed;
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 20px;
+      color: #666;
+    }
+
+    .login-link a {
+      color: #007bff;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+  `]
+})
+export class RegisterComponent {
+  registerDto: RegisterDto = {
+    username: '',
+    email: '',
+    password: ''
+  };
+
+  confirmPassword = '';
+  errorMessage = '';
+  successMessage = '';
+  isLoading = false;
+  isFirstUser = false; // Could be determined by an API call
+
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {
+    // Redirect to dashboard if already authenticated
+    if (this.authService.isAuthenticated()) {
+      console.log('[RegisterComponent] User already authenticated, redirecting to dashboard');
+      this.router.navigate(['/dashboard']);
+    }
+  }
+
+  onSubmit(): void {
+    if (!this.validateForm()) {
+      return;
+    }
+
+    this.isLoading = true;
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    this.authService.register(this.registerDto).subscribe({
+      next: (response) => {
+        console.log('Registration successful:', response);
+        this.successMessage = `Welcome ${response.username}! You are registered as ${response.role}.`;
+
+        // Redirect to telemetry after 2 seconds
+        setTimeout(() => {
+          this.router.navigate(['/telemetry']);
+        }, 2000);
+      },
+      error: (error) => {
+        console.error('Registration failed:', error);
+        this.errorMessage = error.error?.message || 'Registration failed. Please try again.';
+        this.isLoading = false;
+      },
+      complete: () => {
+        this.isLoading = false;
+      }
+    });
+  }
+
+  validateForm(): boolean {
+    if (this.registerDto.password !== this.confirmPassword) {
+      this.errorMessage = 'Passwords do not match!';
+      return false;
+    }
+
+    if (this.registerDto.password.length < 6) {
+      this.errorMessage = 'Password must be at least 6 characters long!';
+      return false;
+    }
+
+    if (this.registerDto.username.length < 3) {
+      this.errorMessage = 'Username must be at least 3 characters long!';
+      return false;
+    }
+
+    return true;
+  }
+
+  goToLogin(): void {
+    this.router.navigate(['/login']);
+  }
+}

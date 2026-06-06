@@ -1,0 +1,22 @@
+﻿import { Routes } from '@angular/router';
+import { DevicesComponent } from './components/devices/devices.component';
+import { TelemetryComponent } from './components/telemetry/telemetry.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { SimulatorComponent } from './components/simulator/simulator.component';
+import { UserManagementComponent } from './components/user-management/user-management.component';
+import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
+import { authGuard } from './guards/auth.guard';
+import { adminGuard } from './guards/admin.guard';
+import { rootGuard } from './guards/root.guard';
+
+export const routes: Routes = [
+  { path: '', canActivate: [rootGuard], children: [] },
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
+  { path: 'devices', component: DevicesComponent, canActivate: [authGuard] },
+  { path: 'telemetry', component: TelemetryComponent, canActivate: [authGuard] },
+  { path: 'simulator', component: SimulatorComponent, canActivate: [adminGuard] },
+  { path: 'user-management', component: UserManagementComponent, canActivate: [adminGuard] }
+];

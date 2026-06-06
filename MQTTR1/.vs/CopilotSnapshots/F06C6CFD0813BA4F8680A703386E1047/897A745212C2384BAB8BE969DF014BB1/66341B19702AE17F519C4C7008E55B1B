@@ -1,0 +1,163 @@
+﻿import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, BehaviorSubject, tap } from 'rxjs';
+
+export interface RegisterDto {
+  username: string;
+  email: string;
+  password: string;
+}
+
+export interface LoginDto {
+  username: string;
+  password: string;
+}
+
+export interface AuthResponse {
+  token: string;
+  username: string;
+  email: string;
+  role: string;
+  expiresAt: Date;
+}
+
+export interface UserDto {
+  id: number;
+  username: string;
+  email: string;
+  role: string;
+  createdAt: Date;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthService {
+  private apiUrl = 'http://localhost:5297/api/auth';
+  private tokenKey = 'auth_token';
+  private userKey = 'auth_user';
+
+  private currentUserSubject = new BehaviorSubject<UserDto | null>(this.getStoredUser());
+  public currentUser$ = this.currentUserSubject.asObservable();
+
+  constructor(private http: HttpClient) {
+    // Initialize authentication state on service creation
+    const token = this.getToken();
+    const user = this.getStoredUser();
+
+    if (!token || !user) {
+      this.logout();
+    }
+  }
+
+  register(registerDto: RegisterDto): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, registerDto).pipe(
+      tap(response => this.handleAuthResponse(response))
+    );
+  }
+
+  login(loginDto: LoginDto): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, loginDto).pipe(
+      tap(response => this.handleAuthResponse(response))
+    );
+  }
+
+  logout(): void {
+    localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(this.userKey);
+    this.currentUserSubject.next(null);
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem(this.tokenKey);
+  }
+
+  isAuthenticated(): boolean {
+    const token = this.getToken();
+    const user = this.getCurrentUser();
+
+    // Both token and user must exist
+    if (!token || !user) {
+      return false;
+    }
+
+    // Check if token is valid (basic check - you can add expiration check here)
+    try {
+      // Decode JWT token to check expiration (optional)
+      const payload = this.decodeToken(token);
+      if (payload && payload.exp) {
+        const expirationDate = new Date(payload.exp * 1000);
+        if (expirationDate < new Date()) {
+          // Token expired
+          this.logout();
+          return false;
+        }
+      }
+      return true;
+    } catch (error) {
+      console.error('Error checking authentication:', error);
+      this.logout();
+      return false;
+    }
+  }
+
+  private decodeToken(token: string): any {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+      return JSON.parse(jsonPayload);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  isAdmin(): boolean {
+    const user = this.currentUserSubject.value;
+    return user?.role === 'Admin';
+  }
+
+  getCurrentUser(): UserDto | null {
+    return this.currentUserSubject.value;
+  }
+
+  private handleAuthResponse(response: AuthResponse): void {
+    localStorage.setItem(this.tokenKey, response.token);
+
+    const user: UserDto = {
+      id: 0, // Will be populated from token or separate call
+      username: response.username,
+      email: response.email,
+      role: response.role,
+      createdAt: new Date()
+    };
+
+    localStorage.setItem(this.userKey, JSON.stringify(user));
+    this.currentUserSubject.next(user);
+  }
+
+  private getStoredUser(): UserDto | null {
+    const userJson = localStorage.getItem(this.userKey);
+    if (!userJson) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(userJson);
+    } catch {
+      return null;
+    }
+  }
+
+  getAuthHeaders(): HttpHeaders {
+    const token = this.getToken();
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+  }
+}

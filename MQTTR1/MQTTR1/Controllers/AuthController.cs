@@ -1,0 +1,122 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using MQTTR1.DTOs;
+using MQTTR1.Services;
+
+namespace MQTTR1.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class AuthController : ControllerBase
+{
+    private readonly AuthService _authService;
+    private readonly ILogger<AuthController> _logger;
+
+    public AuthController(AuthService authService, ILogger<AuthController> logger)
+    {
+        _authService = authService;
+        _logger = logger;
+    }
+
+    [HttpPost("register")]
+    public async Task<ActionResult<AuthResponseDto>> Register([FromBody] RegisterDto registerDto)
+    {
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState
+                .Where(x => x.Value?.Errors.Count > 0)
+                .ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value!.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+
+            return BadRequest(new
+            {
+                message = "Validation failed",
+                errors
+            });
+        }
+
+        try
+        {
+            var response = await _authService.RegisterAsync(registerDto);
+            _logger.LogInformation("User {Username} registered successfully with role {Role}", 
+                response?.Username, response?.Role);
+            return Ok(response);
+        }
+        catch (InvalidOperationException ex)
+        {
+            _logger.LogWarning("Registration failed: {Message}", ex.Message);
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error during registration");
+            return StatusCode(500, new { message = "An error occurred during registration" });
+        }
+    }
+
+    [HttpPost("login")]
+    public async Task<ActionResult<AuthResponseDto>> Login([FromBody] LoginDto loginDto)
+    {
+        try
+        {
+            var response = await _authService.LoginAsync(loginDto);
+            _logger.LogInformation("User {Username} logged in successfully", response?.Username);
+            return Ok(response);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            _logger.LogWarning("Login failed for {Username}: {Message}", loginDto.Username, ex.Message);
+            return Unauthorized(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error during login for {Username}", loginDto.Username);
+            return StatusCode(500, new { message = "An error occurred during login" });
+        }
+    }
+
+    [Authorize]
+    [HttpGet("me")]
+    public async Task<ActionResult<UserDto>> GetCurrentUser()
+    {
+        try
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized(new { message = "Invalid token" });
+            }
+
+            var userId = int.Parse(userIdClaim.Value);
+            var user = await _authService.GetUserByIdAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound(new { message = "User not found" });
+            }
+
+            return Ok(user);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting current user");
+            return StatusCode(500, new { message = "An error occurred" });
+        }
+    }
+
+    [Authorize]
+    [HttpGet("validate")]
+    public IActionResult ValidateToken()
+    {
+        var username = User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value;
+        var role = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+
+        return Ok(new { 
+            valid = true, 
+            username = username,
+            role = role 
+        });
+    }
+}

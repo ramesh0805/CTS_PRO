@@ -1,0 +1,175 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using MQTTR1.Data;
+using MQTTR1.DTOs;
+using MQTTR1.Models;
+using BCrypt.Net;
+
+namespace MQTTR1.Services;
+
+public class AuthService
+{
+    private readonly ApplicationDbContext _context;
+    private readonly IConfiguration _configuration;
+
+    public AuthService(ApplicationDbContext context, IConfiguration configuration)
+    {
+        _context = context;
+        _configuration = configuration;
+    }
+
+    public async Task<AuthResponseDto?> RegisterAsync(RegisterDto registerDto)
+    {
+        var username = registerDto.Username?.Trim() ?? string.Empty;
+        var email = registerDto.Email?.Trim() ?? string.Empty;
+
+        // Business-level validation with beginner-friendly messages
+        if (string.IsNullOrWhiteSpace(username))
+        {
+            throw new InvalidOperationException("Username is required");
+        }
+
+        if (username.Length < 3)
+        {
+            throw new InvalidOperationException($"Username is too short. You entered {username.Length} character(s), but at least 3 are required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            throw new InvalidOperationException("Email is required");
+        }
+
+        if (string.IsNullOrWhiteSpace(registerDto.Password) || registerDto.Password.Length < 6)
+        {
+            throw new InvalidOperationException("Password is too short. It must be at least 6 characters long.");
+        }
+
+        // Check if username already exists
+        if (await _context.Users.AnyAsync(u => u.Username == username))
+        {
+            throw new InvalidOperationException("Username already exists");
+        }
+
+        // Check if email already exists
+        if (await _context.Users.AnyAsync(u => u.Email == email))
+        {
+            throw new InvalidOperationException("Email already exists");
+        }
+
+        // Check if this is the first user (make them admin)
+        var isFirstUser = !await _context.Users.AnyAsync();
+
+        var user = new User
+        {
+            Username = username,
+            Email = email,
+            PasswordHash = HashPassword(registerDto.Password),
+            Role = isFirstUser ? "Admin" : "User",
+            CreatedAt = DateTime.UtcNow,
+            IsActive = true
+        };
+
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync();
+
+        return await GenerateAuthResponse(user);
+    }
+
+    public async Task<AuthResponseDto?> LoginAsync(LoginDto loginDto)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == loginDto.Username);
+
+        if (user == null)
+        {
+            throw new UnauthorizedAccessException("Invalid username or password");
+        }
+
+        if (!user.IsActive)
+        {
+            throw new UnauthorizedAccessException("Account is inactive");
+        }
+
+        if (!VerifyPassword(loginDto.Password, user.PasswordHash))
+        {
+            throw new UnauthorizedAccessException("Invalid username or password");
+        }
+
+        user.UpdatedAt = DateTime.UtcNow;
+        await _context.SaveChangesAsync();
+
+        return await GenerateAuthResponse(user);
+    }
+
+    public async Task<UserDto?> GetUserByIdAsync(int userId)
+    {
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null) return null;
+
+        return new UserDto
+        {
+            Id = user.Id,
+            Username = user.Username,
+            Email = user.Email,
+            Role = user.Role,
+            CreatedAt = user.CreatedAt
+        };
+    }
+
+    private async Task<AuthResponseDto> GenerateAuthResponse(User user)
+    {
+        var token = GenerateJwtToken(user);
+        var expirationHours = _configuration.GetValue<int>("JwtSettings:ExpirationHours", 24);
+
+        return new AuthResponseDto
+        {
+            Token = token,
+            Username = user.Username,
+            Email = user.Email,
+            Role = user.Role,
+            ExpiresAt = DateTime.UtcNow.AddHours(expirationHours)
+        };
+    }
+
+    private string GenerateJwtToken(User user)
+    {
+        var jwtSettings = _configuration.GetSection("JwtSettings");
+        var secretKey = jwtSettings["SecretKey"] ?? "YourSuperSecretKeyForJWTTokenGeneration12345678";
+        var expirationHours = jwtSettings.GetValue<int>("ExpirationHours", 24);
+
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.ASCII.GetBytes(secretKey);
+
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Role, user.Role)
+        };
+
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(claims),
+            Expires = DateTime.UtcNow.AddHours(expirationHours),
+            SigningCredentials = new SigningCredentials(
+                new SymmetricSecurityKey(key),
+                SecurityAlgorithms.HmacSha256Signature)
+        };
+
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        return tokenHandler.WriteToken(token);
+    }
+
+    private string HashPassword(string password)
+    {
+        return BCrypt.Net.BCrypt.HashPassword(password, workFactor: 12);
+    }
+
+    private bool VerifyPassword(string password, string passwordHash)
+    {
+        return BCrypt.Net.BCrypt.Verify(password, passwordHash);
+    }
+}

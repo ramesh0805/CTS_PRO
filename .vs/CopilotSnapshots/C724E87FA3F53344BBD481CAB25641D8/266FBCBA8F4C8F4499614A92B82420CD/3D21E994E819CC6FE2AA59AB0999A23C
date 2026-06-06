@@ -1,0 +1,258 @@
+﻿import { Component, Input, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Chart, ChartConfiguration, registerables } from 'chart.js';
+
+Chart.register(...registerables);
+
+@Component({
+  selector: 'app-telemetry-chart',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    <div class="chart-container">
+      <canvas #chartCanvas></canvas>
+    </div>
+  `,
+  styles: [`
+    .chart-container {
+      position: relative;
+      height: 400px;
+      width: 100%;
+    }
+  `]
+})
+export class TelemetryChartComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('chartCanvas', { static: false }) chartCanvas!: ElementRef<HTMLCanvasElement>;
+  @Input() chartData: any[] = [];
+  @Input() chartLabel: string = 'Telemetry Data';
+  @Input() chartType: 'line' | 'bar' = 'line';
+  @Input() xAxisLabel: string = 'Time';
+  @Input() yAxisLabel: string = 'Value';
+  @Input() metric: string = ''; // New: to determine Y-axis range
+
+  private chart?: Chart;
+
+  ngOnInit(): void {}
+
+  ngAfterViewInit(): void {
+    this.createChart();
+  }
+
+  ngOnDestroy(): void {
+    if (this.chart) {
+      this.chart.destroy();
+    }
+  }
+
+  private createChart(): void {
+    if (!this.chartCanvas) return;
+
+    const ctx = this.chartCanvas.nativeElement.getContext('2d');
+    if (!ctx) return;
+
+    // Calculate time span to determine best X-axis format
+    const timeSpanHours = this.calculateTimeSpan(this.chartData);
+
+    const labels = this.chartData.map((d, index) => {
+      return this.formatTimestampForAxis(d.timestamp, index, this.chartData.length, timeSpanHours);
+    });
+
+    const data = this.chartData.map(d => d.value);
+
+    const config: ChartConfiguration = {
+      type: this.chartType,
+      data: {
+        labels: labels,
+        datasets: [{
+          label: this.chartLabel,
+          data: data,
+          borderColor: 'rgb(75, 192, 192)',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          tension: 0.4,
+          fill: true,
+          pointRadius: timeSpanHours <= 12 ? 4 : (timeSpanHours > 12 ? 2 : 0),  // Larger points for hourly data
+          pointHoverRadius: 6,
+          pointBackgroundColor: 'rgb(75, 192, 192)',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false,
+            callbacks: {
+              title: (context) => {
+                const dataIndex = context[0].dataIndex;
+                const timestamp = this.chartData[dataIndex].timestamp;
+                return new Date(timestamp).toLocaleString();
+              },
+              label: (context) => {
+                const value = context.parsed.y;
+                return `${this.chartLabel}: ${value?.toFixed(2) ?? 'N/A'}`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            display: true,
+            title: {
+              display: true,
+              text: timeSpanHours > 48 ? 'Date' : 'Time'
+            },
+            ticks: {
+              maxRotation: 45,
+              minRotation: 0,
+              autoSkip: false, // Show all labels for hourly data
+              maxTicksLimit: timeSpanHours > 24 ? 24 : (timeSpanHours <= 12 ? 12 : 12)
+            }
+          },
+          y: {
+            display: true,
+            title: {
+              display: true,
+              text: this.yAxisLabel
+            },
+            min: this.getYAxisMin(),
+            max: this.getYAxisMax(),
+            ticks: {
+              callback: (value) => {
+                return Number(value).toFixed(1);
+              }
+            }
+          }
+        },
+        interaction: {
+          mode: 'nearest',
+          axis: 'x',
+          intersect: false
+        }
+      }
+    };
+
+    this.chart = new Chart(ctx, config);
+  }
+
+  private calculateTimeSpan(data: any[]): number {
+    if (data.length < 2) return 0;
+
+    const firstTime = new Date(data[0].timestamp).getTime();
+    const lastTime = new Date(data[data.length - 1].timestamp).getTime();
+    const diffMs = Math.abs(lastTime - firstTime);
+    const diffHours = diffMs / (1000 * 60 * 60);
+
+    return diffHours;
+  }
+
+  private formatTimestampForAxis(timestamp: string, index: number, totalPoints: number, timeSpanHours: number): string {
+    const date = new Date(timestamp);
+
+    // For hourly data (typical for simulator/dashboard), show actual time
+    if (totalPoints <= 12 && timeSpanHours <= 12) {
+      // Show actual hour and minute (e.g., "10:00 AM", "11:00 AM")
+      return date.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true 
+      });
+    }
+
+    // For data spanning more than 12 hours, show date + time
+    if (timeSpanHours >= 12) {
+      // Show date and time for longer periods
+      if (timeSpanHours > 48) {
+        // For multi-day data, show date (e.g., "Jan 15")
+        return date.toLocaleDateString('en-US', { 
+          month: 'short', 
+          day: 'numeric' 
+        });
+      } else {
+        // For 12-48 hours, show time only
+        return date.toLocaleTimeString('en-US', { 
+          hour: '2-digit', 
+          minute: '2-digit',
+          hour12: true 
+        });
+      }
+    } else {
+      // For shorter time spans, show full time
+      return date.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true 
+      });
+    }
+  }
+
+  private getYAxisMin(): number | undefined {
+    // Set metric-specific minimum values for Y-axis
+    switch (this.metric.toLowerCase()) {
+      case 'temperature':
+        return 25; // Temperature range: 25°C to 48°C for Indian climate
+      case 'humidity':
+        return 0; // Humidity: 0% to 100%
+      case 'pressure':
+        return undefined; // Pressure: auto-scale (typically 1000-1020 hPa)
+      default:
+        return undefined; // Auto-scale for unknown metrics
+    }
+  }
+
+  private getYAxisMax(): number | undefined {
+    // Set metric-specific maximum values for Y-axis
+    switch (this.metric.toLowerCase()) {
+      case 'temperature':
+        return 48; // Temperature range: 25°C to 48°C for Indian climate
+      case 'humidity':
+        return 100; // Humidity: 0% to 100%
+      case 'pressure':
+        return undefined; // Pressure: auto-scale (typically 1000-1020 hPa)
+      default:
+        return undefined; // Auto-scale for unknown metrics
+    }
+  }
+
+  public updateChart(newData: any[]): void {
+    if (!this.chart) return;
+
+    this.chartData = newData;
+    const timeSpanHours = this.calculateTimeSpan(newData);
+
+    const labels = newData.map((d, index) => {
+      return this.formatTimestampForAxis(d.timestamp, index, newData.length, timeSpanHours);
+    });
+
+    const data = newData.map(d => d.value);
+
+    this.chart.data.labels = labels;
+    this.chart.data.datasets[0].data = data;
+
+    // Update point radius based on data size
+    if (this.chart.data.datasets[0]) {
+      (this.chart.data.datasets[0] as any).pointRadius = timeSpanHours <= 12 ? 4 : (timeSpanHours > 12 ? 2 : 0);
+      (this.chart.data.datasets[0] as any).pointHoverRadius = 6;
+    }
+
+    // Update X-axis title and ticks
+    if (this.chart.options.scales && this.chart.options.scales['x']) {
+      const xScale = this.chart.options.scales['x'] as any;
+      if (xScale.title) {
+        xScale.title.text = timeSpanHours >= 12 ? 'Time (Hours)' : 'Hours Ago';
+      }
+      if (xScale.ticks) {
+        xScale.ticks.autoSkip = false; // Show all labels
+      }
+    }
+
+    this.chart.update();
+  }
+}

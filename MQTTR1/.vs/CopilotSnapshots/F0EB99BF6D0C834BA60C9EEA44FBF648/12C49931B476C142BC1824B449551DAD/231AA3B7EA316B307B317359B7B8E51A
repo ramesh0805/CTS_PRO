@@ -1,0 +1,174 @@
+﻿<div class="telemetry">
+  <div class="header">
+    <h1>Telemetry Data</h1>
+    <button class="btn btn-primary" (click)="showAddForm()" *ngIf="!showForm">Submit Telemetry</button>
+  </div>
+
+  <div *ngIf="success" class="alert alert-success">
+    {{ success }}
+  </div>
+
+  <div *ngIf="error" class="alert alert-error">
+    {{ error }}
+  </div>
+
+  <div *ngIf="showForm" class="card">
+    <h3>Submit Telemetry Data</h3>
+    <form (ngSubmit)="submitForm()">
+      <div class="form-group">
+        <label for="deviceId">Device *</label>
+        <select 
+          id="deviceId" 
+          [(ngModel)]="telemetryForm.deviceId" 
+          name="deviceId"
+          (ngModelChange)="onFormDeviceChange()"
+          required>
+          <option *ngFor="let device of devices" [value]="device.deviceId">
+            {{ device.name }} ({{ device.deviceId }})
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="metric">Metric</label>
+        <input 
+          type="text" 
+          id="metric" 
+          [value]="telemetryForm.metric | titlecase" 
+          name="metric" 
+          disabled
+          class="readonly-input">
+      </div>
+
+      <div class="form-group">
+        <label for="value">Value *</label>
+        <input 
+          type="number" 
+          id="value" 
+          [(ngModel)]="telemetryForm.value" 
+          name="value" 
+          step="0.01"
+          required>
+      </div>
+
+      <div class="form-group">
+        <label for="timestamp">Timestamp</label>
+        <input 
+          type="datetime-local" 
+          id="timestamp" 
+          [(ngModel)]="telemetryForm.timestamp" 
+          name="timestamp">
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-success">Submit</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelForm()">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>Filter Telemetry</h3>
+    <div class="filter-form">
+      <div class="form-group">
+        <label for="filterDevice">Device</label>
+        <select 
+          id="filterDevice" 
+          [(ngModel)]="selectedDeviceId" 
+          (ngModelChange)="onDeviceChange()">
+          <option value="">All Devices</option>
+          <option *ngFor="let device of devices" [value]="device.deviceId">
+            {{ device.name }} ({{ device.deviceId }})
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <p>Loading telemetry data...</p>
+  </div>
+
+  <!-- Charts Section -->
+  <div *ngIf="!loading && telemetryData.length > 0 && showChart">
+    <div class="card" *ngFor="let metric of uniqueMetrics">
+      <div class="chart-header">
+        <h3>{{ metric | titlecase }} Chart</h3>
+        <p class="chart-info">Showing data for {{ selectedDeviceId || 'All Devices' }}</p>
+      </div>
+      <app-telemetry-chart
+        [chartData]="getChartDataForMetric(metric)"
+        [chartLabel]="metric"
+        [chartType]="'line'"
+        [xAxisLabel]="'Time'"
+        [yAxisLabel]="metric"
+        [metric]="metric">
+      </app-telemetry-chart>
+    </div>
+  </div>
+
+  <!-- Table Section -->
+  <div *ngIf="!loading && telemetryData.length > 0" class="card">
+    <div class="table-header">
+      <h3>Telemetry Records ({{ totalCount }})</h3>
+      <button class="btn btn-secondary" (click)="showChart = !showChart">
+        {{ showChart ? 'Hide Charts' : 'Show Charts' }}
+      </button>
+    </div>
+
+    <table class="table" *ngIf="telemetryData.length > 0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Device ID</th>
+          <th>Metric</th>
+          <th>Value</th>
+          <th>Timestamp</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let telemetry of telemetryData">
+          <td>{{ telemetry.id }}</td>
+          <td>{{ telemetry.deviceId }}</td>
+          <td>{{ telemetry.metric }}</td>
+          <td>{{ telemetry.value | number:'1.2-2' }}</td>
+          <td>{{ telemetry.timestamp | date:'short' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p *ngIf="telemetryData.length === 0">No telemetry data found for the selected filters.</p>
+
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button 
+        (click)="previousPage()" 
+        [disabled]="currentPage === 1"
+        class="btn">
+        Previous
+      </button>
+
+      <button 
+        *ngFor="let page of pageNumbers" 
+        (click)="goToPage(page)"
+        [class.active]="page === currentPage"
+        class="btn">
+        {{ page }}
+      </button>
+
+      <button 
+        (click)="nextPage()" 
+        [disabled]="currentPage === totalPages"
+        class="btn">
+        Next
+      </button>
+    </div>
+
+    <div class="page-info" *ngIf="totalPages > 0">
+      Page {{ currentPage }} of {{ totalPages }} ({{ totalCount }} total records)
+    </div>
+  </div>
+
+  <div *ngIf="!loading && telemetryData.length === 0" class="card">
+    <p class="info-message">No telemetry data available. Live data will be generated automatically every 5 minutes.</p>
+  </div>
+</div>

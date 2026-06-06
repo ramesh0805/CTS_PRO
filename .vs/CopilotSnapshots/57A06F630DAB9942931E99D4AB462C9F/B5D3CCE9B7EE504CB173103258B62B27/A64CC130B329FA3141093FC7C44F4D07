@@ -1,0 +1,490 @@
+﻿using System.Text;
+using System.Text.Json;
+
+namespace ConsolePublisher;
+
+class Program
+{
+    private static readonly HttpClient _httpClient = new();
+    private static string _apiBaseUrl = "https://localhost:7124/api"; // Update port if needed
+    private static string? _jwtToken; // Store JWT token
+    private static DateTime _tokenExpiresAt = DateTime.MinValue;
+    private static readonly string _username = "admin";
+    private static readonly string _password = "AdminPassword123!";
+
+    static async Task Main(string[] args)
+    {
+        Console.WriteLine("╔════════════════════════════════════════════════════════╗");
+        Console.WriteLine("║   MQTT Telemetry Console Publisher (IoT Simulator)    ║");
+        Console.WriteLine("╚════════════════════════════════════════════════════════╝");
+        Console.WriteLine();
+
+        // Check if custom API URL is provided
+        if (args.Length > 0)
+        {
+            _apiBaseUrl = args[0];
+        }
+
+        Console.WriteLine($"API Base URL: {_apiBaseUrl}");
+        Console.WriteLine();
+
+        // Attempt to authenticate before showing menu
+        if (!await AuthenticateAsync())
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("✗ Authentication failed. Exiting...");
+            Console.ResetColor();
+            return;
+        }
+
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine($"✓ Authenticated successfully. Token will expire at: {_tokenExpiresAt:yyyy-MM-dd HH:mm:ss}");
+        Console.ResetColor();
+        Console.WriteLine();
+
+        while (true)
+        {
+            // Check if token is about to expire and refresh if needed
+            if (DateTime.UtcNow >= _tokenExpiresAt.AddMinutes(-5))
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("⚠ Token expiring soon, refreshing authentication...");
+                Console.ResetColor();
+                if (!await AuthenticateAsync())
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("✗ Re-authentication failed. Please try again.");
+                    Console.ResetColor();
+                    continue;
+                }
+            }
+
+            ShowMenu();
+            var choice = Console.ReadLine();
+
+            try
+            {
+                switch (choice)
+                {
+                    case "1":
+                        await PostSingleTelemetry();
+                        break;
+                    case "2":
+                        await PostBatchTelemetry();
+                        break;
+                    case "3":
+                        await SimulateIoTDevice();
+                        break;
+                    case "4":
+                        await PostFromJsonFile();
+                        break;
+                    case "5":
+                        await ListDevices();
+                        break;
+                    case "6":
+                        ConfigureApiUrl();
+                        // Re-authenticate after URL change
+                        if (!await AuthenticateAsync())
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("✗ Authentication failed with new URL.");
+                            Console.ResetColor();
+                        }
+                        break;
+                    case "0":
+                        Console.WriteLine("Exiting...");
+                        return;
+                    default:
+                        Console.WriteLine("Invalid option. Please try again.");
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"Error: {ex.Message}");
+                Console.ResetColor();
+            }
+
+            Console.WriteLine();
+        }
+    }
+
+    /// <summary>
+    /// Authenticates with the API and obtains JWT token
+    /// </summary>
+    static async Task<bool> AuthenticateAsync()
+    {
+        try
+        {
+            var loginRequest = new
+            {
+                username = _username,
+                password = _password
+            };
+
+            var json = JsonSerializer.Serialize(loginRequest, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync($"{_apiBaseUrl}/auth/login", content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"✗ Authentication failed: {response.StatusCode}");
+                Console.WriteLine($"Error: {error}");
+                Console.ResetColor();
+                return false;
+            }
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            using var document = JsonDocument.Parse(responseContent);
+            var root = document.RootElement;
+
+            if (root.TryGetProperty("token", out var tokenElement))
+            {
+                _jwtToken = tokenElement.GetString();
+
+                // Set token expiration (assuming 24 hours as per appsettings)
+                _tokenExpiresAt = DateTime.UtcNow.AddHours(24);
+
+                // Add default Authorization header for future requests
+                _httpClient.DefaultRequestHeaders.Authorization = 
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _jwtToken);
+
+                return true;
+            }
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("✗ No token in response");
+            Console.ResetColor();
+            return false;
+        }
+        catch (Exception ex)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"✗ Authentication error: {ex.Message}");
+            Console.ResetColor();
+            return false;
+        }
+    }
+
+    static void ShowMenu()
+    {
+        Console.WriteLine("┌────────────────────────────────────────┐");
+        Console.WriteLine("│             MAIN MENU                  │");
+        Console.WriteLine("├────────────────────────────────────────┤");
+        Console.WriteLine("│ 1. Post Single Telemetry               │");
+        Console.WriteLine("│ 2. Post Batch Telemetry                │");
+        Console.WriteLine("│ 3. Simulate IoT Device (Continuous)    │");
+        Console.WriteLine("│ 4. Post from JSON File                 │");
+        Console.WriteLine("│ 5. List Devices                        │");
+        Console.WriteLine("│ 6. Configure API URL                   │");
+        Console.WriteLine("│ 0. Exit                                │");
+        Console.WriteLine("└────────────────────────────────────────┘");
+        Console.Write("Select option: ");
+    }
+
+    static async Task PostSingleTelemetry()
+    {
+        Console.WriteLine("\n--- Post Single Telemetry ---");
+
+        Console.Write("Device ID (e.g., device-001): ");
+        var deviceId = Console.ReadLine();
+
+        Console.Write("Metric (e.g., temperature): ");
+        var metric = Console.ReadLine();
+
+        Console.Write("Value (e.g., 23.5): ");
+        var valueInput = Console.ReadLine();
+
+        if (!double.TryParse(valueInput, out var value))
+        {
+            Console.WriteLine("Invalid value format.");
+            return;
+        }
+
+        var telemetry = new
+        {
+            deviceId,
+            metric,
+            value,
+            timestamp = DateTime.UtcNow
+        };
+
+        await PostTelemetryToApi(telemetry);
+    }
+
+    static async Task PostBatchTelemetry()
+    {
+        Console.WriteLine("\n--- Post Batch Telemetry ---");
+
+        Console.Write("Number of records to generate: ");
+        if (!int.TryParse(Console.ReadLine(), out var count) || count <= 0)
+        {
+            Console.WriteLine("Invalid count.");
+            return;
+        }
+
+        var devices = new[] { "device-001", "device-002", "device-003" };
+        var metrics = new[] { "temperature", "humidity", "pressure" };
+        var random = new Random();
+        var batch = new List<object>();
+
+        for (int i = 0; i < count; i++)
+        {
+            batch.Add(new
+            {
+                deviceId = devices[random.Next(devices.Length)],
+                metric = metrics[random.Next(metrics.Length)],
+                value = Math.Round(random.NextDouble() * 100, 2),
+                timestamp = DateTime.UtcNow.AddSeconds(-random.Next(3600))
+            });
+        }
+
+        await PostBatchToApi(batch);
+    }
+
+    static async Task SimulateIoTDevice()
+    {
+        Console.WriteLine("\n--- Simulate IoT Device (Continuous Publishing) ---");
+
+        Console.Write("Device ID (e.g., device-001): ");
+        var deviceId = Console.ReadLine();
+
+        Console.Write("Metric (e.g., temperature): ");
+        var metric = Console.ReadLine();
+
+        Console.Write("Interval in seconds (e.g., 5): ");
+        if (!int.TryParse(Console.ReadLine(), out var intervalSeconds) || intervalSeconds <= 0)
+        {
+            Console.WriteLine("Invalid interval.");
+            return;
+        }
+
+        Console.Write("Number of readings (0 for infinite): ");
+        if (!int.TryParse(Console.ReadLine(), out var maxReadings))
+        {
+            Console.WriteLine("Invalid number.");
+            return;
+        }
+
+        Console.WriteLine($"\nSimulating device '{deviceId}' posting '{metric}' every {intervalSeconds}s...");
+        Console.WriteLine("Press Ctrl+C to stop.\n");
+
+        var random = new Random();
+        var baseValue = 20.0;
+        var count = 0;
+
+        while (maxReadings == 0 || count < maxReadings)
+        {
+            var variation = (random.NextDouble() - 0.5) * 5; // Random variation ±2.5
+            var value = Math.Round(baseValue + variation, 2);
+
+            var telemetry = new
+            {
+                deviceId,
+                metric,
+                value,
+                timestamp = DateTime.UtcNow
+            };
+
+            Console.Write($"[{DateTime.Now:HH:mm:ss}] Sending: {metric}={value}°C... ");
+
+            try
+            {
+                await PostTelemetryToApi(telemetry, false);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("✓ Sent");
+                Console.ResetColor();
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"✗ Failed: {ex.Message}");
+                Console.ResetColor();
+            }
+
+            count++;
+            await Task.Delay(intervalSeconds * 1000);
+        }
+
+        Console.WriteLine($"\nSimulation completed. {count} readings sent.");
+    }
+
+    static async Task PostFromJsonFile()
+    {
+        Console.WriteLine("\n--- Post from JSON File ---");
+        Console.WriteLine("Format: Single object or array of objects");
+        Console.WriteLine("Example: {\"deviceId\":\"device-001\",\"metric\":\"temp\",\"value\":23.5}");
+        Console.WriteLine();
+
+        Console.Write("Enter file path: ");
+        var filePath = Console.ReadLine()?.Trim('"');
+
+        if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
+        {
+            Console.WriteLine("File not found.");
+            return;
+        }
+
+        var jsonContent = await File.ReadAllTextAsync(filePath);
+
+        // Try to parse as array first
+        try
+        {
+            using var document = JsonDocument.Parse(jsonContent);
+            if (document.RootElement.ValueKind == JsonValueKind.Array)
+            {
+                var batch = JsonSerializer.Deserialize<List<object>>(jsonContent);
+                await PostBatchToApi(batch!);
+            }
+            else
+            {
+                var telemetry = JsonSerializer.Deserialize<object>(jsonContent);
+                await PostTelemetryToApi(telemetry!);
+            }
+        }
+        catch (JsonException ex)
+        {
+            Console.WriteLine($"Invalid JSON format: {ex.Message}");
+        }
+    }
+
+    static async Task ListDevices()
+    {
+        Console.WriteLine("\n--- List Devices ---");
+
+        try
+        {
+            var response = await _httpClient.GetAsync($"{_apiBaseUrl}/devices");
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+            var devices = JsonSerializer.Deserialize<List<Device>>(content, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            if (devices == null || devices.Count == 0)
+            {
+                Console.WriteLine("No devices found.");
+                return;
+            }
+
+            Console.WriteLine($"\nFound {devices.Count} device(s):\n");
+            Console.WriteLine("┌─────┬──────────────┬─────────────────────────┬──────────────────────┐");
+            Console.WriteLine("│ ID  │ Device ID    │ Name                    │ Created              │");
+            Console.WriteLine("├─────┼──────────────┼─────────────────────────┼──────────────────────┤");
+
+            foreach (var device in devices)
+            {
+                Console.WriteLine($"│ {device.Id,-3} │ {device.DeviceId,-12} │ {device.Name,-23} │ {device.CreatedAt:yyyy-MM-dd HH:mm} │");
+            }
+
+            Console.WriteLine("└─────┴──────────────┴─────────────────────────┴──────────────────────┘");
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine($"Failed to retrieve devices: {ex.Message}");
+        }
+    }
+
+    static void ConfigureApiUrl()
+    {
+        Console.WriteLine("\n--- Configure API URL ---");
+        Console.WriteLine($"Current URL: {_apiBaseUrl}");
+        Console.Write("Enter new API URL (or press Enter to keep current): ");
+
+        var newUrl = Console.ReadLine()?.Trim();
+        if (!string.IsNullOrWhiteSpace(newUrl))
+        {
+            _apiBaseUrl = newUrl;
+            Console.WriteLine($"API URL updated to: {_apiBaseUrl}");
+        }
+    }
+
+    static async Task PostTelemetryToApi(object telemetry, bool showDetails = true)
+    {
+        var json = JsonSerializer.Serialize(telemetry, new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        });
+
+        if (showDetails)
+        {
+            Console.WriteLine($"\nSending: {json}");
+        }
+
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = await _httpClient.PostAsync($"{_apiBaseUrl}/telemetry", content);
+
+        if (response.IsSuccessStatusCode)
+        {
+            if (showDetails)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"✓ Success: {response.StatusCode}");
+                Console.WriteLine($"Response: {responseContent}");
+                Console.ResetColor();
+            }
+        }
+        else
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            if (showDetails)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"✗ Failed: {response.StatusCode}");
+                Console.WriteLine($"Error: {error}");
+                Console.ResetColor();
+            }
+            throw new HttpRequestException($"{response.StatusCode}: {error}");
+        }
+    }
+
+    static async Task PostBatchToApi(List<object> batch)
+    {
+        var json = JsonSerializer.Serialize(batch, new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        });
+
+        Console.WriteLine($"\nSending batch of {batch.Count} records...");
+
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = await _httpClient.PostAsync($"{_apiBaseUrl}/telemetry/batch", content);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var responseContent = await response.Content.ReadAsStringAsync();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"✓ Batch posted successfully!");
+            Console.WriteLine($"Response: {responseContent}");
+            Console.ResetColor();
+        }
+        else
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"✗ Batch failed: {response.StatusCode}");
+            Console.WriteLine($"Error: {error}");
+            Console.ResetColor();
+        }
+    }
+
+    class Device
+    {
+        public int Id { get; set; }
+        public string DeviceId { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string? Description { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+    }
+}

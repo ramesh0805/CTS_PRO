@@ -1,0 +1,146 @@
+﻿<div class="simulator">
+  <div class="header">
+    <h1>Live Telemetry Monitor</h1>
+    <p class="subtitle">View live database telemetry data with bar graph visualization</p>
+  </div>
+
+  <div *ngIf="success" class="alert alert-success">
+    {{ success }}
+  </div>
+
+  <div *ngIf="error" class="alert alert-error">
+    {{ error }}
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <p>Loading live data from database...</p>
+  </div>
+
+  <!-- Controls -->
+  <div class="card">
+    <h3>Live Data Controls</h3>
+
+    <div class="controls-grid">
+      <div class="form-group">
+        <label for="device">Select Device</label>
+        <select 
+          id="device" 
+          [(ngModel)]="selectedDevice" 
+          (ngModelChange)="onDeviceChange()"
+          [disabled]="simulationRunning">
+          <option *ngFor="let device of devices" [ngValue]="device">
+            {{ device.name }} ({{ device.deviceId }})
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="interval">Refresh Interval (seconds)</label>
+        <input 
+          type="number" 
+          id="interval" 
+          [(ngModel)]="updateIntervalSeconds" 
+          min="30" 
+          max="300"
+          [disabled]="simulationRunning">
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button 
+        class="btn btn-success" 
+        (click)="startSimulation()" 
+        [disabled]="simulationRunning || !selectedDevice">
+        <span *ngIf="!simulationRunning">▶ Start Live Monitoring</span>
+        <span *ngIf="simulationRunning">⏸ Monitoring...</span>
+      </button>
+
+      <button 
+        class="btn btn-danger" 
+        (click)="stopSimulation()" 
+        [disabled]="!simulationRunning">
+        ⏹ Stop Monitoring
+      </button>
+
+      <button 
+        class="btn btn-primary" 
+        (click)="refreshData()" 
+        [disabled]="!selectedDevice || loading">
+        🔄 Refresh Data
+      </button>
+
+      <button 
+        class="btn btn-secondary" 
+        (click)="clearData()">
+        🗑️ Clear Charts
+      </button>
+    </div>
+
+    <div class="info-box" *ngIf="simulationRunning">
+      <span class="status-indicator active"></span>
+      Live monitoring active - Refreshing data every {{ updateIntervalSeconds }} seconds from database
+    </div>
+  </div>
+
+  <!-- Metrics Info -->
+  <div class="card">
+    <h3>Live Metrics from Database</h3>
+    <div class="metrics-grid">
+      <div class="metric-card" *ngFor="let metric of metrics">
+        <div class="metric-header">
+          <h4>{{ metric.name | titlecase }}</h4>
+          <span class="metric-unit">{{ metric.unit }}</span>
+        </div>
+        <div class="metric-info">
+          <span>📊 Displaying last 10 hourly averages</span>
+          <span>🔴 Live database data</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Section with Bar Graphs -->
+  <div *ngIf="selectedDevice">
+    <div class="card chart-card" *ngFor="let metric of metrics">
+      <div class="chart-header">
+        <h3>{{ metric.name | titlecase }} - {{ selectedDevice.name }}</h3>
+
+        <div class="stats" *ngIf="getStats(metric.name)">
+          <div class="stat-item">
+            <span class="stat-label">Current:</span>
+            <span class="stat-value">{{ getStats(metric.name).current?.toFixed(2) }}{{ metric.unit }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Min:</span>
+            <span class="stat-value">{{ getStats(metric.name).min?.toFixed(2) }}{{ metric.unit }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Max:</span>
+            <span class="stat-value">{{ getStats(metric.name).max?.toFixed(2) }}{{ metric.unit }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Avg:</span>
+            <span class="stat-value">{{ getStats(metric.name).avg?.toFixed(2) }}{{ metric.unit }}</span>
+          </div>
+        </div>
+      </div>
+
+      <app-telemetry-chart
+        *ngIf="getChartData(metric.name).length > 0"
+        [chartData]="getChartData(metric.name)"
+        [chartLabel]="metric.name + ' (' + metric.unit + ')'"
+        [chartType]="'bar'"
+        [xAxisLabel]="'Time'"
+        [yAxisLabel]="metric.name + ' (' + metric.unit + ')'">
+      </app-telemetry-chart>
+
+      <p *ngIf="getChartData(metric.name).length === 0" class="no-data">
+        No data available. Click "Refresh Data" or "Start Live Monitoring" to load data from database.
+      </p>
+    </div>
+  </div>
+
+  <div *ngIf="!selectedDevice" class="card">
+    <p class="info-message">Please select a device to view live telemetry data.</p>
+  </div>
+</div>

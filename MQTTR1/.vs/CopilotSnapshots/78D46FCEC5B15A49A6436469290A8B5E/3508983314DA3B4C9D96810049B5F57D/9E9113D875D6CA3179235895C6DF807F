@@ -1,0 +1,67 @@
+﻿import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Telemetry, TelemetryDto, PagedResult } from '../models/telemetry.model';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class TelemetryService {
+  private apiUrl = 'http://localhost:5297/api/telemetry';
+
+  constructor(private http: HttpClient) {}
+
+  postTelemetry(telemetry: TelemetryDto): Observable<Telemetry> {
+    return this.http.post<Telemetry>(this.apiUrl, telemetry);
+  }
+
+  postTelemetryBatch(telemetries: TelemetryDto[]): Observable<any> {
+    return this.http.post(`${this.apiUrl}/batch`, telemetries);
+  }
+
+  getTelemetry(deviceId?: string, metric?: string, page: number = 1, pageSize: number = 20): Observable<PagedResult<Telemetry>> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('pageSize', pageSize.toString());
+
+    if (deviceId) {
+      params = params.set('deviceId', deviceId);
+    }
+    if (metric) {
+      params = params.set('metric', metric);
+    }
+
+    return this.http.get<PagedResult<Telemetry>>(this.apiUrl, { params });
+  }
+
+  getTelemetryByDevice(deviceId: string, page: number = 1, pageSize: number = 20): Observable<PagedResult<Telemetry>> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('pageSize', pageSize.toString())
+      .set('deviceId', deviceId);
+
+    return this.http.get<PagedResult<Telemetry>>(this.apiUrl, { params });
+  }
+
+  getLatestTelemetry(deviceId: string, metric: string, count: number = 10): Observable<Telemetry[]> {
+    return this.http.get<Telemetry[]>(`${this.apiUrl}/last?deviceId=${deviceId}&metric=${metric}&count=${count}`);
+  }
+
+  getTelemetryStats(deviceId: string, metric: string, startDate?: string, endDate?: string): Observable<any> {
+    let params = new HttpParams();
+    if (startDate) params = params.set('startDate', startDate);
+    if (endDate) params = params.set('endDate', endDate);
+
+    return this.http.get(`${this.apiUrl}/${deviceId}/${metric}/stats`, { params });
+  }
+
+  // Get last 10 hours of hourly data for charts (10 data points)
+  getHourlyData(deviceId: string, metric?: string): Observable<any> {
+    let params = new HttpParams();
+    if (metric) {
+      params = params.set('metric', metric);
+    }
+
+    return this.http.get(`${this.apiUrl}/hourly/${deviceId}`, { params });
+  }
+}

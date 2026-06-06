@@ -1,0 +1,27 @@
+﻿import { Component } from '@angular/core';
+import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
+  template: `
+    <nav class="nav">
+      <ul>
+        <li><a routerLink="/dashboard" routerLinkActive="active">Dashboard</a></li>
+        <li><a routerLink="/devices" routerLinkActive="active">Devices</a></li>
+        <li><a routerLink="/telemetry" routerLinkActive="active">Telemetry</a></li>
+        <li><a routerLink="/simulator" routerLinkActive="active">Simulator</a></li>
+      </ul>
+    </nav>
+
+    <div class="container">
+      <router-outlet></router-outlet>
+    </div>
+  `,
+  styles: []
+})
+export class AppComponent {
+  title = 'MQTTR Dashboard';
+}

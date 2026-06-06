@@ -1,0 +1,144 @@
+﻿import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { DeviceService } from '../../services/device.service';
+import { Device, DeviceDto } from '../../models/device.model';
+import { AuthService } from '../../services/auth.service';
+
+@Component({
+  selector: 'app-devices',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './devices.component.html',
+  styleUrls: ['./devices.component.scss']
+})
+export class DevicesComponent implements OnInit {
+  devices: Device[] = [];
+  loading: boolean = true;
+  error: string = '';
+  success: string = '';
+
+  showForm: boolean = false;
+  editingDevice: Device | null = null;
+
+  deviceForm: DeviceDto = {
+    deviceId: '',
+    name: '',
+    description: ''
+  };
+
+  constructor(
+    private deviceService: DeviceService,
+    public authService: AuthService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadDevices();
+  }
+
+  loadDevices(): void {
+    this.loading = true;
+    this.error = '';
+
+    this.deviceService.getAllDevices().subscribe({
+      next: (devices) => {
+        this.devices = devices;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = 'Failed to load devices';
+        this.loading = false;
+        console.error(err);
+      }
+    });
+  }
+
+  showAddForm(): void {
+    this.showForm = true;
+    this.editingDevice = null;
+    this.deviceForm = {
+      deviceId: '',
+      name: '',
+      description: ''
+    };
+  }
+
+  showEditForm(device: Device): void {
+    this.showForm = true;
+    this.editingDevice = device;
+    this.deviceForm = {
+      deviceId: device.deviceId,
+      name: device.name,
+      description: device.description || ''
+    };
+  }
+
+  cancelForm(): void {
+    this.showForm = false;
+    this.editingDevice = null;
+    this.deviceForm = {
+      deviceId: '',
+      name: '',
+      description: ''
+    };
+  }
+
+  submitForm(): void {
+    this.error = '';
+    this.success = '';
+
+    if (this.editingDevice) {
+      this.deviceService.updateDevice(this.editingDevice.id, this.deviceForm).subscribe({
+        next: () => {
+          this.success = 'Device updated successfully';
+          setTimeout(() => this.success = '', 5000);
+          this.cancelForm();
+          this.loadDevices();
+        },
+        error: (err) => {
+          this.error = err.error?.error || 'Failed to update device';
+          console.error(err);
+        }
+      });
+    } else {
+      this.deviceService.createDevice(this.deviceForm).subscribe({
+        next: () => {
+          this.success = 'Device created successfully';
+          setTimeout(() => this.success = '', 5000);
+          this.cancelForm();
+          this.loadDevices();
+        },
+        error: (err) => {
+          this.error = err.error?.error || 'Failed to create device';
+          console.error(err);
+        }
+      });
+    }
+  }
+
+  deleteDevice(device: Device): void {
+    if (!confirm(`Are you sure you want to delete device "${device.name}"?`)) {
+      return;
+    }
+
+    this.deviceService.deleteDevice(device.id).subscribe({
+      next: () => {
+        this.success = 'Device deleted successfully';
+        setTimeout(() => this.success = '', 5000);
+        this.loadDevices();
+      },
+      error: (err) => {
+        this.error = err.error?.error || 'Failed to delete device';
+        console.error(err);
+      }
+    });
+  }
+
+  refresh(): void {
+    this.loadDevices();
+  }
+
+  isAdmin(): boolean {
+    return this.authService.isAdmin();
+  }
+}

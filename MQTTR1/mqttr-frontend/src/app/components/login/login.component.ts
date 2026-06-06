@@ -1,0 +1,1042 @@
+import { Component, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService, LoginDto } from '../../services/auth.service';
+
+@Component({
+  selector: 'app-login',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  template: `
+    <div class="container">
+      <div class="background">
+        <!-- Animated Particles Background -->
+        <div class="particles">
+          <div class="particle" *ngFor="let p of particles" 
+               [style.left.%]="p.x" 
+               [style.top.%]="p.y"
+               [style.animation-delay.s]="p.delay"></div>
+        </div>
+
+        <!-- Floating Data Orbs -->
+        <div class="data-orb orb-1">
+          <div class="orb-core"></div>
+          <div class="orb-ring ring-1"></div>
+          <div class="orb-ring ring-2"></div>
+        </div>
+        <div class="data-orb orb-2">
+          <div class="orb-core"></div>
+          <div class="orb-ring ring-1"></div>
+          <div class="orb-ring ring-2"></div>
+        </div>
+        <div class="data-orb orb-3">
+          <div class="orb-core"></div>
+          <div class="orb-ring ring-1"></div>
+          <div class="orb-ring ring-2"></div>
+        </div>
+
+        <!-- IoT Telemetry Widgets with Enhanced Animations -->
+        <div class="telemetry-widget temp-widget">
+          <div class="widget-glow temp-glow"></div>
+          <div class="widget-icon">🌡️</div>
+          <div class="widget-value">
+            <span class="value">{{tempValue}}°C</span>
+            <div class="value-trend" [class.trend-up]="tempTrend > 0" [class.trend-down]="tempTrend < 0">
+              {{ tempTrend > 0 ? '↑' : tempTrend < 0 ? '↓' : '→' }}
+            </div>
+          </div>
+          <div class="widget-label">Temperature</div>
+          <div class="progress-bar">
+            <div class="progress-fill temp-fill" [style.width.%]="tempValue * 3"></div>
+          </div>
+          <div class="data-pulse"></div>
+        </div>
+
+        <div class="telemetry-widget humidity-widget">
+          <div class="widget-glow humidity-glow"></div>
+          <div class="widget-icon">💧</div>
+          <div class="widget-value">
+            <span class="value">{{humidityValue}}%</span>
+            <div class="value-trend" [class.trend-up]="humidityTrend > 0" [class.trend-down]="humidityTrend < 0">
+              {{ humidityTrend > 0 ? '↑' : humidityTrend < 0 ? '↓' : '→' }}
+            </div>
+          </div>
+          <div class="widget-label">Humidity</div>
+          <div class="circular-progress">
+            <svg viewBox="0 0 100 100">
+              <circle class="progress-bg" cx="50" cy="50" r="45"></circle>
+              <circle class="progress-bar humidity-progress" cx="50" cy="50" r="45" 
+                [style.strokeDashoffset]="283 - (283 * humidityValue / 100)"></circle>
+            </svg>
+          </div>
+          <div class="data-pulse"></div>
+        </div>
+
+        <div class="telemetry-widget pressure-widget">
+          <div class="widget-glow pressure-glow"></div>
+          <div class="widget-icon">📊</div>
+          <div class="widget-value">
+            <span class="value">{{pressureValue}}</span>
+            <div class="value-trend" [class.trend-up]="pressureTrend > 0" [class.trend-down]="pressureTrend < 0">
+              {{ pressureTrend > 0 ? '↑' : pressureTrend < 0 ? '↓' : '→' }}
+            </div>
+          </div>
+          <div class="widget-label">Pressure (kPa)</div>
+          <div class="gauge">
+            <div class="gauge-needle" [style.transform]="'rotate(' + (pressureValue - 950) * 1.8 + 'deg)'"></div>
+          </div>
+          <div class="data-pulse"></div>
+        </div>
+
+        <!-- Connection Lines Between Widgets -->
+        <svg class="connection-lines" width="100%" height="100%">
+          <line class="connection-line line-1" x1="15%" y1="15%" x2="15%" y2="65%"></line>
+          <line class="connection-line line-2" x1="15%" y1="65%" x2="85%" y2="35%"></line>
+          <line class="connection-line line-3" x1="15%" y1="15%" x2="85%" y2="35%"></line>
+          <circle class="connection-dot" cx="15%" cy="15%" r="3"></circle>
+          <circle class="connection-dot" cx="15%" cy="65%" r="3"></circle>
+          <circle class="connection-dot" cx="85%" cy="35%" r="3"></circle>
+        </svg>
+
+        <!-- Data Stream Lines -->
+        <div class="data-stream">
+          <div class="stream-line" *ngFor="let line of dataLines" 
+               [style.animation-delay.s]="line * 0.3"></div>
+        </div>
+
+        <!-- Binary Rain Effect -->
+        <div class="binary-rain">
+          <div class="binary-column" *ngFor="let col of binaryColumns" 
+               [style.left.%]="col.x"
+               [style.animation-delay.s]="col.delay">
+            <span>{{col.data}}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Welcome Back</h2>
+
+        <form (ngSubmit)="onSubmit()" #form="ngForm">
+          <div class="field">
+            <label for="username">Username</label>
+            <input 
+              type="text" 
+              id="username" 
+              name="username"
+              [(ngModel)]="loginDto.username" 
+              required
+              placeholder="Username">
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <input 
+              type="password" 
+              id="password" 
+              name="password"
+              [(ngModel)]="loginDto.password" 
+              required
+              placeholder="Password">
+          </div>
+
+          <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+
+          <button type="submit" [disabled]="!form.valid || isLoading">
+            {{ isLoading ? 'Logging in...' : 'Login' }}
+          </button>
+        </form>
+
+        <p class="link">
+          Don't have an account? <a (click)="goToRegister()">Register</a>
+        </p>
+      </div>
+    </div>
+  `,
+  styles: [`
+    /* Reset and ensure full coverage */
+    :host {
+      display: block;
+      position: fixed;
+      inset: 0;
+      overflow: auto;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      min-width: 100vw;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      position: relative;
+      overflow: hidden;
+      margin: 0;
+    }
+
+    .background {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    /* Telemetry Widgets */
+    .telemetry-widget {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 15px;
+      color: white;
+      animation: widgetFloat 6s infinite ease-in-out;
+    }
+
+    .temp-widget {
+      top: 10%;
+      left: 8%;
+      width: 140px;
+      animation-delay: 0s;
+    }
+
+    .humidity-widget {
+      top: 60%;
+      left: 12%;
+      width: 130px;
+      animation-delay: 2s;
+    }
+
+    .pressure-widget {
+      top: 30%;
+      right: 10%;
+      width: 150px;
+      animation-delay: 4s;
+    }
+
+    @keyframes widgetFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    .widget-icon {
+      font-size: 32px;
+      text-align: center;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    }
+
+    .widget-value {
+      text-align: center;
+      margin-bottom: 5px;
+    }
+
+    .widget-value .value {
+      font-size: 20px;
+      font-weight: 700;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      animation: valueChange 3s infinite;
+    }
+
+    @keyframes valueChange {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; transform: scale(1.05); }
+    }
+
+    .widget-label {
+      text-align: center;
+      font-size: 11px;
+      opacity: 0.9;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Temperature Progress Bar */
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      animation: tempProgress 4s infinite ease-in-out;
+    }
+
+    .temp-fill {
+      background: linear-gradient(90deg, #4ade80, #ef4444);
+    }
+
+    @keyframes tempProgress {
+      0% { width: 45%; }
+      50% { width: 75%; }
+      100% { width: 45%; }
+    }
+
+    /* Humidity Circular Progress */
+    .circular-progress {
+      width: 60px;
+      height: 60px;
+      margin: 8px auto 0;
+    }
+
+    .circular-progress svg {
+      transform: rotate(-90deg);
+    }
+
+    .progress-bg {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.2);
+      stroke-width: 8;
+    }
+
+    .humidity-progress {
+      fill: none;
+      stroke: #3b82f6;
+      stroke-width: 8;
+      stroke-dasharray: 283;
+      stroke-linecap: round;
+      animation: humidityProgress 5s infinite ease-in-out;
+    }
+
+    @keyframes humidityProgress {
+      0% { stroke-dashoffset: 113; }
+      50% { stroke-dashoffset: 70; }
+      100% { stroke-dashoffset: 113; }
+    }
+
+    /* Pressure Gauge */
+    .gauge {
+      width: 80px;
+      height: 40px;
+      margin: 10px auto 0;
+      position: relative;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 80px 80px 0 0;
+      border-bottom: none;
+      overflow: hidden;
+    }
+
+    .gauge::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 3px;
+      height: 3px;
+      background: white;
+      border-radius: 50%;
+      transform: translateX(-50%);
+    }
+
+    .gauge-needle {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 2px;
+      height: 35px;
+      background: linear-gradient(to top, white, #fbbf24);
+      transform-origin: bottom center;
+      animation: gaugeRotate 4s infinite ease-in-out;
+      box-shadow: 0 0 5px rgba(251, 191, 36, 0.8);
+    }
+
+    @keyframes gaugeRotate {
+      0% { transform: translateX(-50%) rotate(-45deg); }
+      50% { transform: translateX(-50%) rotate(45deg); }
+      100% { transform: translateX(-50%) rotate(-45deg); }
+    }
+
+    /* Data Stream Lines */
+    .data-stream {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 100px;
+      overflow: hidden;
+      opacity: 0.3;
+    }
+
+    .stream-line {
+      position: absolute;
+      bottom: 0;
+      width: 2px;
+      height: 100%;
+      background: linear-gradient(to top, transparent, rgba(255, 255, 255, 0.5), transparent);
+      animation: streamFlow 3s infinite linear;
+    }
+
+    .stream-line:nth-child(1) { left: 10%; animation-delay: 0s; }
+    .stream-line:nth-child(2) { left: 20%; animation-delay: 0.3s; }
+    .stream-line:nth-child(3) { left: 30%; animation-delay: 0.6s; }
+    .stream-line:nth-child(4) { left: 40%; animation-delay: 0.9s; }
+    .stream-line:nth-child(5) { left: 60%; animation-delay: 1.2s; }
+    .stream-line:nth-child(6) { left: 70%; animation-delay: 1.5s; }
+    .stream-line:nth-child(7) { left: 80%; animation-delay: 1.8s; }
+    .stream-line:nth-child(8) { left: 90%; animation-delay: 2.1s; }
+
+    @keyframes streamFlow {
+      0% { transform: translateY(100%); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(-100%); opacity: 0; }
+    }
+
+    /* Enhanced Particle System */
+    .particles {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: white;
+      border-radius: 50%;
+      opacity: 0;
+      animation: particleFloat 8s infinite ease-in-out;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    }
+
+    @keyframes particleFloat {
+      0%, 100% { 
+        opacity: 0;
+        transform: translate(0, 0) scale(0.5);
+      }
+      50% { 
+        opacity: 0.8;
+        transform: translate(30px, -50px) scale(1.2);
+      }
+    }
+
+    /* Floating Data Orbs */
+    .data-orb {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      animation: orbFloat 10s infinite ease-in-out;
+    }
+
+    .orb-1 {
+      top: 25%;
+      left: 50%;
+      animation-delay: 0s;
+    }
+
+    .orb-2 {
+      top: 65%;
+      right: 30%;
+      animation-delay: 3s;
+    }
+
+    .orb-3 {
+      bottom: 20%;
+      left: 25%;
+      animation-delay: 6s;
+    }
+
+    @keyframes orbFloat {
+      0%, 100% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+      33% {
+        transform: translate(20px, -30px) rotate(120deg);
+      }
+      66% {
+        transform: translate(-15px, 25px) rotate(240deg);
+      }
+    }
+
+    .orb-core {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 12px;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
+                  0 0 40px rgba(102, 126, 234, 0.6);
+      animation: orbPulse 2s infinite ease-in-out;
+    }
+
+    @keyframes orbPulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.3); }
+    }
+
+    .orb-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .ring-1 {
+      width: 40px;
+      height: 40px;
+      animation: ringExpand 3s infinite ease-out;
+    }
+
+    .ring-2 {
+      width: 60px;
+      height: 60px;
+      animation: ringExpand 3s 1.5s infinite ease-out;
+    }
+
+    @keyframes ringExpand {
+      0% {
+        transform: translate(-50%, -50%) scale(0.5);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    /* Widget Glow Effects */
+    .widget-glow {
+      position: absolute;
+      inset: -10px;
+      border-radius: 12px;
+      opacity: 0.5;
+      filter: blur(15px);
+      animation: glowPulse 3s infinite ease-in-out;
+    }
+
+    .temp-glow {
+      background: linear-gradient(135deg, #ef4444, #f59e0b);
+    }
+
+    .humidity-glow {
+      background: linear-gradient(135deg, #3b82f6, #06b6d4);
+    }
+
+    .pressure-glow {
+      background: linear-gradient(135deg, #8b5cf6, #ec4899);
+    }
+
+    @keyframes glowPulse {
+      0%, 100% { opacity: 0.3; transform: scale(0.95); }
+      50% { opacity: 0.6; transform: scale(1.05); }
+    }
+
+    /* Value Trend Indicators */
+    .value-trend {
+      display: inline-block;
+      margin-left: 5px;
+      font-size: 16px;
+      font-weight: bold;
+      animation: trendBounce 0.5s ease-out;
+    }
+
+    .trend-up {
+      color: #4ade80;
+    }
+
+    .trend-down {
+      color: #f87171;
+    }
+
+    @keyframes trendBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+
+    /* Data Pulse Effect on Widgets */
+    .data-pulse {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 8px;
+      height: 8px;
+      background: #4ade80;
+      border-radius: 50%;
+      animation: dataPulse 2s infinite ease-in-out;
+      box-shadow: 0 0 10px #4ade80;
+    }
+
+    @keyframes dataPulse {
+      0%, 100% { 
+        opacity: 1;
+        transform: scale(1);
+      }
+      50% { 
+        opacity: 0.3;
+        transform: scale(0.7);
+      }
+    }
+
+    /* Connection Lines Between Widgets */
+    .connection-lines {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .connection-line {
+      stroke: rgba(255, 255, 255, 0.2);
+      stroke-width: 1;
+      stroke-dasharray: 5, 5;
+      animation: lineDash 2s infinite linear;
+    }
+
+    .line-1 { animation-delay: 0s; }
+    .line-2 { animation-delay: 0.7s; }
+    .line-3 { animation-delay: 1.4s; }
+
+    @keyframes lineDash {
+      to { stroke-dashoffset: -10; }
+    }
+
+    .connection-dot {
+      fill: rgba(255, 255, 255, 0.6);
+      animation: dotPulse 2s infinite ease-in-out;
+    }
+
+    @keyframes dotPulse {
+      0%, 100% { r: 3; opacity: 0.6; }
+      50% { r: 5; opacity: 1; }
+    }
+
+    /* Binary Rain Effect */
+    .binary-rain {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      opacity: 0.08;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .binary-column {
+      position: absolute;
+      top: -100%;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: white;
+      line-height: 1.2;
+      animation: binaryFall 10s infinite linear;
+      white-space: nowrap;
+      writing-mode: vertical-rl;
+    }
+
+    @keyframes binaryFall {
+      0% { 
+        top: -100%;
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% { 
+        top: 100%;
+        opacity: 0;
+      }
+    }
+
+    /* Enhanced Telemetry Widgets */
+    .telemetry-widget {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 16px;
+      padding: 18px;
+      color: white;
+      animation: widgetFloat 6s infinite ease-in-out;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease;
+      z-index: 2;
+    }
+
+    .telemetry-widget:hover {
+      transform: scale(1.05) !important;
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Widget Positioning */
+    .temp-widget {
+      top: 10%;
+      left: 8%;
+      width: 140px;
+      animation-delay: 0s;
+    }
+
+    .humidity-widget {
+      top: 60%;
+      left: 12%;
+      width: 130px;
+      animation-delay: 2s;
+    }
+
+    .pressure-widget {
+      top: 30%;
+      right: 10%;
+      width: 150px;
+      animation-delay: 4s;
+    }
+
+    @keyframes widgetFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    .widget-icon {
+      font-size: 32px;
+      text-align: center;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    }
+
+    .widget-value {
+      text-align: center;
+      margin-bottom: 5px;
+    }
+
+    .widget-value .value {
+      font-size: 20px;
+      font-weight: 700;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      animation: valueChange 3s infinite;
+    }
+
+    @keyframes valueChange {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; transform: scale(1.05); }
+    }
+
+    .widget-label {
+      text-align: center;
+      font-size: 11px;
+      opacity: 0.9;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Temperature Progress Bar */
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      animation: tempProgress 4s infinite ease-in-out;
+    }
+
+    .temp-fill {
+      background: linear-gradient(90deg, #4ade80, #ef4444);
+    }
+
+    @keyframes tempProgress {
+      0% { width: 45%; }
+      50% { width: 75%; }
+      100% { width: 45%; }
+    }
+
+    /* Humidity Circular Progress */
+    .circular-progress {
+      width: 60px;
+      height: 60px;
+      margin: 8px auto 0;
+    }
+
+    .circular-progress svg {
+      transform: rotate(-90deg);
+    }
+
+    .progress-bg {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.2);
+      stroke-width: 8;
+    }
+
+    .humidity-progress {
+      fill: none;
+      stroke: #3b82f6;
+      stroke-width: 8;
+      stroke-dasharray: 283;
+      stroke-linecap: round;
+      animation: humidityProgress 5s infinite ease-in-out;
+    }
+
+    @keyframes humidityProgress {
+      0% { stroke-dashoffset: 113; }
+      50% { stroke-dashoffset: 70; }
+      100% { stroke-dashoffset: 113; }
+    }
+
+    /* Pressure Gauge */
+    .gauge {
+      width: 80px;
+      height: 40px;
+      margin: 10px auto 0;
+      position: relative;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 80px 80px 0 0;
+      border-bottom: none;
+      overflow: hidden;
+    }
+
+    .gauge::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 3px;
+      height: 3px;
+      background: white;
+      border-radius: 50%;
+      transform: translateX(-50%);
+    }
+
+    .gauge-needle {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 2px;
+      height: 35px;
+      background: linear-gradient(to top, white, #fbbf24);
+      transform-origin: bottom center;
+      animation: gaugeRotate 4s infinite ease-in-out;
+      box-shadow: 0 0 5px rgba(251, 191, 36, 0.8);
+    }
+
+    @keyframes gaugeRotate {
+      0% { transform: translateX(-50%) rotate(-45deg); }
+      50% { transform: translateX(-50%) rotate(45deg); }
+      100% { transform: translateX(-50%) rotate(-45deg); }
+    }
+
+    .card {
+      background: white;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      position: relative;
+      z-index: 1;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+      margin: 0 0 30px;
+      font-size: 24px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: #555;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover:not(:disabled) {
+      background: #5568d3;
+    }
+
+    button:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+    }
+
+    .link {
+      text-align: center;
+      margin: 20px 0 0;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .link a {
+      color: #667eea;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .link a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .telemetry-widget {
+        transform: scale(0.8);
+      }
+
+      .temp-widget { top: 5%; left: 5%; }
+      .humidity-widget { top: 70%; left: 5%; }
+      .pressure-widget { top: 15%; right: 5%; }
+    }
+  `]
+})
+export class LoginComponent implements OnDestroy {
+  loginDto: LoginDto = { username: '', password: '' };
+  errorMessage = '';
+  isLoading = false;
+
+  // Telemetry animation values
+  tempValue = 22;
+  humidityValue = 60;
+  pressureValue = 1013;
+  tempTrend = 0;
+  humidityTrend = 0;
+  pressureTrend = 0;
+  dataLines = Array(8).fill(0).map((_, i) => i);
+
+  // Particle system
+  particles = Array(30).fill(0).map(() => ({
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    delay: Math.random() * 5
+  }));
+
+  // Binary rain
+  binaryColumns = Array(15).fill(0).map((_, i) => ({
+    x: i * 7,
+    delay: Math.random() * 3,
+    data: this.generateBinaryString()
+  }));
+
+  private intervals: any[] = [];
+
+  constructor(private authService: AuthService, private router: Router) {
+    this.authService.validateTokenWithServer().subscribe(isValid => {
+      if (isValid) {
+        this.router.navigate(['/dashboard']);
+      }
+    });
+    this.startTelemetryAnimation();
+  }
+
+  ngOnDestroy(): void {
+    this.intervals.forEach(interval => clearInterval(interval));
+  }
+
+  generateBinaryString(): string {
+    return Array(20).fill(0).map(() => Math.random() > 0.5 ? '1' : '0').join('');
+  }
+
+  startTelemetryAnimation(): void {
+    let lastTemp = 22;
+    let lastHumidity = 60;
+    let lastPressure = 1013;
+
+    // Temperature animation (18-28°C) with trend
+    this.intervals.push(setInterval(() => {
+      const newTemp = Math.floor(18 + Math.random() * 10);
+      this.tempTrend = newTemp - lastTemp;
+      lastTemp = this.tempValue;
+      this.tempValue = newTemp;
+    }, 3000));
+
+    // Humidity animation (45-85%) with trend
+    this.intervals.push(setInterval(() => {
+      const newHumidity = Math.floor(45 + Math.random() * 40);
+      this.humidityTrend = newHumidity - lastHumidity;
+      lastHumidity = this.humidityValue;
+      this.humidityValue = newHumidity;
+    }, 4000));
+
+    // Pressure animation (995-1025 kPa) with trend
+    this.intervals.push(setInterval(() => {
+      const newPressure = Math.floor(995 + Math.random() * 30);
+      this.pressureTrend = newPressure - lastPressure;
+      lastPressure = this.pressureValue;
+      this.pressureValue = newPressure;
+    }, 3500));
+
+    // Update binary rain
+    this.intervals.push(setInterval(() => {
+      this.binaryColumns = this.binaryColumns.map(col => ({
+        ...col,
+        data: this.generateBinaryString()
+      }));
+    }, 2000));
+  }
+
+  onSubmit(): void {
+    if (!this.loginDto.username || !this.loginDto.password) return;
+
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    this.authService.login(this.loginDto).subscribe({
+      next: () => this.router.navigate(['/dashboard']),
+      error: (error) => {
+        this.errorMessage = error.error?.message || 'Invalid credentials';
+        this.isLoading = false;
+      }
+    });
+  }
+
+  goToRegister(): void {
+    this.router.navigate(['/register']);
+  }
+}

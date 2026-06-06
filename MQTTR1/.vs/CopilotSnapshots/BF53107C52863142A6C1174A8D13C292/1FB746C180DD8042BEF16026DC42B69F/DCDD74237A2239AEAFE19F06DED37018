@@ -1,0 +1,198 @@
+﻿# Live Telemetry System - User Guide
+
+## 🎯 Overview
+Your system now uses **real live data** stored in **SQL Server** instead of random seeded data. The frontend displays actual telemetry data from the database.
+
+---
+
+## 📊 System Architecture
+
+```
+IoT Simulator (PowerShell/ConsolePublisher)
+	↓ HTTP POST
+API Backend (ASP.NET Core) - http://localhost:5297
+	↓ Store
+SQL Server Database (TelemetryDb)
+	↑ Query
+Frontend (Angular) - http://localhost:4200
+```
+
+---
+
+## 🚀 Quick Start
+
+### 1. Start the Backend API
+```powershell
+cd MQTTR1
+dotnet run
+```
+Backend will run on: `http://localhost:5297`
+
+### 2. Start the Frontend
+```powershell
+cd mqttr-frontend
+npm start
+```
+Frontend will run on: `http://localhost:4200`
+
+### 3. Send Live Telemetry Data
+
+**Option A: One-time batch (300 readings)**
+```powershell
+.\send-live-data.ps1
+```
+
+**Option B: Continuous simulation (runs until stopped)**
+```powershell
+.\continuous-simulator.ps1
+```
+Press `Ctrl+C` to stop
+
+**Option C: Use ConsolePublisher (Interactive)**
+```powershell
+cd ConsolePublisher
+dotnet run -- http://localhost:5297/api
+```
+Then select option 3 to simulate continuous IoT device
+
+---
+
+## 📍 Database Information
+
+**Database Name:** `TelemetryDb`  
+**Server:** `(localdb)\mssqllocaldb`  
+**Location:**
+- Data File: `C:\Users\2489338\TelemetryDb.mdf`
+- Log File: `C:\Users\2489338\TelemetryDb_log.ldf`
+
+**Tables:**
+- `Devices` - Device information (3 pre-seeded devices)
+- `Telemetries` - Telemetry readings (populated by live data)
+
+### Pre-configured Devices:
+1. **device-001** - Temperature Sensor 1 (metric: `temperature`)
+2. **device-002** - Humidity Sensor 1 (metric: `humidity`)
+3. **device-003** - Pressure Sensor 1 (metric: `pressure`)
+
+---
+
+## 🔍 View Data in Database
+
+### Using SQL Command:
+```powershell
+sqlcmd -S "(localdb)\mssqllocaldb" -d "TelemetryDb" -Q "SELECT COUNT(*) FROM Telemetries"
+```
+
+### Using Visual Studio:
+1. Open **SQL Server Object Explorer**
+2. Expand: `(localdb)\mssqllocaldb` → `Databases` → `TelemetryDb`
+3. Right-click tables and select **View Data**
+
+---
+
+## 📈 View Data in Frontend
+
+1. Open browser: `http://localhost:4200`
+2. Navigate to **Telemetry** page
+3. Select a device from dropdown
+4. Select a metric (temperature, humidity, or pressure)
+5. View data table and chart with **LIVE DATABASE DATA**
+
+The chart will display the real telemetry data stored in SQL Server!
+
+---
+
+## 🛠️ Manual API Testing
+
+### Send Single Telemetry:
+```powershell
+$body = @{
+	deviceId = "device-001"
+	metric = "temperature"
+	value = 23.5
+} | ConvertTo-Json
+
+Invoke-RestMethod -Uri "http://localhost:5297/api/telemetry" -Method Post -Body $body -ContentType "application/json"
+```
+
+### Query Telemetry:
+```powershell
+Invoke-RestMethod -Uri "http://localhost:5297/api/telemetry?deviceId=device-001&metric=temperature"
+```
+
+---
+
+## 🔄 Workflow
+
+### Typical Usage Flow:
+
+1. **Start Backend** → `cd MQTTR1; dotnet run`
+2. **Start Frontend** → `cd mqttr-frontend; npm start`
+3. **Run Simulator** → `.\continuous-simulator.ps1`
+4. **Open Browser** → `http://localhost:4200`
+5. **Select Device & Metric** → View real-time graphs!
+
+### The Data Flow:
+- Simulator sends data via HTTP POST to API
+- API validates and stores in SQL Server
+- Frontend queries API for data
+- API retrieves from SQL Server
+- Charts display real database data
+
+---
+
+## 📊 Data Retention
+
+✅ **Data persists** after stopping the application  
+✅ **Historical data** accumulates over time  
+✅ **Database survives** application restarts  
+
+### Clear Telemetry Data (Optional):
+```powershell
+sqlcmd -S "(localdb)\mssqllocaldb" -d "TelemetryDb" -Q "DELETE FROM Telemetries"
+```
+
+---
+
+## 🎨 Key Features
+
+✅ **Real-time data ingestion** - Simulators send live data  
+✅ **Persistent storage** - SQL Server database  
+✅ **RESTful API** - Standard HTTP endpoints  
+✅ **Interactive charts** - Chart.js visualization  
+✅ **Pagination** - Handle large datasets  
+✅ **Filtering** - By device and metric  
+
+---
+
+## 🐛 Troubleshooting
+
+### Issue: No data in frontend
+**Solution:** 
+1. Check backend is running: `http://localhost:5297`
+2. Run simulator to send data: `.\send-live-data.ps1`
+3. Refresh frontend
+
+### Issue: Database connection error
+**Solution:**
+```powershell
+# Verify SQL Server LocalDB is running
+sqllocaldb info mssqllocaldb
+sqllocaldb start mssqllocaldb
+```
+
+### Issue: Frontend shows "CORS error"
+**Solution:** Backend has CORS enabled for all origins, but ensure backend is running first.
+
+---
+
+## 📝 Summary
+
+Your system now:
+- ✅ Uses **SQL Server** for persistent storage
+- ✅ Stores **live telemetry data** from simulators
+- ✅ Frontend displays **real database data** in charts
+- ✅ NO random seeded data in charts
+- ✅ Data persists between restarts
+
+**Next time you restart, the database data will still be there!** 🎉

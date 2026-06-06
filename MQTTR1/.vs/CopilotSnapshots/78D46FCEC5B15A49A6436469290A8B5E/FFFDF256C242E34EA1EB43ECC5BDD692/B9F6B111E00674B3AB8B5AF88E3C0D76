@@ -1,0 +1,229 @@
+﻿<div class="user-management">
+  <div class="header">
+    <h1>👥 User Management</h1>
+    <button class="btn btn-primary" (click)="openCreateForm()">
+      ➕ Create New User
+    </button>
+  </div>
+
+  <!-- Success/Error Messages -->
+  <div *ngIf="success" class="alert alert-success">
+    ✅ {{ success }}
+  </div>
+
+  <div *ngIf="error" class="alert alert-error">
+    ❌ {{ error }}
+  </div>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="loading" class="loading">
+    <p>Loading users...</p>
+  </div>
+
+  <!-- Create User Form (Modal) -->
+  <div class="modal" *ngIf="showCreateForm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Create New User</h2>
+        <button class="close-btn" (click)="closeCreateForm()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="username">Username *</label>
+          <input
+            type="text"
+            id="username"
+            [(ngModel)]="newUser.username"
+            placeholder="Enter username"
+            class="form-control"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input
+            type="email"
+            id="email"
+            [(ngModel)]="newUser.email"
+            placeholder="Enter email"
+            class="form-control"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password *</label>
+          <input
+            type="password"
+            id="password"
+            [(ngModel)]="newUser.password"
+            placeholder="Enter password (min 6 characters)"
+            class="form-control"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="role">Role *</label>
+          <select id="role" [(ngModel)]="newUser.role" class="form-control">
+            <option value="User">User</option>
+            <option value="Admin">Admin</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeCreateForm()">Cancel</button>
+        <button class="btn btn-primary" (click)="createUser()">Create User</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit User Form (Modal) -->
+  <div class="modal" *ngIf="editingUser">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Edit User: {{ editingUser.username }}</h2>
+        <button class="close-btn" (click)="cancelEdit()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="edit-email">Email</label>
+          <input
+            type="email"
+            id="edit-email"
+            [(ngModel)]="editForm.email"
+            placeholder="Enter email"
+            class="form-control"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="edit-role">Role</label>
+          <select id="edit-role" [(ngModel)]="editForm.role" class="form-control">
+            <option value="User">User</option>
+            <option value="Admin">Admin</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              [(ngModel)]="editForm.isActive"
+            />
+            Active
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
+        <button class="btn btn-primary" (click)="updateUser()">Update User</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reset Password Form (Modal) -->
+  <div class="modal" *ngIf="resetPasswordUserId">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Reset Password</h2>
+        <button class="close-btn" (click)="closeResetPassword()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="new-password">New Password *</label>
+          <input
+            type="password"
+            id="new-password"
+            [(ngModel)]="newPassword"
+            placeholder="Enter new password (min 6 characters)"
+            class="form-control"
+          />
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeResetPassword()">Cancel</button>
+        <button class="btn btn-primary" (click)="resetPassword()">Reset Password</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Users Table -->
+  <div class="table-container" *ngIf="!loading">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Created</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>{{ user.id }}</td>
+          <td>
+            <strong>{{ user.username }}</strong>
+          </td>
+          <td>
+            <!-- Hide email for Admin role users -->
+            <span *ngIf="isAdminRole(user)" class="private-info" title="Admin email is private">
+              🔒 Private
+            </span>
+            <span *ngIf="!isAdminRole(user)">{{ user.email }}</span>
+          </td>
+          <td>
+            <span class="badge" [ngClass]="getRoleBadgeClass(user.role)">
+              {{ user.role }}
+            </span>
+          </td>
+          <td>
+            <span class="badge" [ngClass]="getStatusBadgeClass(user.isActive)">
+              {{ user.isActive ? 'Active' : 'Inactive' }}
+            </span>
+          </td>
+          <td>{{ user.createdAt | date:'short' }}</td>
+          <td class="actions">
+            <!-- Show protected badge for main admin -->
+            <span *ngIf="isMainAdmin(user)" class="badge badge-protected" title="Main admin account is protected">
+              🔒 Protected
+            </span>
+
+            <!-- Remove Edit and Reset Password buttons for ALL users -->
+            <!-- Action buttons removed as per requirements -->
+
+            <!-- Hide Deactivate and Delete buttons for Admin role users -->
+            <button
+              *ngIf="!isAdminRole(user)"
+              class="btn btn-sm"
+              [ngClass]="user.isActive ? 'btn-secondary' : 'btn-success'"
+              (click)="toggleUserStatus(user)"
+              [title]="(user.isActive ? 'Deactivate' : 'Activate') + ' user'"
+            >
+              {{ user.isActive ? '🚫 Deactivate' : '✅ Activate' }}
+            </button>
+            <button
+              *ngIf="!isAdminRole(user)"
+              class="btn btn-sm btn-danger"
+              (click)="deleteUser(user)"
+              title="Delete user"
+            >
+              🗑️ Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p *ngIf="users.length === 0" class="no-data">
+      No users found. Create your first user above.
+    </p>
+  </div>
+</div>

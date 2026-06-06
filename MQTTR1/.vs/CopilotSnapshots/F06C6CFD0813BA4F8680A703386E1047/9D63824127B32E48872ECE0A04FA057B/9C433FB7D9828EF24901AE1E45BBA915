@@ -1,0 +1,729 @@
+﻿import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService, RegisterDto } from '../../services/auth.service';
+
+@Component({
+  selector: 'app-register',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  template: `
+    <div class="register-container">
+      <!-- Animated Background -->
+      <div class="background-animation">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+        <div class="circle circle-3"></div>
+        <div class="floating-icons">
+          <span class="icon">🔐</span>
+          <span class="icon">✨</span>
+          <span class="icon">🚀</span>
+          <span class="icon">💡</span>
+          <span class="icon">🎯</span>
+        </div>
+      </div>
+
+      <div class="register-card">
+        <h2>Register for IoT Telemetry</h2>
+
+        <div *ngIf="isFirstUser" class="info-message">
+          <strong>First User Registration:</strong> You will automatically become an Admin!
+        </div>
+
+        <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input 
+              type="text" 
+              id="username" 
+              name="username"
+              [(ngModel)]="registerDto.username" 
+              required
+              minlength="3"
+              class="form-control"
+              placeholder="Enter username (min 3 characters)">
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input 
+              type="email" 
+              id="email" 
+              name="email"
+              [(ngModel)]="registerDto.email" 
+              required
+              email
+              class="form-control"
+              placeholder="Enter email address">
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input 
+              type="password" 
+              id="password" 
+              name="password"
+              [(ngModel)]="registerDto.password" 
+              required
+              minlength="6"
+              class="form-control"
+              placeholder="Enter password (min 6 characters)">
+          </div>
+
+          <div class="form-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <input 
+              type="password" 
+              id="confirmPassword" 
+              name="confirmPassword"
+              [(ngModel)]="confirmPassword" 
+              required
+              class="form-control"
+              placeholder="Confirm password">
+          </div>
+
+          <div *ngIf="errorMessage" class="error-message">
+            {{ errorMessage }}
+          </div>
+
+          <div *ngIf="successMessage" class="success-message">
+            {{ successMessage }}
+          </div>
+
+          <button 
+            type="submit" 
+            class="btn-primary" 
+            [disabled]="!registerForm.valid || isLoading">
+            {{ isLoading ? 'Registering...' : 'Register' }}
+          </button>
+        </form>
+
+        <p class="login-link">
+          Already have an account? 
+          <a (click)="goToLogin()">Login here</a>
+        </p>
+      </div>
+    </div>
+  `,
+  styles: [`
+    /* Container & Background - Similar to Login with green theme */
+    .register-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Animated Background Elements */
+    .background-animation {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .circle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      animation: float 20s infinite ease-in-out;
+    }
+
+    .circle-1 {
+      width: 350px;
+      height: 350px;
+      top: -175px;
+      right: -175px;
+      animation-delay: 0s;
+    }
+
+    .circle-2 {
+      width: 250px;
+      height: 250px;
+      bottom: -125px;
+      left: -125px;
+      animation-delay: 7s;
+    }
+
+    .circle-3 {
+      width: 180px;
+      height: 180px;
+      top: 40%;
+      right: 15%;
+      animation-delay: 14s;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translate(0, 0) scale(1);
+      }
+      25% {
+        transform: translate(-30px, 30px) scale(1.1);
+      }
+      50% {
+        transform: translate(20px, -20px) scale(0.9);
+      }
+      75% {
+        transform: translate(-20px, -30px) scale(1.05);
+      }
+    }
+
+    /* Floating Icons */
+    .floating-icons {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    .floating-icons .icon {
+      position: absolute;
+      font-size: 28px;
+      opacity: 0.25;
+      animation: floatIcon 18s infinite ease-in-out;
+    }
+
+    .floating-icons .icon:nth-child(1) {
+      top: 15%;
+      left: 15%;
+      animation-delay: 0s;
+    }
+
+    .floating-icons .icon:nth-child(2) {
+      top: 65%;
+      left: 75%;
+      animation-delay: 4s;
+    }
+
+    .floating-icons .icon:nth-child(3) {
+      top: 75%;
+      left: 15%;
+      animation-delay: 8s;
+    }
+
+    .floating-icons .icon:nth-child(4) {
+      top: 25%;
+      left: 80%;
+      animation-delay: 12s;
+    }
+
+    .floating-icons .icon:nth-child(5) {
+      top: 50%;
+      left: 45%;
+      animation-delay: 16s;
+    }
+
+    @keyframes floatIcon {
+      0%, 100% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.25;
+      }
+      50% {
+        transform: translateY(-25px) rotate(180deg);
+        opacity: 0.4;
+      }
+    }
+
+    /* Register Card */
+    .register-card {
+      background: white;
+      padding: 45px 40px;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 480px;
+      position: relative;
+      z-index: 2;
+      animation: slideIn 0.6s ease-out;
+      backdrop-filter: blur(10px);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Card Header */
+    .card-header {
+      text-align: center;
+      margin-bottom: 35px;
+    }
+
+    .logo-circle {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 30px rgba(17, 153, 142, 0.4);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1) rotate(0deg);
+        box-shadow: 0 10px 30px rgba(17, 153, 142, 0.4);
+      }
+      50% {
+        transform: scale(1.05) rotate(180deg);
+        box-shadow: 0 15px 40px rgba(17, 153, 142, 0.6);
+      }
+    }
+
+    .logo-icon {
+      font-size: 40px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    }
+
+    .card-title {
+      color: #333;
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0 0 10px 0;
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .card-subtitle {
+      color: #666;
+      font-size: 14px;
+      margin: 0;
+    }
+
+    /* Info Message */
+    .info-message {
+      background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+      color: white;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideDown 0.5s ease-out;
+      box-shadow: 0 5px 20px rgba(255, 216, 155, 0.3);
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .info-icon {
+      font-size: 32px;
+      animation: crown 2s infinite;
+    }
+
+    @keyframes crown {
+      0%, 100% {
+        transform: rotate(-10deg) scale(1);
+      }
+      50% {
+        transform: rotate(10deg) scale(1.1);
+      }
+    }
+
+    .info-message div {
+      flex: 1;
+    }
+
+    .info-message strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 5px;
+    }
+
+    .info-message p {
+      margin: 0;
+      font-size: 13px;
+      opacity: 0.95;
+    }
+
+    /* Form */
+    .register-form {
+      animation: fadeIn 0.8s ease-out 0.2s both;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .form-group {
+      margin-bottom: 22px;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      color: #555;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .label-icon {
+      font-size: 16px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 14px 45px 14px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 15px;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+      background: #f8f9fa;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: #11998e;
+      background: white;
+      box-shadow: 0 0 0 4px rgba(17, 153, 142, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .input-icon {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      opacity: 0.5;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus + .input-icon {
+      opacity: 1;
+      transform: translateY(-50%) scale(1.2);
+    }
+
+    /* Success Message */
+    .success-message {
+      background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+      color: white;
+      padding: 12px 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: bounceIn 0.6s;
+      box-shadow: 0 4px 15px rgba(86, 171, 47, 0.3);
+    }
+
+    @keyframes bounceIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.3);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      70% {
+        transform: scale(0.9);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .success-icon {
+      font-size: 24px;
+      animation: celebrate 1s infinite;
+    }
+
+    @keyframes celebrate {
+      0%, 100% {
+        transform: rotate(-15deg) scale(1);
+      }
+      50% {
+        transform: rotate(15deg) scale(1.2);
+      }
+    }
+
+    /* Error Message */
+    .error-message {
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+      color: white;
+      padding: 12px 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: shake 0.5s;
+      box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    .error-icon {
+      font-size: 20px;
+    }
+
+    /* Primary Button */
+    .btn-primary {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 30px rgba(17, 153, 142, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn-primary:hover::before {
+      left: 100%;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 40px rgba(17, 153, 142, 0.4);
+    }
+
+    .btn-primary:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .btn-primary:disabled {
+      background: linear-gradient(135deg, #ccc 0%, #999 100%);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .btn-icon {
+      margin-right: 8px;
+    }
+
+    /* Loading Spinner */
+    .loading-spinner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Card Footer */
+    .card-footer {
+      margin-top: 25px;
+      padding-top: 20px;
+      border-top: 1px solid #e0e0e0;
+      animation: fadeIn 1s ease-out 0.4s both;
+    }
+
+    .login-link {
+      text-align: center;
+      margin: 0;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .login-btn {
+      color: #11998e;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.3s ease;
+    }
+
+    .login-btn:hover {
+      color: #38ef7d;
+      gap: 8px;
+      text-decoration: underline;
+    }
+
+    .link-icon {
+      font-size: 16px;
+      animation: unlock 2s infinite;
+    }
+
+    @keyframes unlock {
+      0%, 100% {
+        transform: rotate(0deg) scale(1);
+      }
+      25% {
+        transform: rotate(-15deg) scale(1.1);
+      }
+      75% {
+        transform: rotate(15deg) scale(1.1);
+      }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 480px) {
+      .register-card {
+        padding: 30px 20px;
+      }
+
+      .card-title {
+        font-size: 24px;
+      }
+
+      .logo-circle {
+        width: 60px;
+        height: 60px;
+      }
+
+      .logo-icon {
+        font-size: 30px;
+      }
+
+      .form-group {
+        margin-bottom: 18px;
+      }
+    }
+  `]
+})
+export class RegisterComponent {
+  registerDto: RegisterDto = {
+    username: '',
+    email: '',
+    password: ''
+  };
+
+  confirmPassword = '';
+  errorMessage = '';
+  successMessage = '';
+  isLoading = false;
+  isFirstUser = false; // Could be determined by an API call
+
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {
+    // Redirect to dashboard if already authenticated
+    if (this.authService.isAuthenticated()) {
+      console.log('[RegisterComponent] User already authenticated, redirecting to dashboard');
+      this.router.navigate(['/dashboard']);
+    }
+  }
+
+  onSubmit(): void {
+    if (!this.validateForm()) {
+      return;
+    }
+
+    this.isLoading = true;
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    this.authService.register(this.registerDto).subscribe({
+      next: (response) => {
+        console.log('Registration successful:', response);
+        this.successMessage = `Welcome ${response.username}! You are registered as ${response.role}.`;
+
+        // Redirect to telemetry after 2 seconds
+        setTimeout(() => {
+          this.router.navigate(['/telemetry']);
+        }, 2000);
+      },
+      error: (error) => {
+        console.error('Registration failed:', error);
+        this.errorMessage = error.error?.message || 'Registration failed. Please try again.';
+        this.isLoading = false;
+      },
+      complete: () => {
+        this.isLoading = false;
+      }
+    });
+  }
+
+  validateForm(): boolean {
+    if (this.registerDto.password !== this.confirmPassword) {
+      this.errorMessage = 'Passwords do not match!';
+      return false;
+    }
+
+    if (this.registerDto.password.length < 6) {
+      this.errorMessage = 'Password must be at least 6 characters long!';
+      return false;
+    }
+
+    if (this.registerDto.username.length < 3) {
+      this.errorMessage = 'Username must be at least 3 characters long!';
+      return false;
+    }
+
+    return true;
+  }
+
+  goToLogin(): void {
+    this.router.navigate(['/login']);
+  }
+}

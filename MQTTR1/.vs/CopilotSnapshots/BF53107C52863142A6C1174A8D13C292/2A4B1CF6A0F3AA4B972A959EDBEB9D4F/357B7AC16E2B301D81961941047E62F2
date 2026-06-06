@@ -1,0 +1,141 @@
+﻿import { Component } from '@angular/core';
+import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { AuthService } from './services/auth.service';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
+  template: `
+    <nav class="navbar" *ngIf="authService.isAuthenticated()">
+      <div class="navbar-container">
+        <div class="navbar-brand">
+          <div class="brand-icon">🌡️</div>
+          <div class="brand-text">
+            <span class="brand-name">IoT Telemetry</span>
+            <span class="brand-subtitle">Kolkata Dashboard</span>
+          </div>
+        </div>
+
+        <ul class="navbar-menu">
+          <li class="menu-item">
+            <a routerLink="/dashboard" routerLinkActive="active" class="menu-link">
+              <span class="menu-icon">📊</span>
+              <span class="menu-text">Dashboard</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a routerLink="/devices" routerLinkActive="active" class="menu-link">
+              <span class="menu-icon">📱</span>
+              <span class="menu-text">Devices</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a routerLink="/telemetry" routerLinkActive="active" class="menu-link">
+              <span class="menu-icon">📈</span>
+              <span class="menu-text">Telemetry</span>
+            </a>
+          </li>
+          <li class="menu-item" *ngIf="authService.isAdmin()">
+            <a routerLink="/simulator" routerLinkActive="active" class="menu-link">
+              <span class="menu-icon">⚙️</span>
+              <span class="menu-text">Simulator</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="navbar-user">
+          <div class="user-profile">
+            <div class="user-avatar">{{ getInitials() }}</div>
+            <div class="user-details">
+              <span class="user-name">{{ authService.getCurrentUser()?.username }}</span>
+              <span class="user-role" [class.admin-role]="authService.isAdmin()">
+                {{ authService.getCurrentUser()?.role }}
+              </span>
+            </div>
+          </div>
+          <button class="logout-button" (click)="logout()" title="Logout">
+            <span class="logout-icon">🚪</span>
+            <span class="logout-text">Logout</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+  `,
+  styles: [`
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #333;
+      padding: 0 20px;
+    }
+
+    .nav-left ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+    }
+
+    .nav-left li {
+      margin: 0;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .user-info {
+      color: white;
+      font-size: 14px;
+    }
+
+    .role-badge {
+      background-color: #6c757d;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 12px;
+      margin-left: 8px;
+    }
+
+    .role-badge.admin {
+      background-color: #dc3545;
+      font-weight: bold;
+    }
+
+    .logout-btn {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .logout-btn:hover {
+      background-color: #c82333;
+    }
+  `]
+})
+export class AppComponent {
+  title = 'MQTTR Dashboard';
+
+  constructor(
+    public authService: AuthService,
+    private router: Router
+  ) {}
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
+}

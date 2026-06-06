@@ -1,0 +1,61 @@
+﻿# 📱 IoT Device Quick Reference
+
+## Current Device Configuration
+
+### 🌡️ Smart Thermostat - Living Room
+- **ID:** device-001
+- **Type:** Nest Learning Thermostat
+- **Location:** Living Room
+- **Metric:** temperature (°C)
+- **Purpose:** Climate control and HVAC automation
+- **Data:** 720 readings at 2-minute intervals (24 hours)
+- **Pattern:** Day/night cycle (18-24°C)
+
+### 💧 Humidity Monitor - Basement  
+- **ID:** device-002
+- **Type:** Honeywell Humidity Sensor
+- **Location:** Basement
+- **Metric:** humidity (%)
+- **Purpose:** Moisture control and mold prevention
+- **Data:** 720 readings at 2-minute intervals (24 hours)
+- **Pattern:** Inverse day/night cycle (40-70%)
+
+### 🌤️ Barometric Pressure Sensor - Rooftop
+- **ID:** device-003
+- **Type:** Weather Station Sensor
+- **Location:** Rooftop
+- **Metric:** pressure (hPa)
+- **Purpose:** Weather monitoring and prediction
+- **Data:** 100 readings at 2-minute intervals
+
+---
+
+## Access Points
+
+**Frontend:** http://localhost:4200
+**Backend API:** http://localhost:5297
+**Database:** (localdb)\mssqllocaldb - TelemetryDb
+
+---
+
+## Quick Commands
+
+**View Devices:**
+```powershell
+Invoke-RestMethod -Uri "http://localhost:5297/api/devices"
+```
+
+**Send Realistic Data (24 hours):**
+```powershell
+.\generate-realistic-data.ps1
+```
+
+**Send Live Data (Continuous):**
+```powershell
+.\continuous-simulator.ps1
+```
+
+**Check Database:**
+```powershell
+sqlcmd -S "(localdb)\mssqllocaldb" -d "TelemetryDb" -Q "SELECT * FROM Devices"
+```

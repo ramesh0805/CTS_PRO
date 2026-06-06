@@ -1,0 +1,142 @@
+﻿# Telemetry Form Enhancement: Auto-Detect Metric and Default Value
+
+## Feature Added
+Automatically detect and populate the metric type and a realistic default value based on the selected device in the telemetry submission form.
+
+## Changes Made
+
+### 1. **mqttr-frontend/src/app/components/telemetry/telemetry.component.ts**
+
+#### Added Methods:
+
+**`getDevicePrimaryMetric(device: Device): string`**
+- Determines the primary metric for a device based on its name and description
+- Matches the backend logic in `LiveTelemetryGeneratorService.cs`
+- Priority order: temperature > humidity > pressure
+- Returns the appropriate metric type for the device
+
+**`getDefaultValueForMetric(metric: string): number`**
+- Returns realistic default values for each metric type:
+  - **Temperature**: 25.0°C (comfortable room temperature)
+  - **Humidity**: 60.0% (moderate humidity)
+  - **Pressure**: 1013.25 hPa (standard atmospheric pressure)
+
+**`onFormDeviceChange(): void`**
+- Called when user changes device selection in the form
+- Automatically updates both the metric and value fields
+- Ensures metric matches the device's capability
+
+#### Updated Method:
+
+**`showAddForm(): void`**
+- Now automatically detects the first device's primary metric
+- Sets an appropriate default value based on that metric
+- Provides better initial form state
+
+### 2. **mqttr-frontend/src/app/components/telemetry/telemetry.component.html**
+
+#### Form Updates:
+- Added `(ngModelChange)="onFormDeviceChange()"` to device dropdown
+  - Triggers automatic metric/value update when device changes
+- Added new **Metric** field (read-only):
+  - Displays the auto-detected metric with titlecase formatting
+  - Shows "Temperature", "Humidity", or "Pressure"
+  - Disabled input prevents manual editing
+  - Uses `readonly-input` CSS class for styling
+
+### 3. **mqttr-frontend/src/app/components/telemetry/telemetry.component.scss**
+
+#### Added Styling:
+```scss
+.readonly-input {
+  background-color: #f8f9fa;
+  color: #495057;
+  cursor: not-allowed;
+  font-weight: 500;
+}
+```
+- Light gray background indicates read-only state
+- Not-allowed cursor shows field is disabled
+- Medium font weight makes it visually distinct
+
+## How It Works
+
+### Device-to-Metric Mapping Logic:
+The feature uses the same logic as the backend to determine which metric a device should use:
+
+1. **Temperature Devices**:
+   - Name/description contains: "temperature", "thermostat", "temp"
+   - Device ID: "device-001"
+   - Default value: 25.0°C
+
+2. **Humidity Devices**:
+   - Name/description contains: "humidity", "moisture"
+   - Device ID: "device-002"
+   - Default value: 60.0%
+
+3. **Pressure Devices**:
+   - Name/description contains: "pressure", "barometric", "barometer"
+   - Device ID: "device-003"
+   - Default value: 1013.25 hPa
+
+### User Experience Flow:
+
+1. User clicks "Submit Telemetry" button
+2. Form opens with:
+   - First device pre-selected
+   - Metric auto-detected from device name
+   - Realistic default value populated
+3. User changes device selection
+4. Form automatically updates:
+   - Metric field changes to match new device
+   - Value field updates to appropriate default
+5. User can modify the value but not the metric
+6. User submits the form
+
+## Benefits
+
+1. **Consistency**: Matches backend logic for device-metric assignment
+2. **User-Friendly**: No need to manually select metric or guess appropriate values
+3. **Error Prevention**: Users can't submit wrong metric types for devices
+4. **Realistic Defaults**: Provides sensible starting values for each metric type
+5. **Time-Saving**: Reduces form filling steps
+
+## Example Scenarios
+
+### Scenario 1: Temperature Sensor
+- **Device Selected**: "Smart Thermostat - Living Room (device-001)"
+- **Auto-Detected Metric**: "Temperature"
+- **Default Value**: 25.0
+- **User can change to**: 22.5, 30.0, etc.
+
+### Scenario 2: Humidity Sensor
+- **Device Selected**: "Humidity Monitor - Kitchen (device-002)"
+- **Auto-Detected Metric**: "Humidity"
+- **Default Value**: 60.0
+- **User can change to**: 45.0, 75.0, etc.
+
+### Scenario 3: Pressure Sensor
+- **Device Selected**: "Barometric Pressure Sensor - Rooftop (device-003)"
+- **Auto-Detected Metric**: "Pressure"
+- **Default Value**: 1013.25
+- **User can change to**: 1010.0, 1020.5, etc.
+
+## Verification
+
+✅ Form opens with correct metric for first device
+✅ Metric field is read-only and visually distinct
+✅ Default value is realistic for metric type
+✅ Changing device updates both metric and value
+✅ Frontend successfully rebuilds with changes
+✅ No TypeScript compilation errors
+✅ Styling applied correctly
+
+## Technical Notes
+
+- The metric detection logic is consistent with `LiveTelemetryGeneratorService.cs` (lines 286-317)
+- Default values represent typical real-world measurements:
+  - Temperature: Room temperature in Celsius
+  - Humidity: Moderate indoor humidity percentage
+  - Pressure: Standard sea-level atmospheric pressure
+- The metric field is bound one-way (`[value]`) to prevent editing while still showing the current value
+- TypeScript's `titlecase` pipe formats metric names properly (e.g., "temperature" → "Temperature")

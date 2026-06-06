@@ -1,0 +1,32 @@
+[
+  {
+    "deviceId": "device-001",
+    "metric": "temperature",
+    "value": 22.3,
+    "timestamp": "2024-01-15T10:00:00Z"
+  },
+  {
+    "deviceId": "device-001",
+    "metric": "temperature",
+    "value": 23.1,
+    "timestamp": "2024-01-15T10:15:00Z"
+  },
+  {
+    "deviceId": "device-002",
+    "metric": "humidity",
+    "value": 65.5,
+    "timestamp": "2024-01-15T10:00:00Z"
+  },
+  {
+    "deviceId": "device-002",
+    "metric": "humidity",
+    "value": 67.2,
+    "timestamp": "2024-01-15T10:15:00Z"
+  },
+  {
+    "deviceId": "device-003",
+    "metric": "pressure",
+    "value": 1013.25,
+    "timestamp": "2024-01-15T10:00:00Z"
+  }
+]

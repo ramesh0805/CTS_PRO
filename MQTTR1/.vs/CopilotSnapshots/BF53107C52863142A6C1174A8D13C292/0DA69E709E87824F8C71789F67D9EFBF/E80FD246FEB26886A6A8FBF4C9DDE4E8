@@ -1,0 +1,401 @@
+﻿# ====================================================================
+# INDIA CLIMATE TELEMETRY DATA GENERATOR
+# ====================================================================
+# Generates realistic IoT sensor data based on Indian climate patterns
+# Uses India Standard Time (IST = UTC +5:30)
+# ====================================================================
+
+Write-Host "=============================================" -ForegroundColor Cyan
+Write-Host "  INDIA CLIMATE DATA GENERATOR (IST)" -ForegroundColor Cyan
+Write-Host "=============================================" -ForegroundColor Cyan
+Write-Host ""
+
+# API Configuration
+$apiUrl = "http://localhost:5297/api/telemetry/batch"
+$batchSize = 100
+
+# Device Configuration
+$devices = @(
+	@{
+		deviceId = "device-001"
+		name = "Smart Thermostat - Living Room"
+		location = "Mumbai, India"
+	},
+	@{
+		deviceId = "device-002"
+		name = "Humidity Monitor - Basement"
+		location = "Delhi, India"
+	},
+	@{
+		deviceId = "device-003"
+		name = "Barometric Pressure Sensor - Rooftop"
+		location = "Bangalore, India"
+	}
+)
+
+# ====================================================================
+# INDIAN CLIMATE PARAMETERS
+# ====================================================================
+
+# Temperature ranges for India (in Celsius)
+# India experiences higher temperatures than Western countries
+$temperatureParams = @{
+	# Summer months (March-June): Very hot
+	summerBase = 38      # Base temperature for peak summer
+	summerVariation = 8   # Can range from 30°C to 46°C
+
+	# Monsoon months (July-September): Warm with high humidity
+	monsoonBase = 30
+	monsoonVariation = 5  # 25°C to 35°C
+
+	# Winter months (October-February): Mild (not cold by global standards)
+	winterBase = 22
+	winterVariation = 8   # 14°C to 30°C (warmer than Western winters)
+
+	# Daily variation
+	dayNightDelta = 12    # Temperature difference between day and night
+}
+
+# Humidity ranges for India
+$humidityParams = @{
+	# Monsoon season: Very high humidity (60-95%)
+	monsoonMin = 65
+	monsoonMax = 95
+
+	# Summer: Moderate to high (40-70%)
+	summerMin = 40
+	summerMax = 70
+
+	# Winter: Low to moderate (30-60%)
+	winterMin = 30
+	winterMax = 60
+}
+
+# Pressure (relatively stable, slightly lower in monsoon)
+$pressureParams = @{
+	baseMin = 1008
+	baseMax = 1016
+	variation = 4
+}
+
+# ====================================================================
+# HELPER FUNCTIONS
+# ====================================================================
+
+function Get-ISTTime {
+	param([DateTime]$utcTime)
+	# IST is UTC + 5 hours 30 minutes
+	return $utcTime.AddHours(5).AddMinutes(30)
+}
+
+function Get-CurrentSeason {
+	param([int]$month)
+
+	# Indian seasons
+	if ($month -ge 3 -and $month -le 6) {
+		return "Summer"      # March to June
+	}
+	elseif ($month -ge 7 -and $month -le 9) {
+		return "Monsoon"     # July to September
+	}
+	else {
+		return "Winter"      # October to February
+	}
+}
+
+function Get-IndianTemperature {
+	param(
+		[DateTime]$timestamp,
+		[double]$previousValue
+	)
+
+	$istTime = Get-ISTTime -utcTime $timestamp
+	$hour = $istTime.Hour
+	$month = $istTime.Month
+	$season = Get-CurrentSeason -month $month
+
+	# Select base temperature based on season
+	$baseTemp = switch ($season) {
+		"Summer"  { $temperatureParams.summerBase }
+		"Monsoon" { $temperatureParams.monsoonBase }
+		"Winter"  { $temperatureParams.winterBase }
+	}
+
+	$variation = switch ($season) {
+		"Summer"  { $temperatureParams.summerVariation }
+		"Monsoon" { $temperatureParams.monsoonVariation }
+		"Winter"  { $temperatureParams.winterVariation }
+	}
+
+	# Daily temperature curve (sine wave based on time of day)
+	# Peak at 3 PM (15:00), lowest at 5 AM (5:00)
+	$hourAngle = (($hour - 5) * 15) * [Math]::PI / 180  # Convert to radians
+	$dailyFactor = [Math]::Sin($hourAngle)
+
+	# Calculate target temperature
+	$targetTemp = $baseTemp + ($dailyFactor * $temperatureParams.dayNightDelta / 2)
+
+	# Add some randomness
+	$randomFactor = (Get-Random -Minimum -10 -Maximum 10) / 10.0
+	$targetTemp += $randomFactor
+
+	# Apply smoothing (70% previous, 30% new)
+	$smoothedTemp = ($previousValue * 0.7) + ($targetTemp * 0.3)
+
+	# Clamp to realistic range
+	$minTemp = $baseTemp - $variation
+	$maxTemp = $baseTemp + $variation
+
+	if ($smoothedTemp -lt $minTemp) { $smoothedTemp = $minTemp }
+	if ($smoothedTemp -gt $maxTemp) { $smoothedTemp = $maxTemp }
+
+	return [Math]::Round($smoothedTemp, 2)
+}
+
+function Get-IndianHumidity {
+	param(
+		[DateTime]$timestamp,
+		[double]$temperature,
+		[double]$previousValue
+	)
+
+	$istTime = Get-ISTTime -utcTime $timestamp
+	$month = $istTime.Month
+	$season = Get-CurrentSeason -month $month
+	$hour = $istTime.Hour
+
+	# Humidity ranges by season
+	$minHumidity = switch ($season) {
+		"Summer"  { $humidityParams.summerMin }
+		"Monsoon" { $humidityParams.monsoonMin }
+		"Winter"  { $humidityParams.winterMin }
+	}
+
+	$maxHumidity = switch ($season) {
+		"Summer"  { $humidityParams.summerMax }
+		"Monsoon" { $humidityParams.monsoonMax }
+		"Winter"  { $humidityParams.winterMax }
+	}
+
+	# Humidity inversely related to temperature (generally)
+	# Higher at night, lower during hot afternoon
+	$hourAngle = (($hour - 5) * 15) * [Math]::PI / 180
+	$dailyFactor = -[Math]::Sin($hourAngle)  # Negative sine (inverse of temperature)
+
+	$midHumidity = ($minHumidity + $maxHumidity) / 2
+	$range = ($maxHumidity - $minHumidity) / 2
+
+	$targetHumidity = $midHumidity + ($dailyFactor * $range * 0.6)
+
+	# Add randomness
+	$randomFactor = (Get-Random -Minimum -5 -Maximum 5)
+	$targetHumidity += $randomFactor
+
+	# Smoothing
+	$smoothedHumidity = ($previousValue * 0.7) + ($targetHumidity * 0.3)
+
+	# Clamp
+	if ($smoothedHumidity -lt $minHumidity) { $smoothedHumidity = $minHumidity }
+	if ($smoothedHumidity -gt $maxHumidity) { $smoothedHumidity = $maxHumidity }
+
+	return [Math]::Round($smoothedHumidity, 2)
+}
+
+function Get-IndianPressure {
+	param(
+		[DateTime]$timestamp,
+		[double]$previousValue
+	)
+
+	$istTime = Get-ISTTime -utcTime $timestamp
+	$month = $istTime.Month
+	$season = Get-CurrentSeason -month $month
+
+	# Slightly lower pressure during monsoon
+	$basePressure = if ($season -eq "Monsoon") { 1010 } else { 1013 }
+
+	# Very slow sinusoidal variation over 24 hours
+	$hour = $istTime.Hour
+	$hourAngle = ($hour * 15) * [Math]::PI / 180
+	$dailyFactor = [Math]::Sin($hourAngle) * 0.3
+
+	$targetPressure = $basePressure + $dailyFactor
+
+	# Minimal random variation (pressure changes slowly)
+	$randomFactor = (Get-Random -Minimum -5 -Maximum 5) / 10.0
+	$targetPressure += $randomFactor
+
+	# Heavy smoothing (90% previous, 10% new)
+	$smoothedPressure = ($previousValue * 0.9) + ($targetPressure * 0.1)
+
+	# Clamp
+	$minPressure = $pressureParams.baseMin
+	$maxPressure = $pressureParams.baseMax
+
+	if ($smoothedPressure -lt $minPressure) { $smoothedPressure = $minPressure }
+	if ($smoothedPressure -gt $maxPressure) { $smoothedPressure = $maxPressure }
+
+	return [Math]::Round($smoothedPressure, 2)
+}
+
+# ====================================================================
+# MAIN DATA GENERATION
+# ====================================================================
+
+Write-Host "Configuration:" -ForegroundColor Yellow
+Write-Host "  Timezone: India Standard Time (UTC +5:30)" -ForegroundColor White
+Write-Host "  Time Period: Last 24 hours" -ForegroundColor White
+Write-Host "  Interval: 2 minutes" -ForegroundColor White
+Write-Host "  Records per device: 720" -ForegroundColor White
+Write-Host "  Total records: 2,160" -ForegroundColor White
+Write-Host ""
+
+# Calculate IST-based timestamps
+$nowUtc = [DateTime]::UtcNow
+$nowIst = Get-ISTTime -utcTime $nowUtc
+$startUtc = $nowUtc.AddHours(-24)
+
+Write-Host "Current IST Time: $($nowIst.ToString('yyyy-MM-dd HH:mm:ss'))" -ForegroundColor Green
+Write-Host "Data Range (IST): $((Get-ISTTime -utcTime $startUtc).ToString('yyyy-MM-dd HH:mm:ss')) to $($nowIst.ToString('yyyy-MM-dd HH:mm:ss'))" -ForegroundColor Green
+Write-Host ""
+
+$currentSeason = Get-CurrentSeason -month $nowIst.Month
+Write-Host "Current Season: $currentSeason" -ForegroundColor Magenta
+Write-Host ""
+
+# Initialize previous values for smoothing
+$previousValues = @{}
+foreach ($device in $devices) {
+	$previousValues[$device.deviceId] = @{
+		temperature = switch ($currentSeason) {
+			"Summer"  { 35 }
+			"Monsoon" { 28 }
+			"Winter"  { 22 }
+		}
+		humidity = 55
+		pressure = 1013
+	}
+}
+
+Write-Host "Generating telemetry data..." -ForegroundColor Yellow
+Write-Host ""
+
+$totalRecords = 0
+$allTelemetry = @()
+
+# Generate 720 readings per device (24 hours * 30 readings per hour = 720)
+for ($i = 0; $i -lt 720; $i++) {
+	$currentUtc = $startUtc.AddMinutes($i * 2)
+	$currentIst = Get-ISTTime -utcTime $currentUtc
+
+	foreach ($device in $devices) {
+		$deviceId = $device.deviceId
+
+		# Generate temperature
+		$temp = Get-IndianTemperature -timestamp $currentUtc -previousValue $previousValues[$deviceId].temperature
+		$previousValues[$deviceId].temperature = $temp
+
+		# Generate humidity
+		$humidity = Get-IndianHumidity -timestamp $currentUtc -temperature $temp -previousValue $previousValues[$deviceId].humidity
+		$previousValues[$deviceId].humidity = $humidity
+
+		# Generate pressure
+		$pressure = Get-IndianPressure -timestamp $currentUtc -previousValue $previousValues[$deviceId].pressure
+		$previousValues[$deviceId].pressure = $pressure
+
+		# Create telemetry records
+		$allTelemetry += @{
+			deviceId = $deviceId
+			metric = "temperature"
+			value = $temp
+			timestamp = $currentUtc.ToString("o")
+		}
+
+		$allTelemetry += @{
+			deviceId = $deviceId
+			metric = "humidity"
+			value = $humidity
+			timestamp = $currentUtc.ToString("o")
+		}
+
+		$allTelemetry += @{
+			deviceId = $deviceId
+			metric = "pressure"
+			value = $pressure
+			timestamp = $currentUtc.ToString("o")
+		}
+	}
+
+	# Show progress every 60 readings (2 hours)
+	if (($i + 1) % 60 -eq 0) {
+		$hoursProcessed = ($i + 1) / 30
+		$istTimepoint = Get-ISTTime -utcTime $currentUtc
+		Write-Host "  Processed: $hoursProcessed hours (IST: $($istTimepoint.ToString('MMM dd, HH:mm')))" -ForegroundColor Gray
+	}
+}
+
+Write-Host ""
+Write-Host "Sending data to API in batches..." -ForegroundColor Yellow
+Write-Host ""
+
+# Send in batches
+$successCount = 0
+$failCount = 0
+
+for ($i = 0; $i -lt $allTelemetry.Count; $i += $batchSize) {
+	$batch = $allTelemetry[$i..[Math]::Min($i + $batchSize - 1, $allTelemetry.Count - 1)]
+
+	try {
+		$jsonBody = $batch | ConvertTo-Json -Depth 10
+		$response = Invoke-RestMethod -Uri $apiUrl -Method POST -Body $jsonBody -ContentType "application/json" -ErrorAction Stop
+
+		$batchNum = [Math]::Floor($i / $batchSize) + 1
+		$totalBatches = [Math]::Ceiling($allTelemetry.Count / $batchSize)
+		$recordCount = $batch.Count
+		Write-Host "  [OK] Batch $batchNum/$totalBatches sent successfully - $recordCount records" -ForegroundColor Green
+
+		$successCount += $batch.Count
+	}
+	catch {
+		$errorMsg = $_.Exception.Message
+		Write-Host "  [ERROR] Batch failed: $errorMsg" -ForegroundColor Red
+		$failCount += $batch.Count
+	}
+
+	Start-Sleep -Milliseconds 100
+}
+
+# ====================================================================
+# SUMMARY
+# ====================================================================
+
+Write-Host ""
+Write-Host "=============================================" -ForegroundColor Cyan
+Write-Host "  DATA GENERATION COMPLETE" -ForegroundColor Cyan
+Write-Host "=============================================" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "Statistics:" -ForegroundColor Yellow
+Write-Host "  Total Records Generated: $($allTelemetry.Count)" -ForegroundColor White
+Write-Host "  Successfully Sent: $successCount" -ForegroundColor Green
+Write-Host "  Failed: $failCount" -ForegroundColor $(if ($failCount -gt 0) { "Red" } else { "White" })
+Write-Host ""
+
+# Display sample data with IST timestamps
+Write-Host "Sample Data (Latest 5 readings):" -ForegroundColor Yellow
+$sampleRecords = $allTelemetry | Select-Object -Last 15 | Where-Object { $_.metric -eq 'temperature' }
+foreach ($record in $sampleRecords | Select-Object -First 5) {
+	$istTimestamp = Get-ISTTime -utcTime ([DateTime]::Parse($record.timestamp))
+	Write-Host "  Device: $($record.deviceId) | Temp: $($record.value)°C | IST: $($istTimestamp.ToString('yyyy-MM-dd HH:mm:ss'))" -ForegroundColor White
+}
+
+Write-Host ""
+Write-Host "Indian Climate Characteristics Applied:" -ForegroundColor Magenta
+Write-Host "  ✓ Higher temperature baselines (India experiences warmer climate)" -ForegroundColor White
+Write-Host "  ✓ Seasonal variations (Summer: 30-46°C, Monsoon: 25-35°C, Winter: 14-30°C)" -ForegroundColor White
+Write-Host "  ✓ High humidity during monsoon season (65-95%)" -ForegroundColor White
+Write-Host "  ✓ All timestamps in India Standard Time (UTC +5:30)" -ForegroundColor White
+Write-Host "  ✓ Daily temperature peaks at 3 PM IST" -ForegroundColor White
+Write-Host "  ✓ Smooth transitions matching real sensor behavior" -ForegroundColor White
+Write-Host ""
+Write-Host "✓ Data generation complete!" -ForegroundColor Green
+Write-Host ""

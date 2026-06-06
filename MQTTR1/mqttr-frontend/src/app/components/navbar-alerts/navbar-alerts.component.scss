@@ -1,0 +1,249 @@
+.navbar-alerts {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.alert-bell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .bell-icon {
+    font-size: 20px;
+  }
+
+  .unread-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #dc3545;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 5px;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
+    animation: pulse 2s infinite;
+  }
+}
+
+.alerts-dropdown {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  width: 400px;
+  max-height: 500px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  overflow: hidden;
+  animation: slideDown 0.3s ease;
+
+  .dropdown-header {
+    padding: 15px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+
+      .btn-text {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 12px;
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 4px;
+        transition: background-color 0.2s;
+
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.2);
+        }
+      }
+    }
+  }
+
+  .alerts-list {
+    max-height: 400px;
+    overflow-y: auto;
+
+    .no-alerts {
+      text-align: center;
+      padding: 40px 20px;
+      color: #6c757d;
+
+      .no-alerts-icon {
+        font-size: 48px;
+        display: block;
+        margin-bottom: 10px;
+        color: #28a745;
+      }
+
+      p {
+        margin: 10px 0 5px;
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      small {
+        color: #999;
+      }
+    }
+
+    .alert-item {
+      display: flex;
+      gap: 12px;
+      padding: 15px 20px;
+      border-bottom: 1px solid #e9ecef;
+      cursor: pointer;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background-color: #f8f9fa;
+      }
+
+      &.unread {
+        background-color: #f0f4ff;
+        border-left: 4px solid #667eea;
+      }
+
+      &.alert-critical {
+        border-left-color: #dc3545;
+
+        .alert-icon {
+          background-color: rgba(220, 53, 69, 0.1);
+          color: #dc3545;
+        }
+      }
+
+      &.alert-warning {
+        border-left-color: #ff9800;
+
+        .alert-icon {
+          background-color: rgba(255, 152, 0, 0.1);
+          color: #ff9800;
+        }
+      }
+
+      .alert-icon {
+        font-size: 20px;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        flex-shrink: 0;
+        background-color: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+      }
+
+      .alert-content {
+        flex: 1;
+        min-width: 0;
+
+        .alert-message {
+          font-size: 13px;
+          line-height: 1.5;
+          margin-bottom: 5px;
+          color: #333;
+          word-wrap: break-word;
+        }
+
+        .alert-meta {
+          display: flex;
+          gap: 10px;
+          font-size: 11px;
+          color: #6c757d;
+
+          .alert-device {
+            font-weight: 600;
+          }
+
+          .alert-time {
+            color: #999;
+          }
+        }
+      }
+
+      .alert-actions {
+        display: flex;
+        align-items: flex-start;
+
+        .btn-remove {
+          background: none;
+          border: none;
+          font-size: 20px;
+          color: #999;
+          cursor: pointer;
+          padding: 0;
+          width: 24px;
+          height: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          transition: all 0.2s;
+
+          &:hover {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Animations
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .alerts-dropdown {
+    width: 320px;
+    right: -10px;
+  }
+}

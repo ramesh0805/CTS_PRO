@@ -1,0 +1,15 @@
+export interface Device {
+  id: number;
+  deviceId: string;
+  name: string;
+  description?: string;
+  createdAt: string;
+  updatedAt?: string;
+  lastSeenAt?: string;
+}
+
+export interface DeviceDto {
+  deviceId: string;
+  name: string;
+  description?: string;
+}
